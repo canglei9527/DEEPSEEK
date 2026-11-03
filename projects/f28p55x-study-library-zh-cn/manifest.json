@@ -1,0 +1,222 @@
+[
+  {
+    "title": "TMS320F28P55x 技术参考手册 Rev D",
+    "source": "TMS320F28P55x_Technical_Reference_Manual_SPRUJ53D.pdf",
+    "category": "器件开发核心参考",
+    "id": "00",
+    "note": "F28P55x 外设、寄存器与系统架构的核心手册；TI Rev D（2026 年 4 月修订）。",
+    "url": "https://www.ti.com/lit/ug/spruj53d/spruj53d.pdf",
+    "pages": 3855,
+    "priority": "最高优先级",
+    "source_copy": "source/00_TMS320F28P55x 技术参考手册 Rev D.pdf"
+  },
+  {
+    "title": "TMS320F28P55x 数据手册",
+    "source": "TMS320F28P55x_Data_Sheet_SPRSP85D.pdf",
+    "category": "器件规格",
+    "id": "01",
+    "note": "F28P55x 器件选型、电气特性、封装及引脚信息的核心资料。",
+    "url": "https://www.ti.com/lit/gpn/TMS320F28P550SJ",
+    "pages": 296,
+    "priority": "核心",
+    "source_copy": "source/01_TMS320F28P55x 数据手册.pdf"
+  },
+  {
+    "title": "TMS320F28P55x 芯片勘误",
+    "source": "TMS320F28P55x_Silicon_Errata_SPRZ572.pdf",
+    "category": "器件规格",
+    "id": "02",
+    "note": "设计和调试时核查芯片硅版本限制及规避措施。",
+    "url": "https://www.ti.com/lit/pdf/SPRZ572",
+    "pages": 34,
+    "priority": "核心",
+    "source_copy": "source/02_TMS320F28P55x 芯片勘误.pdf"
+  },
+  {
+    "title": "F28P55x 功能安全手册",
+    "source": "F28P55x_Functional_Safety_Manual_SFFS779.pdf",
+    "category": "安全设计",
+    "id": "03",
+    "note": "安全机制与功能安全相关设计资料；安全应用应结合最新版官方文件核对。",
+    "url": "https://www.ti.com/lit/pdf/SFFS779",
+    "pages": 135,
+    "priority": "按应用选读",
+    "source_copy": "source/03_F28P55x 功能安全手册.pdf"
+  },
+  {
+    "title": "F28P55x E-Metrology 库指南",
+    "source": "F28P55x_E-Metrology_Guide_SLUUDN8.pdf",
+    "category": "计量应用",
+    "id": "04",
+    "note": "电能计量库使用指南，适用于涉及电能测量的开发。",
+    "url": "https://www.ti.com/lit/pdf/SLUUDN8",
+    "pages": 13,
+    "priority": "按应用选读",
+    "source_copy": "source/04_F28P55x E-Metrology 库指南.pdf"
+  },
+  {
+    "title": "F28P55x Flash API v4 指南",
+    "source": "F28P55x_Flash_API_v4_SPRUJC5.pdf",
+    "category": "启动与存储",
+    "id": "05",
+    "note": "片上 Flash 编程 API 及其使用说明。",
+    "url": "https://www.ti.com/lit/pdf/SPRUJC5",
+    "pages": 37,
+    "priority": "核心",
+    "source_copy": "source/05_F28P55x Flash API v4 指南.pdf"
+  },
+  {
+    "title": "LAUNCHXL-F28P55X LaunchPad 用户指南",
+    "source": "LAUNCHXL-F28P55X_User_Guide_SPRUJC0.pdf",
+    "category": "硬件平台",
+    "id": "06",
+    "note": "仅在使用该 LaunchPad 时适用，含板卡连接与硬件说明。",
+    "url": "https://www.ti.com/lit/pdf/SPRUJC0",
+    "pages": 27,
+    "priority": "按板卡选读",
+    "source_copy": "source/06_LAUNCHXL-F28P55X LaunchPad 用户指南.pdf"
+  },
+  {
+    "title": "TMDSCNCD28P55X ControlCARD 用户指南",
+    "source": "TMDSCNCD28P55X_ControlCARD_Guide_SPRUJA7.pdf",
+    "category": "硬件平台",
+    "id": "07",
+    "note": "仅在使用该 ControlCARD 时适用，含卡片接口与硬件说明。",
+    "url": "https://www.ti.com/lit/pdf/SPRUJA7",
+    "pages": 18,
+    "priority": "按板卡选读",
+    "source_copy": "source/07_TMDSCNCD28P55X ControlCARD 用户指南.pdf"
+  },
+  {
+    "title": "C2000 开发入门指南",
+    "source": "C2000_Getting_Started_SPRUIV6C.pdf",
+    "category": "软件开发",
+    "id": "08",
+    "note": "C2000 开发环境和基本流程入门。",
+    "url": "https://www.ti.com/lit/ug/spruiv6c/spruiv6c.pdf",
+    "pages": 11,
+    "priority": "核心",
+    "source_copy": "source/08_C2000 开发入门指南.pdf"
+  },
+  {
+    "title": "C2000 引导加载入门指南",
+    "source": "C2000_Getting_Started_Bootloading_SPRUJH3.pdf",
+    "category": "启动与存储",
+    "id": "09",
+    "note": "引导模式、启动流程和引导加载开发入门，文中涵盖 F28P55x。",
+    "url": "https://www.ti.com/lit/ug/sprujh3/sprujh3.pdf",
+    "pages": 58,
+    "priority": "核心",
+    "source_copy": "source/09_C2000 引导加载入门指南.pdf"
+  },
+  {
+    "title": "C2000 软件指南 v1.5",
+    "source": "C2000_Software_Guide_v1.5.pdf",
+    "category": "软件开发",
+    "id": "10",
+    "note": "软件生态与工具概览，版本日期较早；安装界面和软件版本需按当前环境复核。",
+    "url": "https://software-dl.ti.com/C2000/docs/software_guide/_static/pdf/C2000_Software_Guide.pdf",
+    "pages": 36,
+    "priority": "核心",
+    "source_copy": "source/10_C2000 软件指南 v1.5.pdf"
+  },
+  {
+    "title": "C2000 DigitalPower SDK 入门指南",
+    "source": "C2000_DigitalPower_SDK_Getting_Started_SPRUII8B.pdf",
+    "category": "数字电源",
+    "id": "11",
+    "note": "Rev B（2020）概览，具体 SDK 内容、工具界面和版本可能已更新。",
+    "url": "https://www.ti.com/lit/ug/spruii8b/spruii8b.pdf",
+    "pages": 6,
+    "priority": "按应用选读",
+    "source_copy": "source/11_C2000 DigitalPower SDK 入门指南.pdf"
+  },
+  {
+    "title": "CLB 工具用户指南",
+    "source": "CLB_Tool_Users_Guide_SPRUIR8B.pdf",
+    "category": "CLB 开发",
+    "id": "12",
+    "note": "CLB 工具工作流和使用说明；旧版 CCS/工具步骤需结合当前版本复核。",
+    "url": "https://www.ti.com/lit/pdf/SPRUIR8",
+    "pages": 47,
+    "priority": "CLB 专项",
+    "source_copy": "source/12_CLB 工具用户指南.pdf"
+  },
+  {
+    "title": "使用 C2000 CLB 进行设计",
+    "source": "CLB_Designing_with_C2000_CLB_SPRACL3.pdf",
+    "category": "CLB 开发",
+    "id": "13",
+    "note": "CLB 结构、设计方法与使用场景。",
+    "url": "https://www.ti.com/lit/an/spracl3/spracl3.pdf",
+    "pages": 25,
+    "priority": "CLB 专项",
+    "source_copy": "source/13_使用 C2000 CLB 进行设计.pdf"
+  },
+  {
+    "title": "使用 CLB 实现自定义串行接口",
+    "source": "CLB_Custom_Serial_Interfaces_SPRAD62.pdf",
+    "category": "CLB 实例",
+    "id": "14",
+    "note": "CLB 自定义串行接口实现示例。",
+    "url": "https://www.ti.com/lit/an/sprad62/sprad62.pdf",
+    "pages": 42,
+    "priority": "CLB 专项",
+    "source_copy": "source/14_使用 CLB 实现自定义串行接口.pdf"
+  },
+  {
+    "title": "基于 CLB 的三电平逆变器延迟保护",
+    "source": "CLB_Delayed_Protection_SDAA161.pdf",
+    "category": "CLB 实例",
+    "id": "15",
+    "note": "电力电子功率级保护应用示例。",
+    "url": "https://www.ti.com/lit/pdf/SDAA161",
+    "pages": 10,
+    "priority": "CLB 专项",
+    "source_copy": "source/15_基于 CLB 的三电平逆变器延迟保护.pdf"
+  },
+  {
+    "title": "将 FPGA/CPLD 自定义逻辑迁移到 C2000",
+    "source": "CLB_Migrate_FPGA_CPLD_SPRACO2A.pdf",
+    "category": "CLB 开发",
+    "id": "16",
+    "note": "适用于评估将 FPGA/CPLD 逻辑改由 C2000 CLB 实现的场景。",
+    "url": "https://www.ti.com/lit/an/spraco2a/spraco2a.pdf",
+    "pages": 43,
+    "priority": "CLB 专项",
+    "source_copy": "source/16_将 FPGA_CPLD 自定义逻辑迁移到 C2000.pdf"
+  },
+  {
+    "title": "C2000 实时控制外设参考指南 Rev V",
+    "source": "C2000_Real-Time_Control_Peripheral_Reference_Guide_SPRU566V.pdf",
+    "category": "外设参考",
+    "id": "17",
+    "note": "按器件列出可用外设，并给出外设模块概述；包含 F28P55x 外设选择表，适合与 TRM 配套查阅。",
+    "url": "https://www.ti.com/lit/ug/spru566v/spru566v.pdf",
+    "pages": 81,
+    "priority": "核心配套",
+    "source_copy": "source/17_C2000 实时控制外设参考指南 Rev V.pdf"
+  },
+  {
+    "title": "C2000 安全引导应用报告 Rev A",
+    "source": "Secure_Boot_on_C2000_Devices_SPRACT3A.pdf",
+    "category": "启动与安全",
+    "id": "18",
+    "note": "Secure Boot 工作流程和实现说明；TI 文件明确列出 F28P55x 支持。",
+    "url": "https://www.ti.com/lit/an/spract3a/spract3a.pdf",
+    "pages": 14,
+    "priority": "按应用选读",
+    "source_copy": "source/18_C2000 安全引导应用报告 Rev A.pdf"
+  },
+  {
+    "title": "C2000 神经网络处理单元（NPU）指南",
+    "source": "C2000_Neural-Network_Processing_Unit_Guide_SDAA185.pdf",
+    "category": "NPU/边缘 AI",
+    "id": "19",
+    "note": "NPU 模型部署和推理开发指南；适用于带 NPU 的 F28P55x 器件。",
+    "url": "https://www.ti.com/lit/pdf/SDAA185",
+    "pages": 38,
+    "priority": "按应用选读",
+    "source_copy": "source/19_C2000 NPU 指南.pdf"
+  }
+]
