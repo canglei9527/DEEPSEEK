@@ -1,0 +1,2 @@
+name: 知识库检索
+description: 功能完整的编码 Agent，并内置本地知识库（D:\CODEX\kb）的检索工具 kb_search / kb_read / kb_list。

@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARID 双模式管理台</title>
+<style>
+  /* 现代简洁，系统字体，无外部资源，跟随系统深浅色 */
+  :root {
+    --bg: #f6f7f9;
+    --fg: #1c2024;
+    --muted: #6b7280;
+    --card: #ffffff;
+    --border: #e2e5ea;
+    --accent: #2563eb;
+    --accent-ink: #ffffff;
+    --danger: #dc2626;
+    --ok: #16a34a;
+    --warn-bg: #fef3c7;
+    --warn-fg: #92400e;
+    --shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115;
+      --fg: #e5e7eb;
+      --muted: #9ca3af;
+      --card: #171a20;
+      --border: #2a2f38;
+      --accent: #3b82f6;
+      --warn-bg: #3b2f14;
+      --warn-fg: #fbbf24;
+      --shadow: 0 1px 4px rgba(0,0,0,.5);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC",
+      "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.55;
+  }
+  header {
+    padding: 14px 20px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+  header .sub { margin: 2px 0 0; font-size: 12.5px; color: var(--muted); }
+  main { max-width: 860px; margin: 22px auto 60px; padding: 0 16px; display: grid; gap: 16px; }
+  .statusbar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; box-shadow: var(--shadow);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+  .dot.ok { background: var(--ok); }
+  .dot.err { background: var(--danger); }
+  .dot.link { background: var(--muted); }
+  .sep { opacity: .5; }
+  .pathcell { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; word-break: break-all; }
+  .note { color: var(--muted); font-size: 12.5px; width: 100%; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px 18px; box-shadow: var(--shadow);
+  }
+  .card h2 { margin: 0 0 12px; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--border); color: var(--muted); }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+  input[type=text], select {
+    width: 100%; padding: 8px 10px; font-size: 14px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card); color: var(--fg);
+  }
+  .readonly {
+    background: transparent; border: 1px dashed var(--border); color: var(--muted);
+  }
+  button {
+    border: none; border-radius: 8px; padding: 8px 14px; font-size: 13.5px;
+    background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+  button.secondary { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+  button.danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+  button.small { padding: 4px 10px; font-size: 12px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .result { margin-top: 10px; font-size: 13px; min-height: 20px; }
+  .result.okr { color: var(--ok); }
+  .result.errr { color: var(--danger); }
+  .result.war { color: var(--warn-fg); }
+  .backup-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 4px;
+    border-bottom: 1px solid var(--border); font-size: 13px; flex-wrap: wrap;
+  }
+  .backup-item:last-child { border-bottom: none; }
+  .bkind { font-size: 11px; padding: 1px 8px; border-radius: 999px; flex: none; }
+  .bkind.initial { background: #dbeafe; color: #1d4ed8; }
+  .bkind.pregui { background: #ede9fe; color: #6d28d9; }
+  .bkind.auto { background: #dcfce7; color: #166534; }
+  .bkind.manual { background: #fef3c7; color: #92400e; }
+  @media (prefers-color-scheme: dark) {
+    .bkind.initial { background: #1e3a5f; color: #93c5fd; }
+    .bkind.pregui { background: #3b2270; color: #c4b5fd; }
+    .bkind.auto { background: #14532d; color: #86efac; }
+    .bkind.manual { background: #3b2f14; color: #fcd34d; }
+  }
+  .bmeta { color: var(--muted); font-size: 12px; margin-left: auto; }
+  .bop { display: flex; gap: 6px; }
+  .btext { margin-top: 8px; padding: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; white-space: pre-wrap; font-size: 12px; font-family: ui-monospace, Menlo, Consolas, monospace; max-height: 260px; overflow: auto; }
+  .empty { color: var(--muted); font-size: 13px; }
+  .modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; z-index: 50; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; max-width: 460px; width: 92%; }
+  .modal p { margin: 0 0 4px; font-size: 14px; }
+  .modal .sub { color: var(--muted); font-size: 12.5px; margin-bottom: 14px; }
+  .modal .row { justify-content: flex-end; }
+  .hidden { display: none !important; }
+  /* DSH Web card specific */
+  .statusPill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+  .live { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
+    .live.connected { color: var(--ok); }
+    .live.reconnecting { color: var(--warn-fg); }
+  .live .ldot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+    .live.connected .ldot { background: var(--ok); box-shadow: 0 0 0 0 rgba(22,163,74,.6); animation: livePulse 2s infinite; }
+    .live.reconnecting .ldot { background: #d97706; box-shadow: none; animation: none; }
+  @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(22,163,74,.5); } 70% { box-shadow: 0 0 0 6px rgba(22,163,74,0); } 100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); } }
+  .checks { display: grid; grid-template-columns: minmax(140px,auto) 1fr; gap: 5px 12px; font-size: 13px; }
+  .checks .ckey { color: var(--muted); }
+  .checks .cval { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; word-break: break-all; }
+  .tick-yes { color: var(--ok); }
+  .tick-no { color: var(--danger); }
+  .bigtext { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px; }
+  .usage-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12.5px; }
+  .usage-table th, .usage-table td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  .usage-table th:first-child, .usage-table td:first-child { text-align: left; }
+  .usage-table thead th { color: var(--muted); font-weight: 600; font-size: 11.5px; }
+  .usage-table tfoot td { font-weight: 700; border-top: 2px solid var(--border); border-bottom: none; }
+  .usage-table .side { color: var(--muted); font-size: 11.5px; }
+  .routeinfo { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; word-break: break-all; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>ARID 双模式管理台</h1>
+  <p class="sub">规划/审查 + 执行 双模型分工 · 配置与启动</p>
+</header>
+<main>
+  <div class="statusbar">
+    <span class="dot" id="healthDot"></span>
+    <span id="healthText">连接检测中…</span>
+    <span class="sep">·</span>
+    <span>设置文件</span>
+    <span class="pathcell" id="settingsPath"></span>
+    <span class="live reconnecting" id="liveSync" title="正在连接实时同步通道…"><span class="ldot"></span><span id="liveSyncText">实时同步：连接中…</span><span id="liveSyncTime"></span></span>
+    <div class="note">
+      保存后 DSH 约 100ms 内热重载；执行模型下次执行即生效，规划模型对新会话生效；配置持久化，重启不丢。
+      配置或备份变化（如外部编辑 settings.yaml）通过 SSE 即时推送刷新，无需等待轮询。
+    </div>
+  </div>
+
+  <!-- a. DSH Web 工作台 -->
+  <section class="card">
+    <h2>DSH Web 工作台 <span class="badge">dsh web</span></h2>
+    <div class="row">
+      <span class="dot" id="dshWebDot"></span>
+      <span class="statusPill"><span id="dshWebText">检测中…</span></span>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <button id="dshStartBtn">启动工作台</button>
+      <button id="dshOpenBtn" class="secondary hidden">打开工作台</button>
+      <button id="dshStopBtn" class="secondary hidden">关闭 Harness</button>
+      <span class="hint">启动按钮会调用仓库根的 start-arid.bat（自动完成探测/启动/开窗）。已在运行时不会重复启动。</span>
+    </div>
+    <div class="row" style="margin-top:8px;">
+      <button id="harnessInstallBtn" class="secondary">一键安装 Harness</button>
+      <button id="harnessImportBtn" class="secondary">导入双模式预设</button>
+      <span class="hint" id="harnessStatus"></span>
+    </div>
+    <div class="hint" style="margin-top:8px;">启动后进入 DSH Web 即可与双模式 Agent 对话；新建会话请选择“ARID 双模型模式”预设。</div>
+    <div class="result" id="dshWebResult"></div>
+  </section>
+
+  <!-- b. 双模式体检 -->
+  <section class="card">
+    <h2>双模式体检 <span class="badge">只读概览</span></h2>
+    <div class="checks" id="checksBox">
+      <span class="ckey">预设挂载</span><span class="cval" id="ckPreset">…</span>
+      <span class="ckey">执行插件</span><span class="cval" id="ckPlugin">…</span>
+      <span class="ckey">视觉插件</span><span class="cval" id="ckVisionPlugin">…</span>
+      <span class="ckey">规划模型</span><span class="cval" id="ckPlanner">…</span>
+      <span class="ckey">执行模型</span><span class="cval" id="ckExecutor">…</span>
+      <span class="ckey">视觉模型</span><span class="cval" id="ckVision">…</span>
+    </div>
+    <div class="result wars" id="checkWarn"></div>
+  </section>
+
+  <!-- c. 规划模型 -->
+  <section class="card" data-role="planner">
+    <h2>规划模型 <span class="badge">agent-default-model</span></h2>
+    <div class="field">
+      <label for="planMode">连接方式</label>
+      <select id="planMode">
+        <option value="reuse">复用已有 Provider 路由（仅选 provider / model）</option>
+        <option value="dedicated">独立路由（自动管理 URL / 密钥 / API 格式）</option>
+      </select>
+      <div class="hint">独立路由 = 写入 llm-pi-ai.providers.arid-planner；密钥存 ~/.dsh/.credentials.yaml（DSH 热加载，立即生效）。</div>
+    </div>
+    <div class="field">
+      <label for="planProv">Provider</label>
+      <input type="text" id="planProv" list="provProviders" placeholder="例如 opencode-go" autocomplete="off">
+      <datalist id="provProviders"></datalist>
+    </div>
+    <div class="field">
+      <label for="planModel">Model</label>
+      <input type="text" id="planModel" list="modelSuggest" placeholder="例如 deepseek-v4-flash" autocomplete="off">
+      <datalist id="modelSuggest"></datalist>
+    </div>
+    <div class="field">
+      <label for="planEffort">Reasoning Effort（可选）</label>
+      <input type="text" id="planEffort" list="effortSuggest" placeholder="留空 = 不指定/移除该项" autocomplete="off">
+      <datalist id="effortSuggest">
+        <option value="min"></option>
+        <option value="low"></option>
+        <option value="medium"></option>
+        <option value="high"></option>
+        <option value="max"></option>
+      </datalist>
+    </div>
+    <div class="field role-dedicated">
+      <label for="planApi">API 格式</label>
+      <select id="planApi"></select>
+    </div>
+    <div class="field role-dedicated">
+      <label for="planUrl">URL（baseURL）</label>
+      <input type="text" id="planUrl" placeholder="https://api.example.com/v1" autocomplete="off">
+    </div>
+    <div class="field role-dedicated">
+      <label for="planKey">API 密钥</label>
+      <input type="password" id="planKey" placeholder="留空 = 保持现有密钥" autocomplete="off">
+      <div class="row" style="margin-top:6px;">
+        <span class="hint" id="planKeyState"></span>
+        <button class="secondary small" id="planClearKey" type="button">清除已存密钥</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>当前生效值（只读）</label>
+      <div class="row">
+        <input type="text" class="readonly" id="planCurrent" readonly value="—">
+      </div>
+    </div>
+    <div class="field">
+      <label>当前路由信息（只读）</label>
+      <div class="routeinfo" id="planRouteInfo">…</div>
+    </div>
+    <div class="row">
+      <button id="planSaveBtn">保存</button>
+      <span class="hint">写入前会自动备份；其余配置及注释原样保留。</span>
+    </div>
+    <div class="hint">对新会话生效：新开会话即用新规划模型；已运行的会话沿用其启动时模型（可在工作台 composer 底部模型座位单独改）。</div>
+    <div class="result" id="planResult"></div>
+  </section>
+
+  <!-- d. 执行模型 -->
+  <section class="card" data-role="executor">
+    <h2>执行模型 <span class="badge">arid-dual-model.executor</span></h2>
+    <div class="field">
+      <label for="execMode">连接方式</label>
+      <select id="execMode">
+        <option value="reuse">复用已有 Provider 路由（仅选 provider / model）</option>
+        <option value="dedicated">独立路由（自动管理 URL / 密钥 / API 格式）</option>
+      </select>
+      <div class="hint">独立路由 = 写入 llm-pi-ai.providers.arid-executor；密钥存 ~/.dsh/.credentials.yaml。</div>
+    </div>
+    <div class="field">
+      <label for="execProv">Provider</label>
+      <input type="text" id="execProv" list="provProviders" placeholder="例如 opencode-go" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="execModel">Model</label>
+      <input type="text" id="execModel" list="modelSuggest" placeholder="例如 deepseek-v4-flash" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="execEffort">Reasoning Effort（可选）</label>
+      <input type="text" id="execEffort" list="effortSuggest" placeholder="留空 = 不指定/移除该项" autocomplete="off">
+    </div>
+    <div class="field role-dedicated">
+      <label for="execApi">API 格式</label>
+      <select id="execApi"></select>
+    </div>
+    <div class="field role-dedicated">
+      <label for="execUrl">URL（baseURL）</label>
+      <input type="text" id="execUrl" placeholder="https://api.example.com/v1" autocomplete="off">
+    </div>
+    <div class="field role-dedicated">
+      <label for="execKey">API 密钥</label>
+      <input type="password" id="execKey" placeholder="留空 = 保持现有密钥" autocomplete="off">
+      <div class="row" style="margin-top:6px;">
+        <span class="hint" id="execKeyState"></span>
+        <button class="secondary small" id="execClearKey" type="button">清除已存密钥</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>当前生效值（只读）</label>
+      <div class="row">
+        <input type="text" class="readonly" id="execCurrent" readonly value="—">
+      </div>
+    </div>
+    <div class="field">
+      <label>当前路由信息（只读）</label>
+      <div class="routeinfo" id="execRouteInfo">…</div>
+    </div>
+    <div class="row">
+      <button id="saveBtn">保存</button>
+      <span class="hint">写入的是 provider 与 model 两个叶子，其余配置及注释原样保留。</span>
+    </div>
+    <div class="result" id="execResult"></div>
+  </section>
+
+  <!-- d2. 视觉模型 -->
+  <section class="card" data-role="vision">
+    <h2>视觉模型 <span class="badge">arid-dual-model.vision</span></h2>
+    <div class="field">
+      <label for="visMode">连接方式</label>
+      <select id="visMode">
+        <option value="reuse">复用已有 Provider 路由（仅选 provider / model）</option>
+        <option value="dedicated">独立路由（自动管理 URL / 密钥 / API 格式）</option>
+      </select>
+      <div class="hint">独立路由 = 写入 llm-pi-ai.providers.arid-vision（defaultInput 含 image，可接收图片）；密钥存 ~/.dsh/.credentials.yaml。subagent_vision 工具每次调用实时读取。</div>
+    </div>
+    <div class="field">
+      <label for="visProv">Provider</label>
+      <input type="text" id="visProv" list="provProviders" placeholder="例如 opencode-go" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="visModel">Model</label>
+      <input type="text" id="visModel" list="modelSuggest" placeholder="例如 mimo-v2.5" autocomplete="off">
+    </div>
+    <div class="field role-dedicated">
+      <label for="visApi">API 格式</label>
+      <select id="visApi"></select>
+    </div>
+    <div class="field role-dedicated">
+      <label for="visUrl">URL（baseURL）</label>
+      <input type="text" id="visUrl" placeholder="https://api.example.com/v1" autocomplete="off">
+    </div>
+    <div class="field role-dedicated">
+      <label for="visKey">API 密钥</label>
+      <input type="password" id="visKey" placeholder="留空 = 保持现有密钥" autocomplete="off">
+      <div class="row" style="margin-top:6px;">
+        <span class="hint" id="visKeyState"></span>
+        <button class="secondary small" id="visClearKey" type="button">清除已存密钥</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>当前生效值（只读）</label>
+      <div class="row">
+        <input type="text" class="readonly" id="visCurrent" readonly value="—">
+      </div>
+    </div>
+    <div class="field">
+      <label>当前路由信息（只读）</label>
+      <div class="routeinfo" id="visRouteInfo">…</div>
+    </div>
+    <div class="row">
+      <button id="visSaveBtn">保存</button>
+      <span class="hint">写入 arid-dual-model.vision 的 provider 与 model；独立路由同时维护其路由档案。</span>
+    </div>
+    <div class="result" id="visResult"></div>
+  </section>
+
+  <!-- e2. Token 用量 -->
+  <section class="card">
+    <h2>Token 用量 <span class="badge">按模型 · 来自 DSH 会话日志</span></h2>
+    <div class="row">
+      <button id="usageRefreshBtn" class="secondary">刷新</button>
+      <span class="hint" id="usageHint"></span>
+    </div>
+    <div class="result" id="usageResult"></div>
+    <table class="usage-table" id="usageTable">
+      <thead>
+        <tr>
+          <th>模型</th><th colspan="4">今日</th><th colspan="4">本月</th>
+        </tr>
+        <tr>
+          <th></th><th>输入</th><th>输出</th><th>缓存读</th><th>合计/次数</th><th>输入</th><th>输出</th><th>缓存读</th><th>合计/次数</th>
+        </tr>
+      </thead>
+      <tbody id="usageBody"><tr><td colspan="9" class="empty">用量统计需手动点击"刷新"按钮加载（计算约需 10-20 秒）</td></tr></tbody>
+      <tfoot id="usageFoot"></tfoot>
+    </table>
+    <div class=”hint”>用量直接本地读取 ~/.dsh/sessions 会话日志解算（按 provider/model 汇总，含当日本月），无需 DSH 工作台在运行。缓存约 60 秒；”缓存读”为 prompt 缓存命中的 token。为避免卡顿，需手动点击”刷新”按钮加载（首次计算约需 10-20 秒，后续从缓存读取秒级返回）。最多处理最近 50 个本月活跃会话且跳过大文件（>1MB）。</div>
+  </section>
+
+  <!-- e. 备份 -->
+  <section class="card">
+    <h2>备份 <span class="badge">settings-backups</span></h2>
+    <div class="row" style="margin-bottom:10px;">
+      <button id="preguiRollbackBtn" class="danger">一键回退到 GUI 前配置</button>
+      <span class="hint" id="preguiRollbackHint"></span>
+    </div>
+    <div class="row">
+      <button id="manualBackupBtn" class="secondary">手动创建备份</button>
+      <span class="hint">每次保存或恢复前都会先自动备份一份；<b>初始</b>=首次连接时快照；<b>基线</b>=第一次通过本 GUI 保存前的配置，一键回退目标。初始备份在首次启动时自动生成。</span>
+    </div>
+    <div class="result" id="backupHint"></div>
+    <div id="backupList" style="margin-top: 10px;"></div>
+  </section>
+</main>
+
+<div class="modal-mask hidden" id="modalMask">
+  <div class="modal">
+    <p id="modalTitle"></p>
+    <p class="sub" id="modalBody"></p>
+    <div class="row">
+      <button class="secondary" id="modalCancel">取消</button>
+      <button class="danger" id="modalOk">确认</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var modal = { onConfirm: null };
+  var lastData = { executor: null, planner: null, providers: [], backups: [], checks: null, dshWeb: null };
+  var historyKey = 'dmg:model-history'; // localStorage 记录历史模型
+  var dshStarting = false;
+
+  var $ = function (id) { return document.getElementById(id); };
+
+    // ---- 实时同步状态 ----
+    function clockText(d) {
+      var p = function (n) { return (n < 10 ? '0' : '') + n; };
+      d = d || new Date();
+      return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    }
+    function paintLiveSync(mode, text, showClock) {
+      var el = $('liveSync');
+      el.classList.remove('connected', 'reconnecting');
+      if (mode === 'connected') el.classList.add('connected');
+      if (mode === 'reconnecting') el.classList.add('reconnecting');
+      $('liveSyncText').textContent = text || '';
+      $('liveSyncTime').textContent = showClock ? ('· ' + clockText()) : '';
+      el.title = mode === 'reconnecting'
+        ? '实时同步通道已断开，浏览器将按 EventSource 机制自动重连。'
+        : '实时同步通道已连接（/api/events）；配置或备份变化时由服务端即时推送刷新。';
+    }
+
+  // ---- 通用请求 ----
+  function api(method, path, body) {
+    return fetch(path, {
+      method: method,
+      headers: body !== undefined ? { 'Content-Type': 'application/json' } : undefined,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    }).then(function (res) {
+      return res.json().catch(function () { return { ok: false, error: '响应不是合法 JSON' }; })
+        .then(function (data) {
+            if (res.ok) {
+              data._ok = true;
+              if (data.ok === undefined) data.ok = true;
+            }
+            return data;
+          });
+    });
+  }
+
+  // ---- 顶部状态 ----
+  function paintHealth(ok) {
+    $('healthDot').className = 'dot ' + (ok ? 'ok' : 'err');
+    $('healthText').textContent = ok ? '服务已连接' : '连接断开';
+  }
+  function ping() {
+    fetch('/api/health').then(function (r) { return r.json(); })
+      .then(function () { paintHealth(true); })
+      .catch(function () { paintHealth(false); });
+  }
+
+  // ---- DSH Web 卡片 ----
+  function fmtPlannerKey(p) {
+    if (!p) return '（未找到 agent-default-model）';
+    return p.provider + ' / ' + p.model + (p.reasoningEffort ? ' (reasoningEffort: ' + p.reasoningEffort + ')' : '');
+  }
+  function paintDshWeb(d) {
+    var w = d && d.dshWeb;
+    if (!w) { $('dshWebDot').className = 'dot'; $('dshWebText').textContent = '未知'; return; }
+    $('dshWebDot').className = 'dot ' + (w.running ? 'ok' : '');
+    $('dshWebText').textContent = w.running ? ('运行中 · ' + w.url) : '未运行 · ' + w.url;
+    $('dshStartBtn').classList.toggle('hidden', w.running || dshStarting);
+    $('dshOpenBtn').classList.toggle('hidden', !w.running);
+    $('dshStopBtn').classList.toggle('hidden', !w.running);
+    paintHarness(d);
+  }
+  function paintHarness(d) {
+    var h = d && d.harness;
+    if (!h) { $('harnessStatus').textContent = ''; return; }
+    var parts = [];
+    parts.push('dsh ' + (h.dshInstalled ? '已安装' : '未安装'));
+    parts.push('双模式预设 ' + (h.presetInstalled ? '已导入' : '未导入'));
+    if (h.installing) parts.push('正在安装：' + (h.installMessage || ''));
+    $('harnessStatus').textContent = parts.join(' · ');
+    $('harnessInstallBtn').disabled = !!h.installing;
+    $('harnessImportBtn').disabled = !!h.installing;
+  }
+  function paintChecks(d) {
+    var c = d && d.checks;
+    if (!c) {
+      $('ckPreset').textContent = '—'; $('ckPlugin').textContent = '—'; $('ckVisionPlugin').textContent = '—';
+      $('ckPlanner').textContent = '—'; $('ckExecutor').textContent = '—';
+      return;
+    }
+    function tick(b) { return b ? '<span class="tick-yes">✅ 已安装</span>' : '<span class="tick-no">⚠ 缺失</span>'; }
+    $('ckPreset').innerHTML = escapeHtml(c.presetDefault || '（未设置 default）') + ' ' + tick(c.presetInstalled);
+    $('ckPlugin').innerHTML = tick(c.executorPluginInstalled) + ' <span class="hint">arid-dualmodel-ext6.cjs</span>';
+    
+    // 视觉插件状态（显示 dsh-vision-router 或降级方案）
+    var visionStatus = '';
+    if (c.visionRouterInstalled) {
+      visionStatus = '<span class="tick-yes">✅ dsh-vision-router</span> <span class="hint">11 个工具</span>';
+    } else if (c.visionMethod === 'arid-dualmodel-vision') {
+      visionStatus = '<span class="tick-yes">✅ arid-dualmodel-vision</span> <span class="hint">1 个工具（旧方案）</span>';
+    } else {
+      visionStatus = '<span class="tick-no">⚠ 未安装</span>';
+    }
+    if (c.nodeVersion && !c.visionRouterSupported) {
+      visionStatus += ' <span class="hint" style="color: #ff9800;">Node ' + escapeHtml(c.nodeVersion) + ' &lt; 22</span>';
+    }
+    $('ckVisionPlugin').innerHTML = visionStatus;
+    
+    $('ckPlanner').textContent = fmtPlannerKey(d.planner);
+    $('ckExecutor').textContent = d.executor ? (d.executor.provider + ' / ' + d.executor.model) : '（文件缺失或不可解析）';
+    $('ckVision').textContent = d.vision ? (d.vision.provider + ' / ' + d.vision.model) : '（未配置，默认 opencode-go / mimo-v2.5）';
+    var warn = [];
+    if (!c.presetInstalled) warn.push('预设未安装？运行仓库根 install 或重新安装 agent 预设。');
+    else if (c.presetDefault !== 'arid-dualmodel') warn.push('agent-presets.default 未指向 arid-dualmodel。');
+    if (!c.executorPluginInstalled) warn.push('执行插件 arid-dualmodel-ext6.cjs 缺失。');
+    if (!c.visionPluginInstalled) warn.push('视觉插件未安装。建议点击"一键安装 Harness"。');
+    else if (c.visionRouterSupported && !c.visionRouterInstalled) {
+      warn.push('检测到 Node ' + (c.nodeVersion || '22+') + '，建议升级到 dsh-vision-router（11 个工具）。');
+    }
+    $('checkWarn').textContent = warn.join(' ');
+    $('checkWarn').className = 'result wars ' + (warn.length ? '' : '');
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // ---- 三角色（规划/执行/视觉）连接配置 ----
+  var ROLE_META = {
+    planner:  { pre: 'plan', route: 'arid-planner',  apiPath: 'planner',  hasEffort: true },
+    executor: { pre: 'exec', route: 'arid-executor', apiPath: 'executor', hasEffort: true },
+    vision:   { pre: 'vis',  route: 'arid-vision',   apiPath: 'vision',   hasEffort: false },
+  };
+  var FALLBACK_API_FORMATS = [
+    'openai-completions', 'anthropic-messages', 'google-generative-ai',
+    'openai-responses', 'mistral-conversations', 'bedrock-converse-stream',
+    'google-vertex', 'azure-openai-responses', 'openai-codex-responses', 'pi-messages',
+  ];
+  function roleCard(role) {
+    return document.querySelector('section[data-role="' + role + '"]');
+  }
+  var apiFormatsBuilt = false;
+  function fillApiFormatSelects() {
+    if (apiFormatsBuilt) return; // 列表固定，只建一次，避免重建时重置用户正在做的选择
+    apiFormatsBuilt = true;
+    var formats = lastData.apiFormats || FALLBACK_API_FORMATS;
+    Object.keys(ROLE_META).forEach(function (role) {
+      var sel = $(ROLE_META[role].pre + 'Api');
+      sel.innerHTML = '';
+      formats.forEach(function (f) {
+        var o = document.createElement('option'); o.value = f; o.textContent = f; sel.appendChild(o);
+      });
+    });
+  }
+  function applyRoleMode(role) {
+    var pre = ROLE_META[role].pre;
+    var dedicated = $(pre + 'Mode').value === 'dedicated';
+    var fields = roleCard(role).querySelectorAll('.role-dedicated');
+    for (var i = 0; i < fields.length; i++) fields[i].classList.toggle('hidden', !dedicated);
+    var prov = $(pre + 'Prov');
+    prov.disabled = dedicated;
+    if (dedicated) prov.value = ROLE_META[role].route;
+  }
+  function paintRole(role) {
+    var m = ROLE_META[role];
+    var pre = m.pre;
+    var conn = lastData.connections && lastData.connections[role] ? lastData.connections[role] : null;
+    if (!conn) {
+      var seg = role === 'planner' ? lastData.planner : role === 'executor' ? lastData.executor : lastData.vision;
+      conn = seg ? { mode: 'reuse', provider: seg.provider, model: seg.model, reasoningEffort: seg.reasoningEffort || '' } : null;
+    }
+    var cur = $(pre + 'Current');
+    if (!conn || (!conn.provider && !conn.model)) {
+      cur.value = '（未配置）';
+      applyRoleMode(role);
+      return;
+    }
+    var line = conn.provider + ' / ' + conn.model
+      + (conn.reasoningEffort ? ' (reasoningEffort: ' + conn.reasoningEffort + ')' : '');
+    if (conn.mode === 'dedicated') line += ' · ' + (conn.api || '?') + ' @ ' + (conn.baseURL || '?');
+    cur.value = line;
+    var prov = $(pre + 'Prov'), model = $(pre + 'Model'), modeSel = $(pre + 'Mode');
+    if (document.activeElement !== prov && document.activeElement !== model && document.activeElement !== modeSel) {
+      modeSel.value = conn.mode === 'dedicated' ? 'dedicated' : 'reuse';
+      prov.value = conn.provider;
+      model.value = conn.model;
+    }
+    if (m.hasEffort) {
+      var eff = $(pre + 'Effort');
+      if (document.activeElement !== eff) eff.value = conn.reasoningEffort || '';
+    }
+    if (conn.api) $(pre + 'Api').value = conn.api;
+    if (conn.baseURL && document.activeElement !== $(pre + 'Url')) $(pre + 'Url').value = conn.baseURL;
+    var keyRef = conn.currentApiKeyEnv || conn.apiKeyEnv || '';
+    var routeLine;
+    if (conn.mode === 'dedicated') {
+      routeLine = '独立路由 ' + (conn.route || m.route) + '：api=' + (conn.api || '?') + ' · baseURL=' + (conn.baseURL || '?');
+    } else if (conn.currentApi || conn.currentBaseURL) {
+      routeLine = '复用路由 ' + (conn.provider || '?') + '（只读）：api=' + (conn.currentApi || '—') + ' · baseURL=' + (conn.currentBaseURL || '—');
+    } else {
+      routeLine = '复用路由 ' + (conn.provider || '?') + '：该 provider 未在 llm-pi-ai.providers 声明档案（请用 DSH Models 页或直接编辑 settings.yaml 配置其 URL/密钥）。';
+    }
+    routeLine += ' · 密钥：' + (conn.keyConfigured ? '已配置' : '未配置') + (keyRef ? '（' + keyRef + '）' : '');
+    $(pre + 'RouteInfo').textContent = routeLine;
+
+    $(pre + 'KeyState').textContent = conn.mode === 'dedicated'
+      ? (conn.keyConfigured ? '密钥已配置（存于 ~/.dsh/.credentials.yaml，DSH 热加载）' : '密钥未配置')
+      : '当前为「复用已有 Provider 路由」模式：URL / 密钥 / API 格式 由该 provider 的路由决定（只读）。切到「独立路由」后即可在此编辑。';
+    applyRoleMode(role);
+  }
+  function bindRoleSave(role) {
+    var m = ROLE_META[role];
+    var pre = m.pre;
+    $(pre + 'SaveBtn').addEventListener('click', function () {
+      var btn = $(pre + 'SaveBtn');
+      var resultId = pre + 'Result';
+      var mode = $(pre + 'Mode').value;
+      var provider = $(pre + 'Prov').value.trim();
+      var model = $(pre + 'Model').value.trim();
+      var body = { mode: mode, provider: provider, model: model };
+      if (m.hasEffort) {
+        var effort = $(pre + 'Effort').value.trim();
+        if (effort) body.reasoningEffort = effort;
+      }
+      if (mode === 'dedicated') {
+        body.api = $(pre + 'Api').value;
+        body.baseURL = $(pre + 'Url').value.trim();
+        var key = $(pre + 'Key').value;
+        if (key) body.apiKey = key;
+      }
+      if (!model) { show(resultId, 'Model 不能为空。', 'errr'); return; }
+      if (mode === 'reuse' && !provider) { show(resultId, 'Provider 不能为空。', 'errr'); return; }
+      if (mode === 'dedicated' && !body.baseURL) { show(resultId, '独立路由模式必须填写 URL。', 'errr'); return; }
+      btn.disabled = true;
+      show(resultId, '保存中…');
+      api('PUT', '/api/' + m.apiPath, body).then(function (d) {
+        btn.disabled = false;
+        if (d.ok) {
+          if (d.changed) {
+            var msg = (role === 'planner' ? '已保存。对新会话生效。' : '已保存。下次调用即生效。')
+              + (d.backup ? '（自动备份：' + d.backup.file + '）' : '')
+              + (d.keySaved ? '（密钥已写入凭据库）' : '');
+            if (d.keyError) show(resultId, d.keyError, 'war');
+            else show(resultId, msg, 'okr');
+          } else {
+            show(resultId, '值与当前一致，未做任何修改。', 'okr');
+          }
+          rememberModel(model);
+          $(pre + 'Key').value = '';
+          refresh();
+        } else {
+          show(resultId, d.error || '保存失败', 'errr');
+        }
+      }).catch(function () { btn.disabled = false; show(resultId, '请求失败', 'errr'); });
+    });
+  }
+  function bindRoleClearKey(role) {
+    var m = ROLE_META[role];
+    var pre = m.pre;
+    $(pre + 'ClearKey').addEventListener('click', function () {
+      var conn = lastData.connections && lastData.connections[role];
+      if (!conn || conn.mode !== 'dedicated') { show(pre + 'Result', '仅独立路由模式有本 GUI 管理的密钥。', 'war'); return; }
+      confirmAction('清除密钥', '将删除凭据库中 ' + conn.apiKeyEnv + ' 的已存密钥（settings.yaml 配置不变）。继续？', function () {
+        var body = { mode: 'dedicated', model: conn.model, api: conn.api, baseURL: conn.baseURL, clearKey: true };
+        if (m.hasEffort && conn.reasoningEffort) body.reasoningEffort = conn.reasoningEffort;
+        api('PUT', '/api/' + m.apiPath, body).then(function (d) {
+          if (d.ok) { show(pre + 'Result', d.keyError || '已清除密钥。', d.keyError ? 'war' : 'okr'); refresh(); }
+          else show(pre + 'Result', d.error || '清除失败', 'errr');
+        });
+      });
+    });
+  }
+
+  // ---- 状态加载 ----
+  function rememberModel(m) {
+    if (!m) return;
+    try {
+      var arr = JSON.parse(localStorage.getItem(historyKey) || '[]');
+      if (arr.indexOf(m) === -1) arr.push(m);
+      localStorage.setItem(historyKey, JSON.stringify(arr.slice(0, 10)));
+    } catch (e) { /* ignore */ }
+  }
+  function fillDatalist() {
+    var dl = $('provProviders');
+    dl.innerHTML = '';
+    (lastData.providers || []).forEach(function (p) {
+      var o = document.createElement('option'); o.value = p; dl.appendChild(o);
+    });
+    var mdl = $('modelSuggest');
+    mdl.innerHTML = '';
+    var seen = {};
+    ['deepseek-v4-flash'].concat((function () {
+      try { return JSON.parse(localStorage.getItem(historyKey) || '[]'); } catch (e) { return []; }
+    })()).forEach(function (m) {
+      if (!m || seen[m]) return; seen[m] = true;
+      var o = document.createElement('option'); o.value = m; mdl.appendChild(o);
+    });
+  }
+  function renderBackups(backups) {
+    var box = $('backupList');
+    box.innerHTML = '';
+    if (!backups || !backups.length) { box.innerHTML = '<div class="empty">暂无备份。</div>'; return; }
+    var kindLabel = { initial: '初始', pregui: '基线', auto: '自动', manual: '手动' };
+    backups.forEach(function (b) {
+      var div = document.createElement('div');
+      div.className = 'backup-item';
+      var t = document.createElement('span');
+      t.textContent = new Date(b.mtime).toLocaleString();
+      var k = document.createElement('span');
+      k.className = 'bkind ' + b.kind;
+      k.textContent = kindLabel[b.kind] || b.kind;
+      var meta = document.createElement('span');
+      meta.className = 'bmeta';
+      meta.textContent = fmtSize(b.size) + ' · ' + b.file;
+      var ops = document.createElement('span');
+      ops.className = 'bop';
+      var btnPrev = mkBtn('预览', 'secondary small', function () { togglePreview(div, b.file); });
+      var restoreLabel = b.kind === 'pregui' ? '回退' : '恢复';
+      var btnRestore = mkBtn(restoreLabel, 'small', function () {
+        var restoreTitle = b.kind === 'pregui' ? '回退到 GUI 前配置' : '恢复备份';
+        confirmAction(restoreTitle, '将先把当前配置自动备份，然后用「' + b.file + '」的完整内容覆盖 settings.yaml。继续？', function () {
+          api('POST', '/api/restore', { file: b.file }).then(function (d) {
+            if (d.ok) {
+              var msg = b.kind === 'pregui' ? ('已回退到 GUI 前配置 ' + b.file + '。') : ('已恢复为 ' + b.file + '。');
+              show('backupHint', msg, 'okr');
+              refresh();
+            }
+            else show('backupHint', d.error, 'errr');
+          });
+        });
+      });
+      var btnDel = mkBtn('删除', 'danger small', function () {
+        var delWarn = b.kind === 'initial'
+          ? '\n注意：这是初始备份，删除后无法再通过它一键恢复初始配置。'
+          : b.kind === 'pregui'
+            ? '\n注意：这是 GUI 前基线，删除后无法再一键回退到使用本 GUI 之前的配置，且下次保存时会重新生成一份新的基线。'
+            : '';
+        confirmAction('删除备份', '确定删除备份「' + b.file + '」？' + delWarn, function () {
+          api('DELETE', '/api/backup?file=' + encodeURIComponent(b.file)).then(function (d) {
+            if (d.ok) { show('backupHint', d.warning || '已删除 ' + b.file + '。', d.warning ? 'war' : 'okr'); refresh(); }
+            else show('backupHint', d.error, 'errr');
+          });
+        });
+      });
+      ops.appendChild(btnPrev); ops.appendChild(btnRestore); ops.appendChild(btnDel);
+      div.appendChild(t); div.appendChild(k); div.appendChild(meta); div.appendChild(ops);
+      box.appendChild(div);
+    });
+  }
+  function mkBtn(label, cls, handler) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    cls.split(' ').forEach(function (c) { if (c) b.classList.add(c); });
+    b.addEventListener('click', handler);
+    return b;
+  }
+  function togglePreview(div, file) {
+    var prev = div.querySelector('.btext');
+    if (prev) { prev.remove(); return; }
+    fetch('/api/backup?file=' + encodeURIComponent(file))
+      .then(function (r) { return r.text(); })
+      .then(function (txt) {
+        var p = document.createElement('div');
+        p.className = 'btext';
+        p.textContent = txt;
+        div.appendChild(p);
+      })
+      .catch(function () { var p = document.createElement('div'); p.className = 'btext'; p.textContent = '读取失败'; div.appendChild(p); });
+  }
+  function fmtSize(n) {
+    if (n < 1024) return n + ' B';
+    if (n < 1048576) return (n / 1024).toFixed(1) + ' KB';
+    return (n / 1048576).toFixed(2) + ' MB';
+  }
+  function refresh() {
+    return api('GET', '/api/state').then(function (d) {
+      if (!d._ok) { show('execResult', d.error, 'errr'); return; }
+      lastData = d;
+      $('settingsPath').textContent = d.settingsPath;
+      fillDatalist();
+      fillApiFormatSelects();
+      renderBackups(d.backups);
+      paintChecks(d);
+      paintDshWeb(d);
+      paintPreguiRollback(d);
+      paintRole('planner');
+      paintRole('executor');
+      paintRole('vision');
+    }).catch(function () { show('execResult', '读取状态失败', 'errr'); });
+  }
+  function show(id, msg, cls) {
+    var el = $(id);
+    el.textContent = msg;
+    el.className = 'result ' + (cls || '');
+  }
+
+  // ---- 5s 轮询：只刷新 DSH Web / 体检，避免整页重建备份列表 ----
+  function refreshLight() {
+    api('GET', '/api/state').then(function (d) {
+      if (d.ok) {
+        lastData.dshWeb = d.dshWeb;
+        lastData.checks = d.checks;
+        lastData.connections = d.connections;
+        lastData.planner = d.planner;
+        lastData.executor = d.executor;
+        lastData.vision = d.vision;
+        paintDshWeb(d);
+        paintChecks(d);
+        // 规划/执行/视觉当前生效值也可能被外部修改
+        paintRole('planner');
+        paintRole('executor');
+        paintRole('vision');
+      }
+    }).catch(function () { /* 静默：health 轮询负责连通性提示 */ });
+  }
+
+  // ---- 一键回退到 GUI 前配置 ----
+  function paintPreguiRollback(d) {
+    var btn = $('preguiRollbackBtn');
+    var hint = $('preguiRollbackHint');
+    var backups = (d && d.backups) || [];
+    var pregui = backups.filter(function (b) { return b.kind === 'pregui'; })
+      .sort(function (a, b) { return b.mtime - a.mtime; })[0];
+    if (!pregui) {
+      btn.disabled = true;
+      hint.textContent = '尚无基线；第一次通过本 GUI 保存配置时会自动生成。';
+      return;
+    }
+    btn.disabled = false;
+    hint.textContent = '基线：' + pregui.file + ' · ' + new Date(pregui.mtime).toLocaleString();
+  }
+  $('preguiRollbackBtn').addEventListener('click', function () {
+    var backups = (lastData && lastData.backups) || [];
+    var pregui = backups.filter(function (b) { return b.kind === 'pregui'; })
+      .sort(function (a, b) { return b.mtime - a.mtime; })[0];
+    if (!pregui) { show('backupHint', '尚无基线；第一次通过本 GUI 保存配置时会自动生成。', 'war'); return; }
+    confirmAction('一键回退', '基线文件「' + pregui.file + '」（' + new Date(pregui.mtime).toLocaleString() + '）\n将先把当前配置自动备份，然后用基线完整覆盖 settings.yaml。继续？', function () {
+      api('POST', '/api/restore', { file: pregui.file }).then(function (d) {
+        if (d.ok) {
+          show('backupHint', '已回退到 GUI 前配置 ' + pregui.file + '。', 'okr');
+          refresh();
+        } else {
+          show('backupHint', d.error, 'errr');
+        }
+      });
+    });
+  });
+
+  // ---- DSH Web 启动 ----
+  function startWorkspace() {
+    var btn = $('dshStartBtn');
+    dshStarting = true;
+    btn.disabled = true;
+    $('dshWebResult').textContent = '正在启动工作台…（最多等待 60 秒）';
+    $('dshWebResult').className = 'result';
+    api('POST', '/api/dsh-web/start').then(function (r) {
+      if (!r.ok) {
+        dshStarting = false;
+        btn.disabled = false;
+        $('dshWebResult').textContent = r.error || '启动请求失败';
+        $('dshWebResult').className = 'result errr';
+        return;
+      }
+      if (r.alreadyRunning) {
+        dshStarting = false;
+        btn.disabled = false;
+        $('dshWebResult').textContent = '工作台已在运行，未重复启动。';
+        $('dshWebResult').className = 'result okr';
+        refreshLight();
+        return;
+      }
+      // 已发起启动：轮询 /api/state 每 2s 至多 30 次
+      var tried = 0;
+      var timer = setInterval(function () {
+        tried += 1;
+        api('GET', '/api/state').then(function (d) {
+          var running = d.ok && d.dshWeb && d.dshWeb.running;
+          if (running) {
+            clearInterval(timer);
+            dshStarting = false;
+            btn.disabled = false;
+            $('dshWebResult').className = 'result okr';
+            $('dshWebResult').textContent = '已启动，工作台窗口即将打开。';
+            refreshLight();
+            return;
+          }
+          if (tried >= 30) {
+            clearInterval(timer);
+            dshStarting = false;
+            btn.disabled = false;
+            $('dshWebResult').className = 'result war';
+            $('dshWebResult').textContent = '工作台未在 60 秒内应答。请查看“ARID Workspace (dsh web)”窗口中的错误信息。';
+          }
+        }).catch(function () {
+          if (tried >= 30) {
+            clearInterval(timer);
+            dshStarting = false;
+            btn.disabled = false;
+            $('dshWebResult').className = 'result war';
+            $('dshWebResult').textContent = '轮询状态失败，请刷新页面查看。';
+          }
+        });
+      }, 2000);
+    }).catch(function () {
+      dshStarting = false;
+      btn.disabled = false;
+      $('dshWebResult').textContent = '启动请求失败';
+      $('dshWebResult').className = 'result errr';
+    });
+  }
+  $('dshStartBtn').addEventListener('click', startWorkspace);
+  $('dshOpenBtn').addEventListener('click', function () {
+    if (lastData.dshWeb && lastData.dshWeb.url) window.open(lastData.dshWeb.url, '_blank');
+  });
+  $('dshStopBtn').addEventListener('click', function () {
+    var btn = $('dshStopBtn');
+    btn.disabled = true;
+    api('POST', '/api/harness/stop').then(function (d) {
+      btn.disabled = false;
+      if (d.ok) {
+        show('dshWebResult', d.alreadyStopped ? '工作台本来就没在运行。' : (d.stopped ? '已关闭 Harness 工作台。' : '未能完全关闭，请手动结束 dsh 进程。'), d.stopped ? 'okr' : 'war');
+        refresh();
+      } else {
+        show('dshWebResult', d.error || '关闭失败', 'errr');
+      }
+    }).catch(function () { btn.disabled = false; show('dshWebResult', '关闭请求失败', 'errr'); });
+  });
+  $('harnessInstallBtn').addEventListener('click', function () {
+    var btn = $('harnessInstallBtn');
+    btn.disabled = true;
+    api('POST', '/api/harness/install').then(function (d) {
+      btn.disabled = false;
+      if (d.ok) {
+        show('dshWebResult', d.message || '安装已开始。', 'okr');
+        refreshLight();
+      } else {
+        show('dshWebResult', d.error || '启动安装失败', 'errr');
+      }
+    }).catch(function () { btn.disabled = false; show('dshWebResult', '启动安装请求失败', 'errr'); });
+  });
+  $('harnessImportBtn').addEventListener('click', function () {
+    var btn = $('harnessImportBtn');
+    btn.disabled = true;
+    api('POST', '/api/harness/import-dualmodel').then(function (d) {
+      btn.disabled = false;
+      if (d.ok) {
+        show('dshWebResult', '已导入双模式预设（' + d.files + ' 个文件）', 'okr');
+        refresh();
+      } else {
+        show('dshWebResult', d.error || '导入失败', 'errr');
+      }
+    }).catch(function () { btn.disabled = false; show('dshWebResult', '导入请求失败', 'errr'); });
+  });
+
+  // ---- 三角色保存 / 清除密钥 / 连接方式切换 ----
+  Object.keys(ROLE_META).forEach(function (role) {
+    var pre = ROLE_META[role].pre;
+    $(pre + 'Mode').addEventListener('change', function () { applyRoleMode(role); });
+    bindRoleSave(role);
+    bindRoleClearKey(role);
+  });
+
+  // ---- Token 用量 ----
+  function fmtNum(n) {
+    if (!Number.isFinite(n)) return '0';
+    if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+    if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+    if (n >= 1e4) return (n / 1e3).toFixed(1) + 'k';
+    return String(n);
+  }
+  function fmtTokens(u) {
+    if (!u) return '—';
+    return '合计 ' + fmtNum(u.total) + ' · ' + u.requests + ' 次';
+  }
+  function fmtMoney(n) {
+    if (!Number.isFinite(n) || n <= 0) return '$0.00';
+    if (n >= 100) return '$' + n.toFixed(0);
+    return '$' + n.toFixed(2);
+  }
+  function fmtTokensWithCost(u) {
+    if (!u) return '—';
+    return fmtTokens(u) + ' · ' + fmtMoney(u.cost);
+  }
+  function paintUsage(d) {
+    var tbody = $('usageBody');
+    var foot = $('usageFoot');
+    $('usageResult').className = 'result';
+    if (!d || !d.available) {
+      var msg = d && d.reason ? escapeHtml(d.reason) : '无法读取用量。';
+      tbody.innerHTML = '<tr><td colspan="9" class="empty">' + msg + '</td></tr>';
+      foot.innerHTML = '';
+      // 如果正在计算中，3秒后自动刷新
+      if (d && d.computing) {
+        setTimeout(function() {
+          var btn = $('usageRefreshBtn');
+          if (!btn.disabled) fetchUsage();
+        }, 3000);
+      }
+      return;
+    }
+    var rows = d.perModel || [];
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="9" class="empty">本月暂无结算到模型用量的会话。</td></tr>';
+    } else {
+      tbody.innerHTML = rows.map(function (m) {
+        return '<tr>'
+          + '<td>' + escapeHtml(m.model) + '</td>'
+          + '<td>' + fmtNum(m.today.input) + '</td>'
+          + '<td>' + fmtNum(m.today.output) + '</td>'
+          + '<td>' + fmtNum(m.today.cacheRead) + '</td>'
+          + '<td>' + fmtTokensWithCost(m.today) + '</td>'
+          + '<td>' + fmtNum(m.month.input) + '</td>'
+          + '<td>' + fmtNum(m.month.output) + '</td>'
+          + '<td>' + fmtNum(m.month.cacheRead) + '</td>'
+          + '<td>' + fmtTokensWithCost(m.month) + '</td>'
+          + '</tr>';
+      }).join('');
+    }
+    var t = d.totals || { today: null, month: null };
+    foot.innerHTML = '<tr>'
+      + '<td>总计</td>'
+      + '<td>' + fmtNum(t.today && t.today.input) + '</td>'
+      + '<td>' + fmtNum(t.today && t.today.output) + '</td>'
+      + '<td>' + fmtNum(t.today && t.today.cacheRead) + '</td>'
+      + '<td>' + fmtTokensWithCost(t.today) + '</td>'
+      + '<td>' + fmtNum(t.month && t.month.input) + '</td>'
+      + '<td>' + fmtNum(t.month && t.month.output) + '</td>'
+      + '<td>' + fmtNum(t.month && t.month.cacheRead) + '</td>'
+      + '<td>' + fmtTokensWithCost(t.month) + '</td>'
+      + '</tr>';
+    var when = d.computedAt ? new Date(d.computedAt).toLocaleString() : '—';
+    var extra = '';
+    if (d.cached) extra = '（缓存 ' + Math.round(d.durationMs || 0) + 'ms 耗时后复用）';
+    else if (typeof d.durationMs === 'number') extra = '（本次计算 ' + Math.round(d.durationMs) + 'ms · ' + (d.processedSessions || 0) + ' 个会话）';
+    $('usageHint').textContent = '生成于 ' + when + extra + (d.truncated ? ' · 仅统计近期会话' : '') + ' · 费用为估算（' + (d.currency || 'USD') + '）';
+  }
+  function fetchUsage() {
+    return fetch('/api/usage').then(function (r) { return r.json(); }).then(paintUsage)
+      .catch(function () { paintUsage({ ok: false, available: false, reason: '请求用量失败。' }); });
+  }
+  $('usageRefreshBtn').addEventListener('click', function () {
+    var b = $('usageRefreshBtn');
+    b.disabled = true;
+    // 不要清空整个 usageResult，只更新表格内容
+    var tbody = $('usageBody');
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">正在计算用量…</td></tr>';
+    fetchUsage().finally(function () { b.disabled = false; });
+  });
+
+  // ---- 手动备份 ----
+  $('manualBackupBtn').addEventListener('click', function () {
+    api('POST', '/api/backup', { kind: 'manual' }).then(function (d) {
+      if (d.ok) { show('backupHint', '已创建手动备份：' + d.file, 'okr'); refresh(); }
+      else show('backupHint', d.error, 'errr');
+    });
+  });
+
+  // ---- 二次确认对话框 ----
+  function confirmAction(title, body, onOk) {
+    $('modalTitle').textContent = title;
+    $('modalBody').textContent = body;
+    modal.onConfirm = onOk;
+    $('modalMask').classList.remove('hidden');
+  }
+  $('modalCancel').addEventListener('click', function () {
+    modal.onConfirm = null;
+    $('modalMask').classList.add('hidden');
+  });
+  $('modalOk').addEventListener('click', function () {
+    var fn = modal.onConfirm; modal.onConfirm = null;
+    $('modalMask').classList.add('hidden');
+    if (fn) fn();
+  });
+
+  // ---- 启动 ----
+  ping();
+  refresh();
+  // 用量统计不自动加载，改为手动点击刷新按钮触发
+  // setTimeout(fetchUsage, 3000);
+  setInterval(ping, 10000);
+  setInterval(refreshLight, 5000);
+  // setInterval(fetchUsage, 60000); // 不再自动刷新，避免后台持续计算
+
+  // ---- SSE 实时同步：外部改 settings.yaml / 备份目录时即时刷新 ----
+  (function initSse() {
+      // 初始为连接中；下面的事件会真实显示「已连接 / 已断开重连中 / 刚同步」，
+      // 不再是一个永远不变的静态「实时同步」标签。
+      paintLiveSync('reconnecting', '实时同步：连接中…', false);
+      var src = new EventSource('/api/events');
+      src.onopen = function () {
+        paintLiveSync('connected', '实时同步：已连接', true);
+      };
+    // hello: 连接建立即刷新一次体检与当前生效值；settings-changed: 配置或备份
+    // 变化时刷新体检 / 当前生效值 / 备份列表。EventSource 断线由浏览器自动重连。
+      // EventSource 已在上方创建，这里不再重复连接。
+    src.addEventListener('hello', function () { paintLiveSync('connected', '实时同步：已连接', true); refreshLight(); });
+    src.addEventListener('settings-changed', function () { paintLiveSync('connected', '已同步最新配置', true); refreshLight(); refresh(); });
+    src.onerror = function () { paintLiveSync('reconnecting', '实时同步：已断开，自动重连中…', false); };
+  })();
+})();
+</script>
+</body>
+</html>

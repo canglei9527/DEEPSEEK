@@ -1,0 +1,6 @@
+# Configuration GUI artifacts
+# Do NOT commit API keys, backups, or local tooling.
+node_modules/
+defaults/
+*.bak*
+.gitignore.d

@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Generated at install time, contains absolute local paths
+marketplace.json
+
+# Runtime state (normally lives outside the repo, at ~/.zcode/plugin-data/)
+sessions/
+*.tmp
+*.bak-dsh-router
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

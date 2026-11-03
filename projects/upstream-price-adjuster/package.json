@@ -1,0 +1,28 @@
+{
+  "name": "upstream-price-adjuster",
+  "version": "1.0.0",
+  "private": true,
+  "description": "根据上游倍率自动生成加价后的倍率工具",
+  "type": "module",
+  "dependencies": {
+    "playwright-core": "^1.55.0"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "dashboard": "node server.mjs",
+    "dashboard:open": "node scripts/launch-dashboard.mjs",
+    "dashboard:restart": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/restart-dashboard.ps1",
+    "test": "node --test",
+    "check": "node --check server.mjs && node --check src/config.js && node --check src/pricing.js && node --check src/app.js && node --check src/sync-console-app.js && node --check src/dai-sync-core.js && node --check src/dai-browser-session.js && node --check src/dai-lifecycle-core.js && node --check src/dai-rest-adapter.js && node --check src/dai-sync-runner.js && node --check src/dai-sync-controller.js && node --check bin/dai-group-sync.mjs && node --check scripts/mock-sync-dry-run.mjs && node --check scripts/launch-dashboard.mjs && node -e \"JSON.parse(require('node:fs').readFileSync('dai-sync.config.example.json', 'utf8'))\"",
+    "sync": "node bin/dai-group-sync.mjs",
+    "sync:mock": "node scripts/mock-sync-dry-run.mjs",
+    "build:exe": "node scripts/build-sea-exe.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "postject": "^1.0.0-alpha.6"
+  }
+}

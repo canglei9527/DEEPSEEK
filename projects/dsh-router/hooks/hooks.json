@@ -1,0 +1,51 @@
+{
+  "description": "dsh-router: bootstrap the stage workflow once per session, inject the routed working-style directive on every user prompt (same request, near-field), and advance the stage from observed tool calls.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "process",
+            "command": "node",
+            "args": [
+              "${ZCODE_PLUGIN_ROOT}/hooks/session-start.mjs"
+            ],
+            "timeoutMs": 10000,
+            "statusMessage": "dsh-router: 已启用任务感知路由（注入对模型可见，界面不显示）"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "process",
+            "command": "node",
+            "args": [
+              "${ZCODE_PLUGIN_ROOT}/hooks/user-prompt-submit.mjs"
+            ],
+            "timeoutMs": 10000,
+            "statusMessage": "dsh-router: 正在按任务类型路由…"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|Bash|TodoWrite",
+        "hooks": [
+          {
+            "type": "process",
+            "command": "node",
+            "args": [
+              "${ZCODE_PLUGIN_ROOT}/hooks/post-tool-use.mjs"
+            ],
+            "timeoutMs": 10000
+          }
+        ]
+      }
+    ]
+  }
+}

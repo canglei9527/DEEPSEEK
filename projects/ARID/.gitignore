@@ -1,0 +1,34 @@
+# ── 密钥与本地配置 ─────────────────────────────────────────────
+.env
+feishu-worker/.env
+config/runtime/
+*.log
+
+# ── 依赖与构建产物 ─────────────────────────────────────────────
+node_modules/
+dist/
+# 但 config-gui 内嵌的 yaml 库 dist 是运行必需（server.mjs 直接引用），放行：
+!config-gui/vendor/yaml/dist/
+
+# ── 个人历史记录（aider / AiderGui / DSH 会话） ───────────────
+.aider*
+.aider_ui_sessions.json
+
+# ── 本地测试夹具（含测试用凭据） ───────────────────────────────
+_gui_test/
+
+# ── 知识库原始资料（版权文档：TI TRM/数据手册、普中教程等） ─────
+# 开源仓库不包含受版权保护的 PDF/转换文本；使用者自行放入。
+kb-installer/kb/*.pdf
+kb-installer/kb/文档/
+kb-installer/kb/ti-official/
+
+# ── 个人运维笔记（含本机路径） ─────────────────────────────────
+ai-context/2026-08-15-api-key-restore-repair.md
+
+# ── 早期演示杂物（飞船/龙绘图脚本与产物） ─────────────────────
+dinosaur.c
+dinosaur.exe
+dragon*.png
+dragon.svg
+draw-dragon*.ps1

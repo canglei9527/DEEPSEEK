@@ -1,0 +1,5 @@
+name: ARID 双模型+知识库模式
+description: >-
+  双模型分工编码 Agent：高等级规划/审查 + 低等级执行，带升级求助流程；
+  内置本地知识库检索（kb_search / kb_read / kb_list，知识库位于 E:/kb）。
+  基于 standard，增加双模型分工、升级流程与知识库检索的规则段。

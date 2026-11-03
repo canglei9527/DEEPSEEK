@@ -1,0 +1,3 @@
+# Baseline credentials may contain plaintext API keys.
+credentials.default.yaml
+settings.default.yaml

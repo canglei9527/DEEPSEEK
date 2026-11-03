@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b7b7c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="精校离线">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="icon" href="./icon-192.png" type="image/png">
+  <link rel="stylesheet" href="./styles.css">
+  <title>精校工作台 · iPad 离线版</title>
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="回到书架">
+        <span class="brand-mark" aria-hidden="true">校</span>
+        <span><strong>精校工作台</strong><small>iPad 离线版</small></span>
+      </a>
+      <div class="top-actions">
+        <span id="storageState" class="storage-state" role="status">本机书库</span>
+        <button class="secondary-button" data-action="video" type="button">在线视频</button>
+        <button class="icon-button" data-action="theme" aria-label="切换明暗主题" title="切换主题">◐</button>
+        <button class="primary-button" data-action="import">＋ 导入 TXT</button>
+      </div>
+    </header>
+
+    <section id="videoView" class="video-page" aria-label="在线视频" hidden>
+      <div class="video-page-heading">
+        <div>
+          <p class="eyebrow">由 iPad 直接连接源站</p>
+          <h1>视频搜索与播放</h1>
+          <p class="video-intro">源配置只保存在本机。仅支持允许浏览器跨域访问的 HTTPS MacCMS JSON 接口；不经过电脑、云端或代理。</p>
+        </div>
+        <button class="secondary-button" data-action="library" type="button">返回书架</button>
+      </div>
+
+      <section class="video-panel" aria-labelledby="video-source-heading">
+        <h2 id="video-source-heading">添加或选择视频源</h2>
+        <form id="videoSourceForm" class="video-source-form">
+          <label>源名称<input id="videoSourceName" maxlength="80" required placeholder="例如：我的视频源"></label>
+          <label>MacCMS JSON API 地址<input id="videoSourceUrl" type="url" inputmode="url" required placeholder="https://example.com/api.php/provide/vod/" autocomplete="url"></label>
+          <button class="primary-button" type="submit">保存到本机</button>
+        </form>
+        <label class="video-source-picker">当前视频源<select id="videoSourceSelect" disabled aria-label="当前视频源"></select></label>
+        <div id="videoSourceList" class="video-source-list"></div>
+      </section>
+
+      <section class="video-panel" aria-labelledby="video-search-heading">
+        <h2 id="video-search-heading">搜索与观看</h2>
+        <form id="videoSearchForm" class="video-search-form">
+          <input id="videoSearchQuery" type="search" required placeholder="输入影片或番剧名称" aria-label="搜索影片名称">
+          <button id="videoSearchButton" class="primary-button" type="submit">搜索</button>
+        </form>
+        <p id="videoStatus" class="video-status" role="status" aria-live="polite">添加一个兼容的 HTTPS 视频源后即可搜索。</p>
+        <video id="ipadVideoPlayer" class="ipad-video-player" controls playsinline preload="none" hidden></video>
+        <div id="videoResults" class="video-results" aria-live="polite"></div>
+      </section>
+    </section>
+
+    <main id="layout" class="layout">
+      <aside class="shelf-panel" aria-label="本机书架">
+        <div class="shelf-heading">
+          <div><p class="eyebrow">只在这台 iPad</p><h1>我的书架</h1></div>
+          <span id="bookCount" class="count-badge">0 本</span>
+        </div>
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="搜索书名或正文" autocomplete="off"></label>
+        <div id="bookList" class="book-list"></div>
+        <button class="import-card" data-action="import" type="button"><span class="import-icon">＋</span><span><strong>导入本地书籍</strong><small>TXT / Markdown · 最大 25 MiB</small></span></button>
+        <div class="backup-actions" aria-label="本机备份与迁移">
+          <button class="secondary-button" data-action="backup" type="button">导出书架备份</button>
+          <button class="secondary-button" data-action="restore-backup" type="button">导入备份</button>
+        </div>
+      </aside>
+
+      <section id="workspace" class="workspace" aria-live="polite"></section>
+    </main>
+    <input id="fileInput" type="file" accept=".txt,.md,text/plain,text/markdown" multiple hidden>
+    <input id="backupInput" type="file" accept=".json,application/json" hidden>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+  <script src="./backup.js" defer></script>
+  <script src="./online-video.js" defer></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>

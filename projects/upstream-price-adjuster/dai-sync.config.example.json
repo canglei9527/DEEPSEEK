@@ -1,0 +1,119 @@
+{
+  "baseUrl": "https://miao.313619.xyz",
+  "allowApply": true,
+  "allowLifecycleApply": true,
+  "allowDisableStale": true,
+  "allowEnableRestored": true,
+  "intervalMs": 60000,
+  "decimals": 4,
+  "adjustment": 0.02,
+  "tolerance": 0.000000001,
+  "headers": {},
+  "browser": {
+    "loginUrl": "https://miao.313619.xyz",
+    "requestPageUrl": "https://miao.313619.xyz/tenant/ai/models/upstreams",
+    "storagePath": "runtime/dai-browser-storage.json"
+  },
+  "endpoints": {
+    "upstreams": {
+      "method": "GET",
+      "path": "/api/v1/tenants/me/upstream-resources",
+      "itemsPath": "items",
+      "fields": {
+        "idField": "id",
+        "nameField": "name",
+        "multiplierField": "tenant_multiplier"
+      }
+    },
+    "groups": {
+      "method": "GET",
+      "path": "/api/v1/tenants/me/groups",
+      "itemsPath": "items",
+      "fields": {
+        "idField": "id",
+        "nameField": "name",
+        "multiplierField": "default_user_multiplier"
+      }
+    },
+    "updateGroup": {
+      "method": "PATCH",
+      "path": "/api/v1/tenants/me/groups/{id}",
+      "bodyTemplate": {
+        "name": "{{group.name}}",
+        "description": "{{group.description}}",
+        "retail_price_book_id": "{{group.retail_price_book_id}}",
+        "default_user_multiplier": "{{desiredMultiplier}}",
+        "user_default_visible": "{{group.user_default_visible}}",
+        "allow_protocol_conversion": "{{group.allow_protocol_conversion}}",
+        "sort_order": "{{group.sort_order}}",
+        "status": "{{group.status}}"
+      }
+    },
+    "targets": {
+      "method": "GET",
+      "path": "/api/v1/tenants/me/groups/{id}/targets",
+      "itemsPath": "items"
+    },
+    "rules": {
+      "method": "GET",
+      "path": "/api/v1/tenants/me/groups/{id}/dispatch-rules",
+      "itemsPath": "items"
+    },
+    "createGroup": {
+      "method": "POST",
+      "path": "/api/v1/tenants/me/groups",
+      "bodyTemplate": {
+        "name": "{{name}}",
+        "description": "{{managedDescription}}",
+        "retail_price_book_id": "{{retailPriceBookId}}",
+        "default_user_multiplier": "{{desiredMultiplier}}",
+        "user_default_visible": "{{userDefaultVisible}}",
+        "allow_protocol_conversion": "{{allowProtocolConversion}}",
+        "sort_order": "{{sortOrder}}",
+        "status": "active"
+      }
+    },
+    "associateUpstream": {
+      "method": "POST",
+      "path": "/api/v1/tenants/me/groups/{id}/targets",
+      "bodyTemplate": {
+        "account_id": "{{upstreamId}}",
+        "priority": "{{priority}}",
+        "status": "active"
+      }
+    },
+    "createRule": {
+      "method": "POST",
+      "path": "/api/v1/tenants/me/groups/{id}/dispatch-rules",
+      "bodyTemplate": {
+        "client_surface": "{{clientSurface}}",
+        "match_type": "exact",
+        "match_value": "{{modelCode}}",
+        "target_model_code": "{{modelCode}}",
+        "priority": "{{priority}}",
+        "status": "active",
+        "required_capability": "{{requiredCapability}}"
+      }
+    },
+    "disableGroup": {
+      "method": "PATCH",
+      "path": "/api/v1/tenants/me/groups/{id}/status",
+      "bodyTemplate": { "status": "disabled" }
+    },
+    "disableRule": {
+      "method": "PATCH",
+      "path": "/api/v1/tenants/me/groups/{groupId}/dispatch-rules/{ruleId}/status",
+      "bodyTemplate": { "status": "inactive" }
+    },
+    "enableGroup": {
+      "method": "PATCH",
+      "path": "/api/v1/tenants/me/groups/{id}/status",
+      "bodyTemplate": { "status": "active" }
+    },
+    "enableRule": {
+      "method": "PATCH",
+      "path": "/api/v1/tenants/me/groups/{groupId}/dispatch-rules/{ruleId}/status",
+      "bodyTemplate": { "status": "active" }
+    }
+  }
+}

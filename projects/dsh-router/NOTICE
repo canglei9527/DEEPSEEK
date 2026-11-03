@@ -1,0 +1,35 @@
+NOTICE
+
+This project is a port of prior open work. The MIT terms above apply.
+
+- **yjh051108/dsh-routing-suite** (MIT) — https://github.com/yjh051108/dsh-routing-suite
+  The routing core in `hooks/lib/router-core.mjs` is ported from
+  `preset/router-standard/router-core.mjs` (v1.20.0 / v34 line): the task
+  classification regexes, the measured behavior bands and their thresholds,
+  the persona strings, the complexity heuristic, and the stage-advance rules.
+  The guidance text in `hooks/lib/guidance.mjs` is adapted from
+  `preset/router-standard/router-bootstrap-v34.mjs`, with the stage guides
+  kept in substance and DSH-only tool references remapped or dropped.
+  The measured results cited in this project's documentation are that
+  project's measurements, taken on DeepSeek Harness — not measurements of
+  this port.
+
+- **DeepSeek Harness** — dsh-routing-suite's own `preset/agent.cordis.yml`
+  derives from the DeepSeek Harness Standard agent preset (MIT). This port
+  does not include that file; it targets ZCode, which has no cordis layer.
+
+DeepSeek is a trademark of its respective owner. This project is a community
+artifact and is not endorsed by DeepSeek or by the upstream authors.
+
+## On the fidelity claims
+
+Upstream's router swaps the **system prompt** persona and gates the **tool
+catalog** per stage, and its published figures (cache-hit rate, routing
+accuracy, convergence) were measured under those conditions on DSH.
+
+This port can do neither: ZCode exposes no system-prompt hook and no hook
+that adds or removes tools. The port therefore conditions only through
+near-field context and reports the stage without gating tools.
+
+Upstream's measured figures **do not transfer to this port**, and this
+project does not claim them. See "Fidelity" in the README.

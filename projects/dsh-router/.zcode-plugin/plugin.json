@@ -1,0 +1,19 @@
+{
+  "name": "dsh-router",
+  "version": "0.1.0",
+  "description": "Task-aware reasoning-mode router ported from dsh-routing-suite: classifies each user prompt (build / fix / ambiguous) and injects the matching working-style directive, stage workflow discipline, and depth-adaptive guidance near-field.",
+  "description_i18n": {
+    "en": "Task-aware reasoning-mode router ported from dsh-routing-suite: classifies each user prompt (build / fix / ambiguous) and injects the matching working-style directive, stage workflow discipline, and depth-adaptive guidance near-field.",
+    "zh-CN": "从 dsh-routing-suite 移植的任务感知思维模式路由器：对每条用户消息分类（构建 / 修复 / 歧义），并在近场注入匹配的工作风格指令、阶段工作流纪律与深度自适应引导。"
+  },
+  "author": {
+    "name": "Local port"
+  },
+  "keywords": [
+    "router",
+    "reasoning-mode",
+    "persona",
+    "workflow",
+    "dsh-routing-suite"
+  ]
+}

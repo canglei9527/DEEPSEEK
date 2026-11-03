@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="D-AI 同名模型分组倍率同步的本地控制台">
+    <title>D-AI 同名分组同步控制台</title>
+    <link rel="stylesheet" href="/sync-console.css">
+  </head>
+  <body>
+    <main class="console-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/" aria-label="D-AI 同名分组同步控制台首页">
+          <span class="brand-icon" aria-hidden="true">⇄</span>
+          <span><small>LOCAL CONTROL</small><strong>同步控制台</strong></span>
+        </a>
+        <nav aria-label="工具导航">
+          <a class="nav-link active" href="/">同步监视器</a>
+          <a class="nav-link" href="/pricing.html">手动调价器</a>
+        </nav>
+        <section class="sidebar-rule" aria-label="同步规则摘要">
+          <p>EXACT MATCH</p>
+          <strong>只处理名称完全相同的一对一记录</strong>
+          <span>不 trim、不忽略大小写、不做模糊匹配。</span>
+        </section>
+      </aside>
+
+      <section class="console-main">
+        <header class="app-header">
+          <div>
+            <p class="eyebrow">D-AI GROUP MULTIPLIER</p>
+            <h1>同名模型分组同步</h1>
+            <p class="subtitle">本机进程控制面板。默认只预览，不会修改远程分组。</p>
+          </div>
+          <div id="connection-badge" class="connection-badge stopped" role="status" aria-live="polite">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="connection-text">已停止</span>
+          </div>
+        </header>
+
+        <section class="status-grid" aria-label="同步状态">
+          <article class="status-card">
+            <span>运行状态</span>
+            <strong id="status-state">已停止</strong>
+            <small id="status-activity">等待本地操作</small>
+          </article>
+          <article class="status-card">
+            <span>写入模式</span>
+            <strong id="status-mode">—</strong>
+            <small>dry-run 默认无 PATCH</small>
+          </article>
+          <article class="status-card">
+            <span>轮询间隔</span>
+            <strong id="status-interval">—</strong>
+            <small>仅监视器持续运行</small>
+          </article>
+          <article class="status-card">
+            <span>最近一轮</span>
+            <strong id="status-cycle">尚未执行</strong>
+            <small id="status-cycle-detail">—</small>
+          </article>
+        </section>
+
+        <section class="action-panel panel">
+          <div class="action-copy">
+            <p class="eyebrow">RUN CONTROL</p>
+            <h2>安全地预览或持续同步</h2>
+            <p>“预览一次”始终为 dry-run；监视器在独立本机 Node 进程中运行，可随时停止。</p>
+          </div>
+          <div class="action-buttons">
+            <button id="preview-once" class="button secondary" type="button">预览一次（dry-run）</button>
+            <button id="start-watch" class="button primary" type="button">启动 dry-run 监视器</button>
+            <button id="stop-watch" class="button danger" type="button" disabled>停止</button>
+          </div>
+        </section>
+
+        <section class="workspace-grid">
+          <section class="panel config-panel" aria-labelledby="config-heading">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">LOCAL CONFIG</p>
+                <h2 id="config-heading">本地配置</h2>
+              </div>
+              <button id="validate-config" class="text-button" type="button">校验配置</button>
+            </div>
+            <div class="form-grid">
+              <label>
+                私有配置文件（项目目录内）
+                <input id="config-path" type="text" value="dai-sync.config.json" autocomplete="off" spellcheck="false">
+                <small>从示例复制后填写；不会在页面中显示或保存认证值。</small>
+              </label>
+              <label>
+                轮询间隔（毫秒）
+                <input id="interval-ms" type="number" min="1000" step="1000" value="60000" inputmode="numeric">
+                <small>最小 1000；留在默认值会覆盖配置中的间隔。</small>
+              </label>
+              <label>
+                调整值
+                <select id="adjustment-value">
+                  <option value="0.001">0.001</option>
+                  <option value="0.005">0.005</option>
+                  <option value="0.01">0.01</option>
+                  <option value="0.02" selected>0.02</option>
+                  <option value="0.05">0.05</option>
+                </select>
+                <small>目标倍率 = 上游倍率 + 调整值；启动监视器时生效。</small>
+              </label>
+              <label>
+                同步类型
+                <select id="sync-type">
+                  <option value="rate" selected>倍率同步</option>
+                  <option value="lifecycle">供应商模型生命周期同步</option>
+                </select>
+                <small>生命周期模式会实时更新已有分组倍率；只为新分组创建关联上游和调度规则，已识别分组/规则的恢复与停用需单独开关。</small>
+              </label>
+              <label class="checkbox-label">
+                <input id="disable-stale" type="checkbox">
+                允许停用失效分组
+                <small>仅生命周期 apply 且配置显式允许时生效；只停用确认失效的分组，规则不会停用。</small>
+              </label>
+              <label class="checkbox-label">
+                <input id="enable-restored" type="checkbox">
+                恢复已识别资源
+                <small>仅生命周期 apply 且配置显式允许时生效；精确匹配的上游或模型恢复才启用，人工分组/规则也会参与。</small>
+              </label>
+              <label>
+                监视器模式
+                <select id="run-mode">
+                  <option value="dry-run" selected>dry-run（只预览）</option>
+                  <option value="apply">apply（写入分组）</option>
+                </select>
+                <small>apply 仍会实时更新已有分组倍率；生命周期创建只针对新分组，恢复/停用已有已识别资源还分别需要 allowEnableRestored / allowDisableStale。</small>
+              </label>
+            </div>
+            <div id="config-feedback" class="feedback" role="status" aria-live="polite">尚未校验。请先复制并填写本机私有配置。</div>
+            <div id="config-summary" class="config-summary" hidden></div>
+            <div class="browser-actions" aria-label="浏览器登录会话">
+              <button id="browser-open" class="button secondary" type="button">打开 D-AI 登录</button>
+              <button id="browser-save" class="button primary" type="button">保存登录会话</button>
+              <button id="browser-close" class="text-button" type="button">关闭登录窗口</button>
+            </div>
+            <div id="browser-feedback" class="feedback" role="status" aria-live="polite">浏览器模式需要先校验包含 browser.loginUrl 的配置。</div>
+          </section>
+
+          <section class="panel rule-panel" aria-labelledby="rule-heading">
+            <p class="eyebrow">SYNC RULE</p>
+            <h2 id="rule-heading">精确同名 + 调整值</h2>
+            <div class="rule-formula">目标分组倍率 = round(上游倍率 + <b id="rule-adjustment">0.02</b>, decimals)</div>
+            <ul class="rule-list">
+              <li>仅同名且双方各一条的记录参与计划。</li>
+              <li>重复名、缺失名、空名、无效倍率或缺少分组 ID 都会跳过。</li>
+              <li>读取失败时本轮不写入；写入失败后立即停止余下 PATCH。</li>
+            </ul>
+            <div class="local-only-note">browser 模式通过受控 Chrome 会话认证；控制台不读取或显示 Cookie、密码或令牌，也不发送 CORS 响应头。</div>
+          </section>
+        </section>
+
+        <section class="results-grid">
+          <section class="panel list-panel" aria-labelledby="mismatch-heading">
+            <div class="panel-heading">
+              <div><p class="eyebrow">RATE PLAN</p><h2 id="mismatch-heading">倍率不一致</h2></div>
+              <span id="mismatch-count" class="count-badge">0</span>
+            </div>
+            <ul id="mismatch-list" class="event-list" aria-live="polite">
+              <li class="empty-list">执行预览后会在这里显示待调整的同名分组。</li>
+            </ul>
+          </section>
+          <section class="panel list-panel" aria-labelledby="lifecycle-heading">
+            <div class="panel-heading">
+              <div><p class="eyebrow">LIFECYCLE PLAN</p><h2 id="lifecycle-heading">分组与模型计划</h2></div>
+              <span id="lifecycle-count" class="count-badge lifecycle">0</span>
+            </div>
+            <ul id="lifecycle-list" class="event-list" aria-live="polite">
+              <li class="empty-list">生命周期预览会在这里显示分组、关联、规则和停用计划。</li>
+            </ul>
+          </section>
+          <section class="panel list-panel" aria-labelledby="skipped-heading">
+            <div class="panel-heading">
+              <div><p class="eyebrow">SKIPPED</p><h2 id="skipped-heading">跳过与风险</h2></div>
+              <span id="skipped-count" class="count-badge muted">0</span>
+            </div>
+            <ul id="skipped-list" class="event-list" aria-live="polite">
+              <li class="empty-list">解析到的重复名、缺失名和无效值会显示在这里。</li>
+            </ul>
+          </section>
+        </section>
+
+        <section class="panel log-panel" aria-labelledby="log-heading">
+          <div class="panel-heading">
+            <div><p class="eyebrow">PROCESS LOG</p><h2 id="log-heading">本地同步日志</h2></div>
+            <button id="clear-log-view" class="text-button" type="button">回到底部</button>
+          </div>
+          <pre id="sync-log" class="sync-log" tabindex="0" aria-live="polite">等待本地同步进程输出…</pre>
+        </section>
+
+        <footer>本控制台只监听 127.0.0.1。关闭控制台服务器会请求停止正在运行的同步进程。</footer>
+      </section>
+    </main>
+    <script type="module" src="/src/sync-console-app.js"></script>
+  </body>
+</html>

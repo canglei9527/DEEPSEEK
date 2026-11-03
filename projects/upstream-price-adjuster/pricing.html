@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="根据上游倍率自动计算加价后的模型倍率">
+    <title>上游倍率 · 自动调价器</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand-mark" aria-hidden="true">＋</div>
+        <div>
+          <p class="eyebrow">LOCAL PRICING TOOL</p>
+          <h1>上游倍率 · 自动调价器</h1>
+        </div>
+        <div class="topbar-note">数据只保存在本机浏览器</div>
+      </header>
+
+      <section class="hero panel">
+        <div class="hero-copy">
+          <span class="chip">规则已启用</span>
+          <h2>上游价格变动时，倍率跟着算</h2>
+          <p>把上游目录里的倍率粘贴进来，工具会按统一规则生成你的销售倍率。</p>
+        </div>
+        <div class="formula" aria-label="计算公式">
+          <span>调整后倍率</span>
+          <strong>＝ 上游倍率 <i>＋</i> 调整值</strong>
+          <small>默认每条加 <b id="formula-adjustment">0.020</b></small>
+        </div>
+      </section>
+
+      <section class="controls panel">
+        <div class="control-group">
+          <label for="adjustment">统一调整值</label>
+          <div class="input-with-suffix">
+            <input id="adjustment" type="number" inputmode="decimal" step="0.001" value="0.02" aria-describedby="adjustment-help">
+            <span>倍率</span>
+          </div>
+          <p id="adjustment-help" class="help">例如填 0.02，表示在每条上游倍率上加 0.02；允许填负数做降价。</p>
+        </div>
+        <div class="control-group compact">
+          <label for="decimals">显示小数位</label>
+          <select id="decimals">
+            <option value="2">2 位</option>
+            <option value="3" selected>3 位</option>
+            <option value="4">4 位</option>
+            <option value="6">6 位</option>
+          </select>
+        </div>
+        <div class="control-actions">
+          <button id="load-sample" class="button secondary" type="button">载入示例</button>
+          <button id="clear-all" class="button ghost" type="button">清空</button>
+        </div>
+      </section>
+
+      <section class="workspace panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">MODEL LIST</p>
+            <h2>模型倍率</h2>
+          </div>
+          <button id="add-row" class="button primary" type="button">＋ 添加一行</button>
+        </div>
+
+        <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">模型 / 分组名称</th>
+                <th scope="col">上游倍率</th>
+                <th scope="col">调整后倍率</th>
+                <th scope="col" class="align-right">操作</th>
+              </tr>
+            </thead>
+            <tbody id="rows-body"></tbody>
+          </table>
+          <div id="empty-state" class="empty-state" hidden>
+            <div class="empty-icon">↗</div>
+            <h3>还没有模型</h3>
+            <p>添加一行，或使用下方的批量粘贴。</p>
+            <button id="empty-add" class="button secondary" type="button">添加第一行</button>
+          </div>
+        </div>
+
+        <div class="bulk-import">
+          <div class="bulk-heading">
+            <div>
+              <h3>批量粘贴</h3>
+              <p>一行一条，支持：<code>模型名&nbsp;&nbsp;倍率</code>、<code>模型名,倍率</code>、<code>模型名 ×倍率</code></p>
+            </div>
+            <button id="apply-bulk" class="button secondary" type="button">解析并替换列表</button>
+          </div>
+          <textarea id="bulk-text" rows="5" spellcheck="false" placeholder="例如：
+claude-opus-4-6    1.00
+claude-sonnet-5, 0.40
+gpt-image-2 ×0.135"></textarea>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <div class="summary panel">
+          <div class="summary-item"><span>模型条数</span><strong id="row-count">0</strong></div>
+          <div class="summary-item"><span>平均上游倍率</span><strong id="average-upstream">—</strong></div>
+          <div class="summary-item accent"><span>平均调整后倍率</span><strong id="average-adjusted">—</strong></div>
+        </div>
+        <div class="export panel">
+          <div>
+            <p class="eyebrow">EXPORT</p>
+            <h2>带走结果</h2>
+            <p>复制到价格表，或下载后留档。</p>
+          </div>
+          <div class="export-actions">
+            <button id="copy-results" class="button secondary" type="button">复制结果</button>
+            <button id="download-csv" class="button primary" type="button">下载 CSV</button>
+            <button id="download-json" class="button ghost" type="button">JSON</button>
+          </div>
+        </div>
+      </section>
+
+      <footer>公式固定为“上游倍率 + 调整值” · 当前页面不会修改任何远程系统</footer>
+    </main>
+    <script type="module" src="/src/app.js"></script>
+  </body>
+</html>

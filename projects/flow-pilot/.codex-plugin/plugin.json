@@ -1,0 +1,36 @@
+{
+  "name": "ai-maintenance-skills",
+  "version": "0.4.18",
+  "description": "AI 项目维护与初始化工作流：修复 Bug、最小修改、验证与记录。Workflows for bug fixes, focused changes, verification, and project bootstrap.",
+  "author": {
+    "name": "canglei9527",
+    "url": "https://github.com/canglei9527"
+  },
+  "homepage": "https://github.com/canglei9527/ai-maintenance-skills",
+  "repository": "https://github.com/canglei9527/ai-maintenance-skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "project-maintenance",
+    "bug-fixing",
+    "debugging",
+    "verification",
+    "project-bootstrap"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "AI Maintenance Skills",
+    "shortDescription": "AI 项目维护与初始化 / Project maintenance and bootstrap",
+    "longDescription": "先局部理解，再最小修改；完成后验证并记录根因。Build local context, make focused changes, verify results, and record root causes.",
+    "developerName": "canglei9527",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "修复这个 Bug，并先定位目标函数和最小测试。",
+      "从零创建这个项目，先设计目录结构和模块职责。"
+    ],
+    "websiteURL": "https://github.com/canglei9527/ai-maintenance-skills"
+  }
+}

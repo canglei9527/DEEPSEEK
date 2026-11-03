@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARID 双模型配置</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --ink: #1f2430;
+    --muted: #6b7280;
+    --line: #e4e8f0;
+    --brand: #2563eb;
+    --brand-ink: #1d4ed8;
+    --ok: #16a34a;
+    --warn: #d97706;
+    --danger: #dc2626;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif; line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #fff; padding: 22px 28px;
+  }
+  header h1 { margin: 0; font-size: 22px; }
+  header .sub { margin-top: 4px; opacity: .9; font-size: 13px; }
+  main { max-width: 980px; margin: 24px auto; padding: 0 20px 60px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px 20px; margin-bottom: 18px;
+  }
+  .card h2 { margin: 0 0 12px; font-size: 17px; display:flex; align-items:center; gap:8px; }
+  .tag { font-size: 12px; padding: 2px 8px; border-radius: 20px; background:#eef2ff; color:var(--brand-ink); }
+  .tag.low { background:#ecfdf5; color:#047857; }
+  .row { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px; }
+  .row.col1 { grid-template-columns: 1fr; }
+  label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 4px; }
+  label .hint { color: var(--muted); font-size: 12px; }
+  input[type=text], input[type=number], input[type=password], select, textarea {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px;
+    font-size: 14px; background: #fff; color: var(--ink);
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--brand); border-color: var(--brand); }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px; border:0; border-radius:8px;
+    padding:10px 18px; font-size:14px; cursor:pointer; font-weight:600;
+  }
+  .btn.primary { background: var(--brand); color:#fff; }
+  .btn.primary:hover { background: var(--brand-ink); }
+  .btn.ghost { background:#f1f5f9; color:var(--ink); border:1px solid var(--line); }
+  .btn.ghost:hover { background:#e2e8f0; }
+  .btn.danger { background:#fff; color:var(--danger); border:1px solid var(--line); }
+  .btn.danger:hover { background:#fef2f2; }
+  .actions { display:flex; gap:12px; margin-top: 6px; flex-wrap: wrap; }
+  #status {
+    display:none; padding:12px 14px; border-radius:8px; margin-top:14px; font-size:14px;
+  }
+  #status.ok { display:block; background:#f0fdf4; color:var(--ok); border:1px solid #bbf7d0; }
+  #status.err { display:block; background:#fef2f2; color:var(--danger); border:1px solid #fecaca; }
+  #status.notice { display:block; background:#fffbeb; color:var(--warn); border:1px solid #fde68a; }
+  .meta { font-size: 12px; color: var(--muted); }
+  .meta code { background:#f1f5f9; padding:1px 6px; border-radius:4px; }
+  details summary { cursor:pointer; font-size:14px; font-weight:600; padding:6px 0; }
+  details.faq { border-top:1px solid var(--line); padding: 10px 0; }
+  details.faq summary { font-weight: 600; }
+  details.faq p { margin:6px 0; font-size:14px; color:#374151; }
+  details.faq pre { background:#f8fafc; border:1px solid var(--line); padding:10px; border-radius:8px; overflow:auto; font-size:13px; }
+  .gateway-item { border:1px solid var(--line); border-radius:8px; padding:12px; margin-bottom:12px; background:#fafbfd; }
+  .gateway-item .ghead { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .gateway-item .ghead b { font-size:14px; }
+  .models-block { margin-top:8px; }
+  .model-row { display:grid; grid-template-columns: 1fr 160px 36px; gap:8px; margin-top:6px; }
+  .model-row input { padding:6px 8px; }
+  .model-row .rm { background:#fff; border:1px solid var(--line); border-radius:6px; cursor:pointer; color:var(--danger); }
+  .field { margin-bottom:10px; }
+  .field.half { display:inline-block; width:48%; margin-right:2%; }
+  .field.half+.field.half { margin-right:0; }
+  .req { color:var(--danger); }
+  .kc { display:flex; align-items:center; gap:8px; }
+  .kc .haskey { font-size:12px; }
+  .kc .haskey.yes { color:var(--ok); }
+  .kc .haskey.no { color:var(--warn); }
+  .empty { color:var(--muted); font-style:italic; font-size:13px; }
+  .spacer { height: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>ARID 双模型配置</h1>
+  <div class="sub">配置两个模型：高等级 规划/审查 与 低等级 执行 —— 各自的 API、模型名、思考程度。</div>
+</header>
+
+<main>
+  <div id="notice-bar" class="card" style="display:none;"></div>
+
+  <!-- ============ 规划/审查 ============ -->
+  <div class="card">
+    <h2>🧭 规划 / 审查 <span class="tag">高等级</span></h2>
+    <p class="meta">负责研究上下文、制定方案并审查执行结果。配置写入 <code>agent-default-model</code>。</p>
+    <div class="row">
+      <div class="field">
+        <label>Provider（路由）<span class="req">*</span></label>
+        <select id="planner-provider"></select>
+        <div class="spacer"></div>
+        <label><span class="hint">模型名（可在该路由的模型中选，也可手输）<span class="req">*</span></span></label>
+        <input id="planner-model" list="planner-models" placeholder="如 deepseek-v4-flash">
+        <datalist id="planner-models"></datalist>
+      </div>
+      <div class="field">
+        <label>思考程度（reasoning effort）</label>
+        <select id="planner-reasoning">
+          <option value="">不设置（模型默认）</option>
+          <option value="off">off — 关闭思考</option>
+          <option value="low">low — 低</option>
+          <option value="medium">medium — 中</option>
+          <option value="high">high — 高</option>
+          <option value="max">max — 最大</option>
+        </select>
+        <div class="spacer"></div>
+        <label><span class="hint">不支持思考的模型请选 off 或「不设置」</span></label>
+        <div class="kc">
+          <input id="planner-key" type="password" placeholder="API key（留空=不修改）" style="flex:1">
+          <span id="planner-haskey" class="haskey no"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 执行 ============ -->
+  <div class="card">
+    <h2>⚙️ 执行 <span class="tag low">低等级</span></h2>
+    <p class="meta">负责按规划落地代码编辑并运行验证。配置写入 <code>arid-dual-model.executor</code>，
+      思考程度为 route 级配置（子代理不支持 reasoningEffort）。与规划同 route 但思考程度不同时会自动派生独立 route。</p>
+    <div class="row">
+      <div class="field">
+        <label>Provider（路由）<span class="req">*</span></label>
+        <select id="executor-provider"></select>
+        <div class="spacer"></div>
+        <label><span class="hint">模型名（可在该路由的模型中选，也可手输）<span class="req">*</span></span></label>
+        <input id="executor-model" list="executor-models" placeholder="如 deepseek-v4-flash">
+        <datalist id="executor-models"></datalist>
+      </div>
+      <div class="field">
+        <label>思考程度（route 级 reasoning）</label>
+        <select id="executor-reasoning">
+          <option value="">不设置（模型默认）</option>
+          <option value="off">off — 关闭思考</option>
+          <option value="low">low — 低</option>
+          <option value="medium">medium — 中</option>
+          <option value="high">high — 高</option>
+          <option value="max">max — 最大</option>
+        </select>
+        <div class="spacer"></div>
+        <label><span class="hint">注意：此思考程度作用于该路由所有请求。与规划同 route 且不同时，将自动派生「&lt;route&gt;-exec」</span></label>
+        <div class="kc">
+          <input id="executor-key" type="password" placeholder="API key（留空=不修改）" style="flex:1">
+          <span id="executor-haskey" class="haskey no"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 网关路由 == 数据库============ -->
+  <div class="card">
+    <h2>🌐 OpenAI 兼容网关路由</h2>
+    <p class="meta">手动声明的 provider 路由（网关）。规划/执行下拉里的每个 route 都会在此列出。
+      第一次使用「＋新建 OpenAI 兼容网关」会自动把新 route 加入下拉。</p>
+    <div id="gateway-list"></div>
+    <div class="actions">
+      <button class="btn ghost" id="add-gateway">＋ 新建 OpenAI 兼容网关</button>
+    </div>
+  </div>
+
+  <!-- ============ 飞书远程控制 ============ -->
+  <div class="card">
+    <h2>📱 飞书远程控制</h2>
+    <p class="meta">用飞书机器人远程驱动 DSH（命令：改 目录 任务 / 状态 / 停止），
+      只在白名单目录内执行。飞书 worker 与上方双模型配置相互独立——飞书任务走
+      <code>dsh --profile headless</code>，使用自己独立的模型配置（下方两组模型）。</p>
+    <details open>
+      <summary>飞书应用凭证 与 白名单</summary>
+      <div class="row">
+        <div class="field">
+          <label>App ID <span class="req">*</span>（需以 cli_ 开头）</label>
+          <input id="feishu-appid" type="text" placeholder="cli_xxx">
+          <div class="spacer"></div>
+          <label>Encrypt Key <span class="hint">（可选，开启加密推送时填）</span></label>
+          <div class="kc">
+            <input id="feishu-encrypt-key" type="password" placeholder="留空=不修改" style="flex:1">
+            <span id="feishu-encrypt-flag" class="haskey no"></span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="kc" style="margin-bottom:10px;">
+            <input id="feishu-secret" type="password" placeholder="App Secret（留空=不修改）" style="flex:1">
+            <span id="feishu-secret-flag" class="haskey no"></span>
+          </div>
+          <label>白名单目录（每行一个）<span class="hint">；只有这些目录内的任务才会执行，未配置则远程执行禁用</span></label>
+          <textarea id="feishu-dirs" rows="4" placeholder="E:\myrepo&#10;E:\GLM5.2\hubway-smart-router"></textarea>
+          <div class="spacer"></div>
+          <label>Bot Open ID <span class="hint">（可选，群聊严格 @ 匹配）</span></label>
+          <input id="feishu-bot-openid" type="text" placeholder="ou_xxx">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>超时秒 <span class="hint">（可选，默认 1800）</span></label>
+          <input id="feishu-timeout" type="number" min="0" placeholder="1800">
+        </div>
+        <div class="field">
+          <div class="row col1" style="margin-bottom:6px;">
+            <label>回复最大字符 <span class="hint">（可选，默认 3500）</span></label>
+            <input id="feishu-reply-chars" type="number" min="0" placeholder="3500">
+          </div>
+          <div class="row col1" style="margin-bottom:0;">
+            <label>输出最大行 <span class="hint">（可选，默认 0 不限）</span></label>
+            <input id="feishu-output-lines" type="number" min="0" placeholder="0">
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details open style="border-top:1px solid var(--line); padding-top:10px;">
+      <summary>飞书 worker 模型（与上方双模型配置相互独立）</summary>
+      <div class="row">
+        <div class="field">
+          <label>高等级模型（规划/审查）</label>
+          <div class="kc">
+            <select id="feishu-planner-provider" style="flex:1">
+              <option value="openai_compatible">openai_compatible</option>
+              <option value="deepseek">deepseek</option>
+              <option value="anthropic">anthropic</option>
+              <option value="openrouter">openrouter</option>
+              <option value="openai">openai</option>
+              <option value="gemini">gemini</option>
+            </select>
+          </div>
+          <div class="spacer"></div>
+          <input id="feishu-planner-model" type="text" placeholder="模型名，如 gpt-5.6-sol">
+          <div class="spacer"></div>
+          <input id="feishu-planner-baseurl" type="text" placeholder="baseURL（http(s)://，可选）">
+          <div class="spacer"></div>
+          <div class="kc">
+            <input id="feishu-planner-key" type="password" placeholder="API key（留空=不修改）" style="flex:1">
+            <span id="feishu-planner-flag" class="haskey no"></span>
+          </div>
+        </div>
+        <div class="field">
+          <label>低等级模型（执行）<span class="hint">（可选，留空则单模型/用 profile 默认）</span></label>
+          <div class="kc">
+            <select id="feishu-executor-provider" style="flex:1">
+              <option value="openai_compatible">openai_compatible</option>
+              <option value="deepseek">deepseek</option>
+              <option value="anthropic">anthropic</option>
+              <option value="openrouter">openrouter</option>
+              <option value="openai">openai</option>
+              <option value="gemini">gemini</option>
+            </select>
+          </div>
+          <div class="spacer"></div>
+          <input id="feishu-executor-model" type="text" placeholder="模型名，如 deepseek-chat">
+          <div class="spacer"></div>
+          <input id="feishu-executor-baseurl" type="text" placeholder="baseURL（http(s)://，可选）">
+          <div class="spacer"></div>
+          <div class="kc">
+            <input id="feishu-executor-key" type="password" placeholder="API key（留空=不修改）" style="flex:1">
+            <span id="feishu-executor-flag" class="haskey no"></span>
+          </div>
+        </div>
+      </div>
+      <div class="kc" style="margin-top:8px;">
+        <span id="feishu-tavily-flag" class="haskey no"></span>
+        <input id="feishu-tavily-key" type="password" placeholder="TAVILY_API_KEY（可选，留空=不修改）" style="flex:1;max-width:480px;">
+      </div>
+      <p class="meta" style="margin-top:10px;">保存成功后，请在 <code>feishu-worker</code> 目录运行
+        <code>start-feishu.bat</code> 启动长连接（保持窗口打开即运行中，关闭即停止）。</p>
+    </details>
+  </div>
+
+  <!-- ============ 保存 ============ -->
+  <div class="card">
+    <h2>💾 保存配置</h2>
+    <p class="meta">当前配置文件：<code id="settings-path">正在读取…</code></p>
+    <div class="actions">
+      <button class="btn primary" id="save">保存配置</button>
+      <button class="btn ghost" id="reload">重新加载</button>
+      <button class="btn danger" id="restore-defaults">一键还原默认配置</button>
+    </div>
+    <div id="status"></div>
+  </div>
+
+  <!-- ============ 常见问题 ============ -->
+  <div class="card">
+    <h2>❓ 常见问题</h2>
+
+    <details class="faq" open>
+      <summary>如何填写 API key？</summary>
+      <p>在规划/执行卡片里「API key」密码框输入即可（留空表示不修改）。保存时写入
+        <code>~/.dsh/.credentials.yaml</code>，只会新增/变更对应键，绝不回显明文。若路由尚未有
+        apiKeyEnv，会自动生成（如 <code>GATEWAY_API_KEY</code>）。网关卡片里的 key 同理，写到该网关路由的 apiKeyEnv。</p>
+    </details>
+
+    <details class="faq">
+      <summary>如何选择模型？</summary>
+      <p>Provider 下拉列出所有已配置路由（含网关）。「Provider」选定后，模型名输入框会自动联想该路由的 models 列表（来自 settings.yaml），也可直接手输任意模型名。建议填该路由 base_url 实际支持的模型 id。</p>
+    </details>
+
+    <details class="faq">
+      <summary>思考程度为什么不生效？</summary>
+      <p><b>规划模型</b>的思考程度写入 <code>agent-default-model.reasoningEffort</code>；DeepSeek 类适配器通常只接受 <code>high</code>/<code>max</code>，
+        其它值请按模型实际能力选择。<b>执行模型</b>的思考程度是 <b>route 级</b>的（子代理不支持 reasoningEffort），写到
+        <code>llm-pi-ai.providers.&lt;route&gt;.reasoning</code>。若执行与规划共用同一 route 且思考程度不同，本工具会自动派生独立 route
+        <code>&lt;route&gt;-exec</code> 并把执行 provider 指向它，避免互相污染。</p>
+    </details>
+
+    <details class="faq">
+      <summary>保存后什么时候生效？</summary>
+      <p>需要<b>重启 dsh web</b>（关闭 start-arid.bat 打开的窗口后重新双击）或<b>新建会话</b>。执行模型是每次调用
+        <code>subagent_executor</code> 时实时读取的，理论上不需要重启，但为稳妥起见仍建议重启。</p>
+    </details>
+
+    <details class="faq">
+      <summary>如何新建一个 OpenAI 兼容网关？</summary>
+      <p>点「＋ 新建 OpenAI 兼容网关」，填入 route 名（如 <code>molifang</code>）、显示名、协议（openai-completions）、
+        baseURL（必须 http(s):// 开头）、models 列表（id + 可选 contextWindow），以及该网关的 API key。保存后它会出现在规划/执行下拉框中，即可选用。</p>
+      <pre>llm-pi-ai:
+  providers:
+    molifang:
+      displayName: 魔方网关
+      apiKeyEnv: GATEWAY_API_KEY
+      api: openai-completions
+      baseURL: https://example.com/v1
+      models:
+        - id: gpt-5.6-sol
+          contextWindow: 200000
+</pre>
+    </details>
+
+    <details class="faq">
+      <summary>dsh 还没安装怎么办？</summary>
+      <p>先运行包内的 <code>install.bat</code>（会自动安装 Node 检查 + <code>npm install -g @deepseek-ai/dsh</code>），
+        再运行 <code>configure.bat</code> 配置模型，最后双击 <code>start-arid.bat</code> 启动工作台。</p>
+    </details>
+
+    <details class="faq">
+      <summary>端口 3456 被占用？</summary>
+      <p>可用环境变量 <code>ARID_GUI_PORT</code> 指定其它端口（如 <code>set ARID_GUI_PORT=4567</code> 后再运行
+        <code>configure.bat</code>）。</p>
+    </details>
+
+    <details class="faq">
+      <summary>如何卸载/重置？</summary>
+      <p>删除 <code>%USERPROFILE%\.dsh\.agent-presets\arid-dualmodel\</code> 目录；删除 <code>settings.yaml</code> 里的
+        <code>agent-default-model</code>、<code>arid-dual-model</code>、以及 <code>llm-pi-ai.providers</code> 下你自行添加的路由段。
+        凭据文件 <code>.credentials.yaml</code> 里对应键可一并删除。</p>
+    </details>
+  </div>
+</main>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const state = { routes: [], planner: {}, executor: {}, reasoningLevels: ['off','low','medium','high','max'], gatewayApis: ['openai-completions'], feishu: {} };
+
+async function api(url, options) {
+  const res = await fetch(url, options);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+  return data;
+}
+
+function keyMaskedInfo(cfg, which) {
+  return cfg[which] && cfg[which].hasKey ? '已配置 key' : '未配置 key';
+}
+
+function fillFeishu(cfg) {
+  const f = cfg.feishu || {};
+  state.feishu = f;
+  $('feishu-appid').value = f.appId || '';
+  $('feishu-secret').value = '';
+  $('feishu-encrypt-key').value = '';
+  // 白名单数组 -> 每行一个
+  const dirs = Array.isArray(f.allowedDirs) ? f.allowedDirs : [];
+  $('feishu-dirs').value = dirs.join('\n');
+  $('feishu-bot-openid').value = f.botOpenId || '';
+  $('feishu-timeout').value = (f.timeoutSeconds !== undefined && f.timeoutSeconds !== '' && f.timeoutSeconds !== null) ? f.timeoutSeconds : '';
+  $('feishu-reply-chars').value = (f.replyMaxChars !== undefined && f.replyMaxChars !== '' && f.replyMaxChars !== null) ? f.replyMaxChars : '';
+  $('feishu-output-lines').value = (f.outputMaxLines !== undefined && f.outputMaxLines !== '' && f.outputMaxLines !== null) ? f.outputMaxLines : '';
+
+  (f.planner || {}).provider && ($('feishu-planner-provider').value = f.planner.provider);
+  $('feishu-planner-model').value = (f.planner || {}).model || '';
+  $('feishu-planner-baseurl').value = (f.planner || {}).baseUrl || '';
+  $('feishu-planner-key').value = '';
+  (f.executor || {}).provider && ($('feishu-executor-provider').value = f.executor.provider);
+  $('feishu-executor-model').value = (f.executor || {}).model || '';
+  $('feishu-executor-baseurl').value = (f.executor || {}).baseUrl || '';
+  $('feishu-executor-key').value = '';
+  $('feishu-tavily-key').value = '';
+
+  const flag = (el, ok) => { el.textContent = ok ? '● 已配置' : '◦ 未配置'; el.className = 'haskey ' + (ok ? 'yes' : 'no'); };
+  flag($('feishu-secret-flag'), Boolean(f.secretSet));
+  flag($('feishu-encrypt-flag'), Boolean(f.encryptKeySet));
+  flag($('feishu-planner-flag'), Boolean((f.planner || {}).hasKey));
+  flag($('feishu-executor-flag'), Boolean((f.executor || {}).hasKey));
+  flag($('feishu-tavily-flag'), Boolean(f.tavilyHasKey));
+}
+
+function feishuToPayload() {
+  const dirs = $('feishu-dirs').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  return {
+    appId: $('feishu-appid').value.trim(),
+    appSecret: $('feishu-secret').value,
+    encryptKey: $('feishu-encrypt-key').value,
+    allowedDirs: dirs,
+    botOpenId: $('feishu-bot-openid').value.trim(),
+    timeoutSeconds: $('feishu-timeout').value,
+    replyMaxChars: $('feishu-reply-chars').value,
+    outputMaxLines: $('feishu-output-lines').value,
+    planner: {
+      provider: $('feishu-planner-provider').value,
+      model: $('feishu-planner-model').value.trim(),
+      baseUrl: $('feishu-planner-baseurl').value.trim(),
+      apiKey: $('feishu-planner-key').value,
+    },
+    executor: {
+      provider: $('feishu-executor-provider').value,
+      model: $('feishu-executor-model').value.trim(),
+      baseUrl: $('feishu-executor-baseurl').value.trim(),
+      apiKey: $('feishu-executor-key').value,
+    },
+    tavilyApiKey: $('feishu-tavily-key').value,
+  };
+}
+
+function fillProviderSelects() {
+  const selP = $('planner-provider');
+  const selE = $('executor-provider');
+  selP.innerHTML = ''; selE.innerHTML = '';
+  const routes = state.routes.map(r => r.route);
+  for (const r of routes) {
+    const o1 = document.createElement('option'); o1.value = r; o1.textContent = r;
+    const o2 = document.createElement('option'); o2.value = r; o2.textContent = r;
+    selP.appendChild(o1); selE.appendChild(o2);
+  }
+  if (state.planner.provider) selP.value = state.planner.provider;
+  if (state.executor.provider) selE.value = state.executor.provider;
+  onProviderChange('planner'); onProviderChange('executor');
+}
+
+function routeModels(route) {
+  const r = state.routes.find(x => x.route === route);
+  return r ? (r.models || []) : [];
+}
+
+function onProviderChange(which) {
+  const sel = $(which + '-provider');
+  const dl = $((which === 'planner' ? 'planner' : 'executor') + '-models');
+  const route = sel.value;
+  dl.innerHTML = '';
+  for (const m of routeModels(route)) {
+    const opt = document.createElement('option'); opt.value = m.id; dl.appendChild(opt);
+  }
+  // 若当前 model 在该路由 models 中没有，自动填第一个作为提示
+  const modelInput = $((which === 'planner' ? 'planner' : 'executor') + '-model');
+  const existing = modelInput.value;
+  const models = routeModels(route);
+  if (!existing && models.length) modelInput.value = models[0].id;
+}
+
+function renderKeyIndicator(which) {
+  const route = $(which + '-provider').value;
+  const r = state.routes.find(x => x.route === route);
+  const has = r && r.hasKey;
+  const el = $(which + '-haskey');
+  el.textContent = has ? '● 已配置 key' : '◦ 未配置 key';
+  el.className = 'haskey ' + (has ? 'yes' : 'no');
+}
+
+function stateToGateways() {
+  const out = [];
+  for (const el of document.querySelectorAll('.gw')) {
+    const g = {
+      origRoute: el.dataset.orig || '',
+      route: el.querySelector('.g-route').value.trim(),
+      displayName: el.querySelector('.g-display').value.trim(),
+      api: el.querySelector('.g-api').value,
+      baseURL: el.querySelector('.g-baseurl').value.trim(),
+      models: [],
+      apiKey: el.querySelector('.g-key').value || '',
+      _removed: el.dataset.removed === '1',
+    };
+    for (const mr of el.querySelectorAll('.model-row')) {
+      const id = mr.querySelector('.m-id').value.trim();
+      const cw = mr.querySelector('.m-cw').value.trim();
+      if (!id) continue;
+      const entry = { id };
+      if (cw && !isNaN(cw) && Number(cw) > 0) entry.contextWindow = Number(cw);
+      g.models.push(entry);
+    }
+    out.push(g);
+  }
+  return out;
+}
+
+function renderGatewayList() {
+  const list = $('gateway-list');
+  list.innerHTML = '';
+  for (const [i, r] of state.routes.entries()) {
+    list.appendChild(gatewayItemHtml({ origRoute: r.route, route: r.route, displayName: r.displayName, api: r.api || 'openai-completions', baseURL: r.baseURL, models: r.models, hasKey: r.hasKey, index: i }));
+  }
+}
+
+function gatewayItemHtml(g) {
+  const div = document.createElement('div');
+  div.className = 'gateway-item gw';
+  div.dataset.orig = g.origRoute || '';
+  div.dataset.removed = '0';
+  div.innerHTML = `
+    <div class="ghead">
+      <b>${escapeHtml(g.route || '新网关')}</b>
+      <button class="btn danger" data-del="1">删除</button>
+    </div>
+    <div class="row">
+      <div class="field"><label>路由名（route）<span class="req">*</span></label>
+        <input class="g-route" type="text" value="${escapeAttr(g.route)}" placeholder="如 molifang"></div>
+      <div class="field"><label>显示名</label>
+        <input class="g-display" type="text" value="${escapeAttr(g.displayName || '')}" placeholder="如 魔方网关"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>协议 api</label>
+        <select class="g-api">${state.gatewayApis.map(a => '<option'+(a===g.api?' selected':'')+'>'+a+'</option>').join('')}</select></div>
+      <div class="field"><label>baseURL <span class="req">*</span></label>
+        <input class="g-baseurl" type="text" value="${escapeAttr(g.baseURL || '')}" placeholder="https://example.com/v1"></div>
+    </div>
+    <div class="field"><label>API key（留空=不修改）${g.hasKey ? '<span class="haskey yes"> ● 已配置</span>' : ''}</label>
+      <input class="g-key" type="password" placeholder="sk-..." style="max-width:420px"></div>
+    <div class="models-block">
+      <label>models（id + 可选 contextWindow）</label>
+      <div class="m-rows"></div>
+      <button class="btn ghost add-model" style="margin-top:6px;padding:6px 12px;font-size:13px;">＋ 添加模型</button>
+    </div>
+  `;
+  const rowsWrap = div.querySelector('.m-rows');
+  for (const m of (g.models || [])) {
+    rowsWrap.appendChild(modelRowHtml(m));
+  }
+  if (!g.models || !g.models.length) rowsWrap.appendChild(modelRowHtml({ id: '', contextWindow: undefined }));
+  div.querySelector('.add-model').addEventListener('click', () => rowsWrap.appendChild(modelRowHtml({})));
+  div.querySelector('[data-del]').addEventListener('click', () => {
+    div.dataset.removed = '1';
+    div.style.display = 'none';
+  });
+  return div;
+}
+
+function modelRowHtml(m) {
+  const row = document.createElement('div');
+  row.className = 'model-row';
+  row.innerHTML =
+    '<input class="m-id" type="text" value="' + escapeAttr(m.id || '') + '" placeholder="模型 id，如 gpt-5.6-sol">' +
+    '<input class="m-cw" type="number" min="0" value="' + (m.contextWindow ? m.contextWindow : '') + '" placeholder="contextWindow">' +
+    '<button class="rm" title="删除">×</button>';
+  row.querySelector('.rm').addEventListener('click', () => row.remove());
+  return row;
+}
+
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s) { return escapeHtml(s); }
+
+function setStatus(kind, text) { const s = $('status'); s.className = kind; s.textContent = text; }
+
+function fillForm(cfg) {
+  state.routes = cfg.routes || [];
+  state.planner = cfg.planner || {};
+  state.executor = cfg.executor || {};
+  state.reasoningLevels = cfg.reasoningLevels || state.reasoningLevels;
+  state.gatewayApis = cfg.gatewayApis || state.gatewayApis;
+  $('settings-path').textContent = cfg.settingsPath || '(未找到 settings.yaml)';
+  fillProviderSelects();
+  $('planner-model').value = state.planner.model || '';
+  $('executor-model').value = state.executor.model || '';
+  $('planner-reasoning').value = state.planner.reasoningEffort || '';
+  $('executor-reasoning').value = state.executor.reasoningEffort || '';
+  $('planner-key').value = '';
+  $('executor-key').value = '';
+  renderKeyIndicator('planner'); renderKeyIndicator('executor');
+  renderGatewayList();
+  fillFeishu(cfg);
+  const nb = $('notice-bar');
+  if (!cfg.dokExists) {
+    nb.style.display = 'block';
+    nb.innerHTML = '⚠ 未找到 <code>' + escapeHtml(cfg.settingsPath || '') + '</code>。将是首次配置，保存时会创建骨架文件。';
+  } else {
+    nb.style.display = 'none';
+  }
+}
+
+async function loadAndFill() {
+  try {
+    const cfg = await api('/api/config');
+    fillForm(cfg);
+    setStatus('ok', '已加载当前配置。');
+  } catch (e) {
+    setStatus('err', '加载失败：' + e.message);
+  }
+}
+
+async function save() {
+  setStatus('notice', '正在保存…');
+
+  // 缺陷修复：provider 若仍为「(新网关…)」占位符 __NEW__，阻止保存并提示，
+  // 避免在 settings.yaml 里创建名叫 __NEW__ 的垃圾路由。
+  const plannerProv = $('planner-provider').value;
+  const executorProv = $('executor-provider').value;
+  if (plannerProv === '__NEW__' || executorProv === '__NEW__') {
+    setStatus('err', '保存失败：请先在「OpenAI 兼容网关路由」卡片中填写路由名，或在 Provider 下拉中选择已有路由。');
+    return;
+  }
+
+  const gateways = stateToGateways();
+  const removedRoutes = gateways.filter(g => g._removed && g.origRoute).map(g => g.origRoute);
+  const gwPayload = gateways.filter(g => !g._removed).map(g => ({
+    route: g.route, displayName: g.displayName, api: g.api, baseURL: g.baseURL, models: g.models, apiKey: g.apiKey || '',
+  }));
+
+  const body = {
+    planner: {
+      provider: plannerProv,
+      model: $('planner-model').value.trim(),
+      reasoningEffort: $('planner-reasoning').value,
+      apiKey: $('planner-key').value,
+    },
+    executor: {
+      provider: executorProv,
+      model: $('executor-model').value.trim(),
+      reasoningEffort: $('executor-reasoning').value,
+      apiKey: $('executor-key').value,
+    },
+    gateways: gwPayload,
+    removedRoutes,
+    feishu: feishuToPayload(),
+  };
+
+  try {
+    const res = await api('/api/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    setStatus('ok', (res.message || '已保存。') + ' 配置文件：' + (res.settingsPath || ''));
+    // 刷新以展示派生路由与 key 状态
+    await loadAndFill();
+  } catch (e) {
+    setStatus('err', '保存失败：' + e.message);
+  }
+}
+
+$('save').addEventListener('click', save);
+$('reload').addEventListener('click', (e) => { e.preventDefault(); loadAndFill(); });
+$('restore-defaults').addEventListener('click', async () => {
+  if (!window.confirm('确认还原默认配置？当前 settings.yaml 和凭据会先自动备份。')) return;
+  setStatus('notice', '正在还原默认配置…');
+  try {
+    const result = await api('/api/defaults/restore', { method: 'POST' });
+    await loadAndFill();
+    setStatus('ok', result.message || '已还原默认配置。');
+  } catch (e) {
+    setStatus('err', '还原失败：' + e.message);
+  }
+});
+$('add-gateway').addEventListener('click', () => {
+  const list = $('gateway-list');
+  const div = gatewayItemHtml({ origRoute: '', route: '', displayName: '', api: state.gatewayApis[0] || 'openai-completions', baseURL: '', models: [], hasKey: false });
+  list.appendChild(div);
+  // 新网关路由自动加入下拉最前，方便立刻选用
+  const selP = $('planner-provider');
+  const opt = document.createElement('option');
+  opt.value = '__NEW__'; opt.textContent = '(新网关…)';
+  selP.appendChild(opt);
+  div.querySelector('.g-route').addEventListener('input', (ev) => {
+    opt.value = ev.target.value; opt.textContent = (ev.target.value || '(新网关…)');
+  });
+});
+
+$('planner-provider').addEventListener('change', () => { onProviderChange('planner'); renderKeyIndicator('planner'); });
+$('executor-provider').addEventListener('change', () => { onProviderChange('executor'); renderKeyIndicator('executor'); });
+
+loadAndFill();
+</script>
+</body>
+</html>

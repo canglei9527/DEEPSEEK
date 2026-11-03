@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "精校工作台 · iPad 离线版",
+  "short_name": "精校离线",
+  "description": "在 iPad 本机导入、阅读、检索和整理 TXT 书籍",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#eaf5f5",
+  "theme_color": "#0b7b7c",
+  "lang": "zh-CN",
+  "categories": ["books", "productivity"],
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

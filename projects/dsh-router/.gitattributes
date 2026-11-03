@@ -1,0 +1,8 @@
+# Normalize line endings: these are cross-platform Node scripts and text
+# assets. Without this, a Windows checkout commits CRLF and the hook scripts
+# inherit it, which breaks shebang execution and diffs on other platforms.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary

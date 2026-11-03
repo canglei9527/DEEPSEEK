@@ -1,0 +1,8 @@
+{
+  "name": "dual-model-gui",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "yaml": "^2.4.0"
+  }
+}

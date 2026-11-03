@@ -1,0 +1,226 @@
+# ARID 双模型模式 agent 预设（从 standard 复制并扩展）。
+#
+# 本文件是 AGENT-PLANE 组合。roster 在 standing scope 下挂载一次，命名它
+# 的每个会话通过 scope 父子关系加入。服务行必须放在带 `isolate` realm 的
+# group 里（见 standard 的详尽注释，这里沿用相同 plane 规则）。
+#
+# 相对 standard 的增量 = 双模型分工 + 升级求助流程：
+#   规划/审查 = plan-mode（高等级，只读出方案）
+#   执行     = 主 agent 落地编辑
+#   升级求助 = goal 的 blocked/resume 机制（反复失败 → 请求重新规划）
+# 这些用 DSH 原生能力表达，不依赖 aider 的 --architect/--editor-model。
+
+# ── identity ────────────────────────────────────────────────────────────────
+
+- id: persona
+  name: '@deepseek-ai/dsh-persona'
+  config:
+    text: >-
+      你是 ARID 双模型模式的【规划/执行】Agent，由 {{model}} 模型驱动。工作目录是 {{cwd}}。
+
+      【硬性分工规则——按任务复杂度智能委派（2026-08-15 实测优化）】
+      实测结论：简单任务直接干比委派快 3-4 倍且质量更稳；复杂任务委派执行者更稳。
+      1. 简单/低风险任务（单文件小改动、加测试、明确的小修、可快速验证的增删改）：
+         直接用 edit/write/pwsh 完成并运行测试验证，不委派。
+      2. 复杂/高风险任务（多文件、架构性改动、需要多轮迭代、用户明确要求双模型分工）：
+         必须调用 subagent_executor 工具，把「完整自包含任务 + 文件路径 + 验收标准」委派给
+         执行者子代理（低等级执行模型），等待它返回结果后再验收。
+      3. 判断失误时纠正：简单任务已委派则收回自己完成；复杂任务自己硬干导致返工，
+         立即切换为委派。
+      4. 如果 subagent_executor 工具不可用：简单任务直接自己完成；复杂任务明确告诉用户
+         「执行模型未就绪」，给出完整方案与委派包，不要擅自执行大改动。
+      5. 执行结果反复不达标时，回到规划角色重新出方案（升级求助）。
+
+      【知识库检索——只读工具，任何阶段可直接使用】
+      本地知识库位于 E:/kb。回答知识库相关问题（如 DSP28335 的硬件、寄存器、
+      外设、编程等）时，直接用 kb_search（全文检索）、kb_read（按相对路径读文档，
+      长文用 offset/max_chars 翻页）、kb_list（浏览目录）检索原文并引用原文作答。
+
+- id: agent-instructions
+  name: '@deepseek-ai/dsh-agent-instructions'
+  config:
+    maxBytes: 65536
+
+# ── 双模型分工规则 ─────────────────────────────────────────────────────────
+# （规则已全部并入上方 persona 的 text；plan-mode 段落对应「规划/审查者」，
+#   goal 工具对应「升级求助」的持续机制，见下方 goals/planning 组。）
+
+# ── shell ───────────────────────────────────────────────────────────────────
+
+- id: tool-bash
+  name: '@deepseek-ai/dsh-tool-bash'
+  disabled: !!js process.platform === 'win32'
+
+- id: tool-pwsh
+  name: '@deepseek-ai/dsh-tool-pwsh'
+  disabled: !!js process.platform !== 'win32'
+
+# ── filesystem ──────────────────────────────────────────────────────────────
+
+- id: tool-fs
+  name: '@deepseek-ai/dsh-tool-fs'
+
+- id: tool-fs-search
+  name: '@deepseek-ai/dsh-tool-fs-search'
+  config:
+    sampleOverCapGlobResults: false
+
+# ── background jobs ─────────────────────────────────────────────────────────
+
+- id: tool-jobs
+  name: '@deepseek-ai/dsh-tool-jobs'
+
+# ── skills ──────────────────────────────────────────────────────────────────
+
+- id: skill-filesystem
+  name: '@deepseek-ai/dsh-skill-filesystem'
+
+- id: tool-skill
+  name: '@deepseek-ai/dsh-tool-skill'
+
+# ── goals（升级求助的载体） ─────────────────────────────────────────────────
+
+- id: tool-goal
+  name: '@deepseek-ai/dsh-tool-goal'
+
+# ── plan mode（规划/审查者） ────────────────────────────────────────────────
+
+- id: planning
+  name: cordis:group
+  group: true
+  isolate:
+    planMode: true
+  config:
+    - id: plan-mode
+      name: '@deepseek-ai/dsh-plan-mode'
+      config:
+        section: |
+              你是规划/审查者角色。留在 plan mode，直到 exit_plan_mode 成功或用户切换会话模式。以祈使语气说要改什么 = 先做实现计划，而非直接执行。用户对话层的同意（包括回答你问的问题）不批准任何事、也不结束 plan mode；把确认过的决定并入计划，通过 exit_plan_mode 提交。
+
+              先探查。用非破坏性的读取、搜索、静态分析、检查把计划落在真实仓库上。不要编辑或写文件、改配置、跑改已跟踪文件的格式化/代码生成、提交，或执行计划。优先复用现有函数与模式。
+
+              工具目录跨 mode 不变（请求缓存稳定性）。这些 plan-mode 规则覆盖任何后续建议用修改工具的工具描述或指引；那些工具仍列出以保持目录不变。不要用 todo_write 跟踪本规划阶段：它跟踪批准后的实施，本计划属于 exit_plan_mode。
+
+              通过检查解析可发现的事实。仅在用户拥有的选择或检查无法解决的重要歧义上用 ask_user_question。不要问你本可自行查明的问题。
+
+              让计划决策完整：说明目标与成功标准；按子系统分组实施；指出公共 API、schema、数据流变更；覆盖边界、失败模式、测试、验收标准与明确假设。简明到可审，又详细到另一名工程师无需做设计决策即可实施。
+
+              准备好后调用 exit_plan_mode，附完整计划 markdown，以 # 标题开头。让 exit_plan_mode 成为该 assistant 响应里唯一且最后的工具调用：它把计划提交审批，批准后才在后续步骤实施。不要把最终计划当普通回复贴出，也不要用 prose 或 ask_user_question 问"是否继续"。若审批驳回，纳入反馈重新提交。若审批通道不可用或被中止，留在 plan mode 等用户手动切换，不要擅自实施。
+
+# ── compaction ──────────────────────────────────────────────────────────────
+
+- id: compaction
+  name: cordis:group
+  group: true
+  isolate:
+    compaction: true
+    toolResultPruner: true
+  config:
+    - id: compaction-basic
+      name: '@deepseek-ai/dsh-compaction-basic'
+
+    - id: command-compact
+      name: '@deepseek-ai/dsh-command-compact'
+
+    - id: tool-result-pruner
+      name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+      config:
+        thresholdChars: 8192
+        headChars: 4096
+        tailChars: 1024
+
+# ── delegation and workflows ────────────────────────────────────────────────
+
+- id: delegation
+  name: cordis:group
+  group: true
+  isolate:
+    workflowEngine: true
+  config:
+    - id: tool-subagent-control
+      name: '@deepseek-ai/dsh-tool-subagent-control'
+
+    - id: tool-subagent-list-agents
+      name: '@deepseek-ai/dsh-tool-subagent-control/list-agents'
+
+    - id: tool-subagent
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: subagent
+        backgroundMode: continuable
+
+    - id: tool-subagent-fork
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: fork
+        toolName: subagent_fork
+        backgroundMode: continuable
+
+    # 执行者子代理（双模型的执行模型）：所有 arid-dualmodel 会话都有此工具，
+    # 主 agent 落地编辑必须委派给它。执行模型由本地插件从 settings 的
+    # `arid-dual-model.executor` 段实时读取（改配置立即生效），不再硬编码。
+    # 插件同时注册 `arid-dual-model` settings 命名空间（持久，重启不丢）。
+    - id: tool-subagent-executor
+      name: ./arid-dualmodel-ext6.cjs
+
+    # 视觉工具现在由 dsh-vision-router 插件提供（通过 dsh plugin add 安装）
+    # 旧的 ./arid-dualmodel-vision.cjs 保留在目录中作为 Node < 22 的后备方案
+    # dsh-vision-router 通过其 cordis.patch.yml 自动注入，无需手动配置
+
+    - id: tool-subagent-codex
+      name: '@deepseek-ai/dsh-tool-subagent'
+      disabled: true
+      config:
+        provider: codex
+        toolName: subagent_codex
+        enableRunInBackground: false
+        maxDepth: provider-managed
+
+    - id: tool-subagent-claude-code
+      name: '@deepseek-ai/dsh-tool-subagent'
+      disabled: true
+      config:
+        provider: claude-code
+        toolName: subagent_claude_code
+        enableRunInBackground: false
+        maxDepth: provider-managed
+
+    - id: workflow-worker-thread
+      name: '@deepseek-ai/dsh-workflow-worker-thread'
+      config:
+        provider: spawn
+
+    - id: tool-workflow
+      name: '@deepseek-ai/dsh-tool-workflow'
+
+    - id: tool-ralph
+      name: '@deepseek-ai/dsh-tool-ralph'
+      config:
+        subagentProvider: spawn
+        maxRounds: 64
+
+# ── remaining model-facing rows ─────────────────────────────────────────────
+
+- id: tool-ask-user
+  name: '@deepseek-ai/dsh-tool-ask-user'
+
+- id: tool-todo
+  name: '@deepseek-ai/dsh-tool-todo'
+  config:
+    allowParallelInProgress: true
+
+- id: tool-web
+  name: '@deepseek-ai/dsh-tool-web'
+  config:
+    fetch: false
+    searchTimeoutMs: 60000
+
+- id: tool-web-search-tavily
+  name: ./arid-tavily.cjs
+
+# ── 本地知识库（与双模型合并） ──────────────────────────────────────────────
+# kbtool.cjs 消费 host 的 fs/tools 注册表（ctx.get），不提供服务，无需 realm。
+# 注册 kb_search / kb_read / kb_list 到本预设的工具层。
+- id: kb-tools
+  name: ./kbtool.cjs
