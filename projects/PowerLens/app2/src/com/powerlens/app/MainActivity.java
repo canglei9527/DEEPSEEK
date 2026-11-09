@@ -171,109 +171,63 @@ public class MainActivity extends Activity {
         SPECIAL.put("2000", "Shell");
         SPECIAL.put("9999", "未分配");
     }
+    /**
+     * 系统标识 → 显示名。
+     *
+     * ===== 命名规则（采集器侧约定）=====
+     *   sys:kernel      → 内核（绝对确定）
+     *   sys:system      → Android 系统（绝对确定）
+     *   sys:adb_shell   → Shell 调试通道（绝对确定）
+     *   proc:<name>     → 从 /proc/<pid>/status 反查的真实进程名
+     *   sys:uid<N>      → 查不到，诚实显示 uid
+     *
+     * ===== 为什么不再用一张大表硬编码 =====
+     *   曾按 AOSP 写了 100 多个 uid→中文名，实战连翻两次车：
+     *     · uid 1041 在 AOSP 是 security，这台小米实际是 audioserver
+     *       → UI 上出现莫名其妙的「安全」条目，用户以为安全服务偷电
+     *     · uid 1077 在 AOSP 是 context_hub，真机是别的服务
+     *   根因：OEM 会重新分配 UID，1000-1100 区间几乎认不全。
+     *   现在只硬编码 3 个绝对确定的，其余全从 /proc 反查，
+     *   查不到就显示 uid 数字 —— 宁可难看，也不要显示错的名字。
+     */
     private static final Map<String, String> SYS_LABEL = new HashMap<>();
 
     static {
-        SYS_LABEL.put("sys:kernel", "root/内核");
+        SYS_LABEL.put("sys:kernel", "内核");
         SYS_LABEL.put("sys:system", "Android 系统");
-        SYS_LABEL.put("sys:radio", "电话/Radio");
-        SYS_LABEL.put("sys:bluetooth", "蓝牙");
-        SYS_LABEL.put("sys:gfx", "图形合成");
-        SYS_LABEL.put("sys:coresvc", "核心服务");
-        SYS_LABEL.put("sys:drm", "DRM");
-        SYS_LABEL.put("sys:voicecall", "语音通话");
-        SYS_LABEL.put("sys:media_ext", "外部存储");
-        SYS_LABEL.put("sys:mediascan", "媒体扫描");
-        SYS_LABEL.put("sys:usim", "USIM");
-        SYS_LABEL.put("sys:drm_cert", "DRM 证书");
-        SYS_LABEL.put("sys:media", "媒体服务");
-        SYS_LABEL.put("sys:gps", "GPS");
-        SYS_LABEL.put("sys:nfc_storage", "NFC 存储");
-        SYS_LABEL.put("sys:dictionary", "字典");
-        SYS_LABEL.put("sys:shell", "Shell");
-        SYS_LABEL.put("sys:bluetooth_share", "蓝牙共享");
-        SYS_LABEL.put("sys:secure_element", "安全元件");
-        SYS_LABEL.put("sys:deleted", "已删文件");
-        SYS_LABEL.put("sys:nfc", "NFC");
-        SYS_LABEL.put("sys:log", "日志");
-        SYS_LABEL.put("sys:fm", "FM 收音");
-        SYS_LABEL.put("sys:ime", "输入法");
-        SYS_LABEL.put("sys:netlocation", "网络定位");
-        SYS_LABEL.put("sys:internal_storage", "内部存储");
-        SYS_LABEL.put("sys:phone", "电话");
-        SYS_LABEL.put("sys:netstack", "网络栈");
-        SYS_LABEL.put("sys:wifi_broadcast", "Wi-Fi 广播");
-        SYS_LABEL.put("sys:inputdev", "输入设备");
-        SYS_LABEL.put("sys:bluetooth2", "蓝牙");
-        SYS_LABEL.put("sys:export", "导出服务");
-        SYS_LABEL.put("sys:screenshot", "截图");
-        SYS_LABEL.put("sys:dialer", "拨号");
-        SYS_LABEL.put("sys:logd", "logd");
-        SYS_LABEL.put("sys:media2", "媒体");
-        SYS_LABEL.put("sys:nolabel", "无标签");
-        SYS_LABEL.put("sys:storage", "存储");
-        SYS_LABEL.put("sys:logbuffer", "日志缓冲");
-        SYS_LABEL.put("sys:security", "安全");
-        SYS_LABEL.put("sys:ipc", "IPC 服务");
-        SYS_LABEL.put("sys:fileshare", "文件共享");
-        SYS_LABEL.put("sys:draw", "绘制");
-        SYS_LABEL.put("sys:clipboard", "剪贴板");
-        SYS_LABEL.put("sys:mediasession", "媒体会话");
-        SYS_LABEL.put("sys:wifi", "Wi-Fi");
-        SYS_LABEL.put("sys:initscript", "init 脚本");
-        SYS_LABEL.put("sys:devicesmart", "设备智能");
-        SYS_LABEL.put("sys:netmgmt", "网络管理");
-        SYS_LABEL.put("sys:ime_clipboard", "输入法/剪贴板");
-        SYS_LABEL.put("sys:embedded", "嵌入 UID");
-        SYS_LABEL.put("sys:display", "显示");
-        SYS_LABEL.put("sys:sched", "调度");
-        SYS_LABEL.put("sys:micperm", "麦克风权限");
-        SYS_LABEL.put("sys:audio", "音频");
-        SYS_LABEL.put("sys:camera_perm", "摄像头权限");
-        SYS_LABEL.put("sys:installd", "安装包");
-        SYS_LABEL.put("sys:health", "健康数据");
-        SYS_LABEL.put("sys:permmgmt", "权限管理");
-        SYS_LABEL.put("sys:documents", "文档");
-        SYS_LABEL.put("sys:devicestate", "设备状态");
-        SYS_LABEL.put("sys:runtime", "运行时资源");
-        SYS_LABEL.put("sys:telephonymgmt", "电话管理");
-        SYS_LABEL.put("sys:mediasort", "媒体排序");
-        SYS_LABEL.put("sys:netshare", "网络共享");
-        SYS_LABEL.put("sys:mediashare", "媒体共享");
-        SYS_LABEL.put("sys:camera", "相机");
-        SYS_LABEL.put("sys:teestorage", "TEE 存储");
-        SYS_LABEL.put("sys:sim", "SIM 卡");
-        SYS_LABEL.put("sys:wifiaware", "Wi-Fi 感知");
-        SYS_LABEL.put("sys:rtt", "RTT");
-        SYS_LABEL.put("sys:sound_vib", "音效/振动");
-        SYS_LABEL.put("sys:webview", "WebView");
-        SYS_LABEL.put("sys:prediction", "预测");
-        SYS_LABEL.put("sys:voiceinteract", "语音交互");
-        SYS_LABEL.put("sys:context", "上下文中心");
-        SYS_LABEL.put("sys:autofill", "自动填充");
-        SYS_LABEL.put("sys:virtcamera", "虚拟摄像头");
-        SYS_LABEL.put("sys:xr", "XR 服务");
-        SYS_LABEL.put("sys:config", "配置");
-        SYS_LABEL.put("sys:comp1082", "系统组件 1082");
-        SYS_LABEL.put("sys:fileshare2", "文件共享");
-        SYS_LABEL.put("sys:macaddr", "MAC 地址");
-        SYS_LABEL.put("sys:phonebroadcast", "电话广播");
-        SYS_LABEL.put("sys:creation", "创作");
-        SYS_LABEL.put("sys:searchui", "搜索 UI");
-        SYS_LABEL.put("sys:wallpaper", "壁纸");
-        SYS_LABEL.put("sys:vendor", "供应商服务");
-        SYS_LABEL.put("sys:multidevice", "多设备");
-        SYS_LABEL.put("sys:trace", "轨迹");
-        SYS_LABEL.put("sys:game", "游戏");
-        SYS_LABEL.put("sys:a11y", "辅助功能");
-        SYS_LABEL.put("sys:devconfig", "设备配置");
-        SYS_LABEL.put("sys:mediapower", "媒体能耗");
-        SYS_LABEL.put("sys:hwstate", "硬件状态");
-        SYS_LABEL.put("sys:timedetect", "时间检测");
-        SYS_LABEL.put("sys:threadnet", "线程网络");
-        SYS_LABEL.put("sys:shell2", "Shell");
-            SYS_LABEL.put("sys:adb_shell", "Shell 调试通道");
-        SYS_LABEL.put("sys:unassigned", "未分配");
+        SYS_LABEL.put("sys:adb_shell", "Shell 调试通道");
+    }
+
+    /** proc:<name> / sys:uid<N> 的人类可读化 */
+    private static String humanizeProc(String tag) {
+        if (tag == null) return null;
+        if (tag.startsWith("proc:")) {
+            String name = tag.substring(5);
+            String zh = procZh(name);
+            return zh != null ? (zh + "（" + name + "）") : name;
+        }
+        if (tag.startsWith("sys:uid")) {
+            return "uid " + tag.substring(7);
+        }
+        return null;
+    }
+
+    /** 高频系统进程的中文名（锦上添花，查不到就显示原名） */
+    private static String procZh(String name) {
+        if (name == null || name.isEmpty()) return null;
+        if (name.startsWith("audioserver"))        return "音频服务";
+        if (name.startsWith("audiohalservice"))    return "音频 HAL";
+        if (name.startsWith("android.hardwar"))    return "安卓 HAL";
+        if (name.startsWith("camera.provider"))    return "相机服务";
+        if (name.startsWith("droid.bluetooth"))    return "蓝牙服务";
+        if (name.startsWith("webview_zygote"))     return "WebView";
+        if (name.equals("logd"))                   return "日志服务";
+        if (name.startsWith("tftp_server"))        return "TFTP 服务";
+        if (name.startsWith("prng_seeder"))        return "随机数种子";
+        if (name.startsWith("loc_launcher"))       return "定位服务";
+        if (name.startsWith("vendor.qti.hard"))    return "高通 HAL";
+        if (name.startsWith("vendor.qti.bluetooth")) return "高通蓝牙";
+        return null;
     }
 
 
@@ -290,9 +244,17 @@ public class MainActivity extends Activity {
     private boolean hideAggregate;
     private final Handler ui = new Handler(Looper.getMainLooper());
     private final SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
-    private final Map<String, Drawable> iconCache = new HashMap<>();
-    private final Map<String, String> labelCache = new HashMap<>();
-    private final Map<Integer, String> uidPkgCache = new HashMap<>();
+    /*
+     * ===== 缓存必须线程安全 =====
+     *   uidPkgCache / labelCache / iconCache 会被两条线同时碰：
+     *     - "pl-refresh" 后台线程（补 UID 时调 uidToPkg）
+     *     - UI 线程（AppAdapter.getView 调 label/icon）
+     *   HashMap 在并发写时可能形成链表环，get 会【死循环卡死】。
+     *   这里统一换 ConcurrentHashMap。
+     */
+    private final Map<String, Drawable> iconCache = new java.util.concurrent.ConcurrentHashMap<>();
+    private final Map<String, String> labelCache = new java.util.concurrent.ConcurrentHashMap<>();
+    private final Map<Integer, String> uidPkgCache = new java.util.concurrent.ConcurrentHashMap<>();
 
     private final Runnable autoRefresh = new Runnable() {
         @Override
@@ -474,18 +436,41 @@ public class MainActivity extends Activity {
         return root;
     }
 
-    /**
-     * 这些 UID 是「聚合容器」，不代表任何单一应用，不能和具体应用并列排名。
-     * 本机实测：「root/内核」聚合了所有内核线程，「Android 系统」聚合了
-     * 几十个系统服务，它们的 cpu/流量是所有子项之和，
-     * 与「微信」这种单一应用放一起比是不公平的。
+    /*
+     * 「聚合容器」判定 —— 修掉一个把自己最大客户藏了的 BUG。
+     *
+     * 旧代码：
+     *     uid == 0 || uid == 1000 || uid == 1001 || uid == 9999
+     *             || (uid >= 10000 && uid < 10500)   // ← "系统服务 UID 段"？
+     *
+     * 最后那条是错的。Android 的 AID 划分：
+     *     <10000          = 系统守护/内核/媒体/音频（AID_SYSTEM=1000、AID_AUDIO=1041…）
+     *     10000..19999    = user 0 安装的应用（u0aXXX → 10000+XXX）
+     *     20000..29999    = 共享 GID 段，不是进程归属
+     *     99000..99999    = isolated 沙箱
+     *     10XXXX          = 其他用户/分身的应用（u10a341 → 1010341）
+     * "10000-10500 是系统服务"根本不存在——u0a341=10341 就是 B 站。
+     * 于是勾选「采集·应用」时，本机实测区间里【电量第一的那一个】被直接隐藏。
+     *
+     * 现在：只有真正属于"应用 UID 段"的才算具体应用，其余按聚合容器处理。
      */
+    private static boolean isAppUid(int uid) {
+        if (uid >= 10000 && uid < 20000) {
+            return true;                       // user 0 应用
+        }
+        if (uid >= 100000 && uid < 1000000) {
+            int sub = uid % 100000;            // u1..u9 应用
+            return sub >= 10000 && sub < 20000;
+        }
+        if (uid >= 1000000) {
+            int sub = uid % 100000;            // u10+ 分身/工作资料
+            return sub >= 10000 && sub < 20000;
+        }
+        return false;
+    }
+
     private static boolean isAggregate(int uid) {
-        return uid == 0                       // root/内核
-                || uid == 1000                // system_server
-                || uid == 1001                // radio
-                || uid == 9999                // 未分配
-                || (uid >= 10000 && uid < 10500);   // 系统服务 UID 段
+        return !isAppUid(uid);
     }
 
     private void scheduleJob() {
@@ -494,6 +479,57 @@ public class MainActivity extends Activity {
         // 采集改由 root 常驻的 C 守护 /data/local/tmp/plc/plc-daemon.sh 负责，
         // App 只读它的输出，App 自己零后台开销。
         Log.i(TAG, "job 调度已交由 root C 守护（plc-daemon.sh），App 侧不注册 JobScheduler");
+    }
+
+    /**
+     * uid → 包名（MainActivity 层，供非 UI 线程使用）。
+     *
+     * 优先 PackageManager（App 自身权限即可用，不需要 root），
+     * 失败再读 /data/system/packages.list（需 root，通常读不到）。
+     * 结果带缓存；查不到返回 null。
+     */
+    private String uidToPkg(int uid) {
+        String cached = uidPkgCache.get(uid);
+        if (cached != null) {
+            return cached.isEmpty() ? null : cached;
+        }
+        String found = null;
+        try {
+            String[] pkgs = getPackageManager().getPackagesForUid(uid);
+            if (pkgs != null && pkgs.length > 0) {
+                found = pkgs[0];
+            }
+        } catch (Throwable ignored) {
+        }
+        if (found == null) {
+            java.io.BufferedReader r = null;
+            try {
+                r = new java.io.BufferedReader(new java.io.FileReader("/data/system/packages.list"));
+                String line;
+                while ((line = r.readLine()) != null) {
+                    String[] f = line.split("\\s+");
+                    if (f.length >= 2) {
+                        try {
+                            if (Integer.parseInt(f[1]) == uid) {
+                                found = f[0];
+                                break;
+                            }
+                        } catch (Throwable ignored) {
+                        }
+                    }
+                }
+            } catch (Throwable ignored) {
+            } finally {
+                if (r != null) {
+                    try {
+                        r.close();
+                    } catch (Throwable ignored) {
+                    }
+                }
+            }
+        }
+        uidPkgCache.put(uid, found == null ? "" : found);
+        return found;
     }
 
     private void doCollect() {
@@ -631,6 +667,25 @@ public class MainActivity extends Activity {
                     totDcpu += r.dCpuMs();
                 }
 
+                /*
+                 * ===== 电量归因用 dumpsys 的模型 mAh，不再用猜的权重 =====
+                 *
+                 *   pldims v3 起，每个 UID 都带 dumpsys 自己算好的分项电量
+                 *   （screen/cpu/radio/wifi/audio/…）。
+                 *   旧版把总放电按 "CPU秒 + 唤醒锁×0.6 + 流量MB×0.44" 分摊，
+                 *   结果 sys:logd 跑 1 分钟 CPU 却分到 463.5 mAh（38.4%）——
+                 *   因为屏幕 560 mAh + 基带 1005 mAh 这些平台级功耗被摊到了
+                 *   少数几个有 CPU 时间的进程头上。
+                 *
+                 *   现在：
+                 *     mahShare(uid) = 该 UID 模型 mAh / 所有 UID 模型 mAh 之和
+                 *     显示 mAh      = 实测放电 × mahShare
+                 *   总量仍锚定真实电池计数器，份额交给系统自己的功耗模型。
+                 */
+                final boolean useMah = dims.hasMah();
+                double totModelMah = useMah ? dims.totalMah() : 0d;
+                final java.util.Set<Integer> seenUid = new java.util.HashSet<>();
+
                 final List<Item> items = new ArrayList<>();
                 double totalW = 0;
                 for (Storage.Row r : rows) {
@@ -641,15 +696,15 @@ public class MainActivity extends Activity {
                         // 前台 / 后台 / 前台服务：dims 增量时长 × CPU 活跃度
                         //
                         // ===== 为什么不能只用 dims 时长 =====
-                        //   实测发现 dumpsys 给很多系统服务报了完全相同的 fg 值
-                        //   （8 个 UID 全是 Δfg=170669ms），按它排序就是并列 12.5%。
-                        //   fg 字段对这些服务没有区分度。
+                        //   实测 dumpsys 对「有任务栈的进程」几乎都报全程前台：
+                        //     uid 1027/10183/10146/6120/10091/10124 的 Δfg 全都 = 121908ms
+                        //     而 interval = 122131ms —— 即 99.8% 的时间都在前台。
+                        //   纯按 fg 排序会让几十个 UID 并列第一，没有区分度。
                         //
-                        //   CPU 又是另一面：CPU 高说明真在干活，但没有"前台/后台"语义。
+                        //   CPU 又是另一面：CPU 高说明真在干活，但没有前台/后台语义。
                         //   两者相乘可以同时体现「在前台」和「真在跑」：
                         //     weight = √(fg秒 × CPU秒)
-                        //   开平方是为了避免任一项极小时把权重压没
-                        //   （例如 fg=170s、cpu=0.08s，直接相乘只有 13.6）。
+                        //   开平方是为了避免任一项极小时把权重压没。
                         double sec = dims.secondsOf(r.uid, mode);
                         if (sec <= 0.001d) {
                             continue;   // 该 UID 在这个维度上是 0 → 不显示
@@ -667,6 +722,16 @@ public class MainActivity extends Activity {
                                 ? (r.dRx() + r.dTx()) / 1048576.0d * 0.44d
                                 : 0;
                         w = wDim + trafficPart;
+                    } else if (useMah) {
+                        // 全部口径 + 有模型电量：直接按 mAh 排
+                        double m = dims.mahOf(r.uid);
+                        if (m <= 0.0005d) {
+                            // 模型没算出这个 UID 的电（常见于纯 IO/内核活动），
+                            // 退回 CPU 权重，但给一个下限，避免完全消失
+                            w = r.wAll() * 0.02d;
+                        } else {
+                            w = m;
+                        }
                     } else {
                         w = r.wAll();
                     }
@@ -695,8 +760,44 @@ public class MainActivity extends Activity {
                     it.fgMs = r.dFgMs();
                     it.bgMs = r.dBgMs();
                     it.fgsMs = r.dFgsMs();
+                    if (useMah && mode == 0) {
+                        it.modelMah = dims.mahOf(r.uid);
+                        it.mahParts = dims.mahPartsOf(r.uid);
+                    }
+                    seenUid.add(r.uid);
                     totalW += w;
                     items.add(it);
+                }
+
+                /*
+                 * ===== 补上 procfs 区间里没有、但 dumpsys 有电量的 UID =====
+                 *
+                 *   plcollect 走 /proc/uid_cputime，只统计【有 CPU 时间】的 UID。
+                 *   而 dumpsys 会给出纯硬件型消耗（屏幕、基带待机、传感器），
+                 *   这些 UID 可能整段区间 CPU = 0，于是从列表里彻底消失 ——
+                 *   用户就会看到"加起来远小于实测放电"，或把平台功耗错算到 App 头上。
+                 *
+                 *   这里按 dims 的 UID 补齐，CPU/IO 留空，只带模型电量。
+                 */
+                if (useMah && mode == 0) {
+                    for (Integer uidObj : dims.byUid.keySet()) {
+                        int uid = uidObj;
+                        if (seenUid.contains(uid)) continue;
+                        double m = dims.mahOf(uid);
+                        if (m <= 0.0005d) continue;
+                        if (hideAggregate && isAggregate(uid)) continue;
+                        Item it = new Item();
+                        it.uid = uid;
+                        it.pkg = uidToPkg(uid);
+                        if (it.pkg == null || it.pkg.isEmpty()) {
+                            it.pkg = "uid" + uid;
+                        }
+                        it.weight = m;
+                        it.modelMah = m;
+                        it.mahParts = dims.mahPartsOf(uid);
+                        totalW += m;
+                        items.add(it);
+                    }
                 }
 
                 final double dischargeMah = sum.dischargeUah / 1000.0d;
@@ -743,15 +844,26 @@ public class MainActivity extends Activity {
         // 两者可能差很多：查询窗口 6 小时，但有效电池点只覆盖 2.8 小时，
         // 用 6 小时去除会得到只有一半的电流值。
         double hours = (sum.lastTs - sum.firstTs) / 3600000.0d;
+        // 纯放电时长：区间内没充电的部分。电流必须用它做分母，
+        // 否则充电时段会稀释结果（实测偏差可达 30%+）。
+        double disHours = sum.dischargeMs / 3600000.0d;
         if (mah > 0.05d) {
             sb.append("\n实测放电 ").append(String.format(Locale.CHINA, "%.1f", mah)).append(" mAh");
             if (hours > 0.01d) {
-                double ma = sum.ratePerHourUah / 1000.0d;
+                // 电流用「纯放电时长」，比例用「全跨度」
+                double ma = (disHours > 0.01d)
+                        ? sum.ratePerHourUahActive / 1000.0d
+                        : sum.ratePerHourUah / 1000.0d;
                 double pctPerHour = (mah / 6100.0d) * 100.0d / hours;
                 sb.append("  ·  ").append(String.format(Locale.CHINA, "%.1f", ma)).append(" mA");
                 sb.append("  ·  ").append(String.format(Locale.CHINA, "%.2f", pctPerHour)).append(" %/h");
+                sb.append("  ·  ").append(String.format(Locale.CHINA, "%.2f", ma * 3.85d / 1000.0d)).append(" W");
                 sb.append("\n有效采样跨度 ").append(String.format(Locale.CHINA, "%.1f", hours))
                         .append(" 小时（").append(sum.points).append(" 个电池点）");
+                if (sum.chargeMs > 60000L) {
+                    sb.append("　其中充电 ").append(String.format(Locale.CHINA, "%.1f", sum.chargeMs / 3600000.0d))
+                            .append(" 小时（已从电流分母剔除）");
+                }
             }
         } else if (sum.points < 2) {
             sb.append("\n采样点不足（").append(sum.points).append(" 个），至少 2 次才能算差值");
@@ -774,21 +886,64 @@ public class MainActivity extends Activity {
             modeTip = "后台口径：√(后台秒 × CPU秒)";
         } else if (mode == 3) {
             modeTip = "前台服务口径：√(前台服务秒 × CPU秒)";
+        } else if (dims.hasMah()) {
+            /*
+             * 全部口径优先用 dumpsys 的模型电量。
+             * 同时把全机分项摊开，让用户一眼看到"平台级"消耗占多少：
+             *   屏幕 / 基带 / CPU 是三大头，加起来通常 > 90%
+             * 不做这件事的话，用户只会看到"某 App 38%"，
+             * 然后去杀那个 App —— 而真正该调的是屏幕和基带。
+             */
+            modeTip = "全部口径：按 dumpsys 系统功耗模型（每 UID 真实 mAh）分摊";
         } else {
-            modeTip = "全部口径：总 CPU + 息屏 CPU + 唤醒锁 + 流量";
+            modeTip = "全部口径：总 CPU + 息屏 CPU + 唤醒锁 + 流量（旧权重，无模型 mAh）";
         }
         sb.append("\n").append(modeTip);
 
-        // 维度数据状态（前台/后台/前台服务模式依赖它）
-        if (mode >= 1 && mode <= 3) {
+        if (mode == 0 && dims.hasMah() && dims.totalMah() > 1.0d) {
+            double[] parts = new double[Dims.M_N];
+            for (int i = 0; i < Dims.M_N; i++) {
+                parts[i] = dims.totMah[i] / 1000.0d;
+            }
+            // 只列非零且较大的分项，按大小排序
+            Integer[] idx = new Integer[Dims.M_N];
+            for (int i = 0; i < Dims.M_N; i++) idx[i] = i;
+            final double[] fp = parts;
+            java.util.Arrays.sort(idx, new Comparator<Integer>() {
+                @Override
+                public int compare(Integer a, Integer b) {
+                    return Double.compare(fp[b], fp[a]);
+                }
+            });
+            double tot = dims.totalMah();
+            sb.append("\n区间模型电量 ").append(String.format(Locale.CHINA, "%.1f", tot)).append(" mAh：");
+            int shown = 0;
+            for (int k = 0; k < Dims.M_N && shown < 4; k++) {
+                int i = idx[k];
+                if (parts[i] < tot * 0.02d) continue;
+                sb.append("  ").append(Dims.MAH_NAME[i]).append(' ')
+                        .append(String.format(Locale.CHINA, "%.0f", parts[i]))
+                        .append("(").append(String.format(Locale.CHINA, "%.0f", parts[i] * 100.0d / tot)).append("%)");
+                shown++;
+            }
+        }
+
+        // 维度数据状态（前台/后台/前台服务模式依赖它；全部口径的 mAh 也依赖它）
+        if (mode >= 1 && mode <= 3 || dims.hasMah()) {
             if (dimsAge < 0) {
-                sb.append("\n[!] 没有维度数据，已退化到「全部」口径");
-                sb.append("\n    修复：su -c \"/data/local/tmp/plc/pldims\"");
+                if (mode >= 1 && mode <= 3) {
+                    sb.append("\n[!] 没有维度数据，已退化到「全部」口径");
+                    sb.append("\n    修复：su -c \"/data/local/tmp/plc/pldims\"");
+                }
             } else if (dimsAge > 3600) {
-                sb.append("\n[!] 维度数据已 ").append(dimsAge / 60).append(" 分钟未更新");
+                sb.append("\n[!] 维度数据已 ").append(dimsAge / 60).append(" 分钟未更新（pldims 守护可能停了）");
             } else {
                 sb.append("\n维度数据 ").append(dimsAge < 60 ? dimsAge + " 秒前" : dimsAge / 60 + " 分钟前")
-                        .append("（").append(dims.count).append(" 个 UID）");
+                        .append("（").append(dims.count).append(" 个 UID");
+                if (dims.intervalMs > 0) {
+                    sb.append("，采样间隔 ").append(Math.round(dims.intervalMs / 1000.0d)).append(" 秒");
+                }
+                sb.append('）');
             }
         }
 
@@ -823,6 +978,10 @@ public class MainActivity extends Activity {
         long fgsMs;
         /** true = rx/tx 是真网络流量；false = 文件读写字节数（procfs 来源） */
         boolean trafficIsReal;
+        /** dumpsys 自己算出的本 UID 模型电量（mAh），0 = 无 */
+        double modelMah;
+        /** 本 UID 的分项模型电量（mAh），下标见 Dims.M_* */
+        double[] mahParts;
     }
 
     private static String dur(long ms) {
@@ -919,17 +1078,33 @@ public class MainActivity extends Activity {
             boolean hasPkg = it.pkg != null && !"?".equals(it.pkg)
                     && !it.pkg.isEmpty() && !it.pkg.startsWith("(uid");
 
-            // 0) 特殊标签：hasPkg 且以 "sys:" 开头时后面会重新赋值
-            if (hasPkg && it.pkg.startsWith("sys:")) {
-                String zh = SYS_LABEL.get(it.pkg);
-                s = (zh != null) ? zh : it.pkg.substring(4);
-                labelCache.put(key, s);
-                return s;
+            /*
+             * 优先级：
+             *   0) sys:kernel / sys:system / sys:adb_shell → 固定中文名
+             *   1) proc:<name>  → 真实进程名（含可选中文注解）
+             *   2) sys:uid<N>   → 显示 "uid N"
+             *   3) 真实包名     → PackageManager 取应用名
+             *   4) 都没有       → "(uid N)"
+             *
+             * 注意：不要跳过 proc:/sys:uid 走 PackageManager ——
+             * 它们本来就不是包名，查了也查不到，会白跑一次 binder 调用。
+             */
+            if (hasPkg) {
+                if (it.pkg.startsWith("sys:") || it.pkg.startsWith("proc:")) {
+                    String zh = SYS_LABEL.get(it.pkg);
+                    if (zh == null) {
+                        zh = humanizeProc(it.pkg);
+                    }
+                    if (zh == null) {
+                        zh = it.pkg;
+                    }
+                    labelCache.put(key, zh);
+                    return zh;
+                }
             }
 
-            // 1) 采集器已给名字（含系统 UID 的语义名）
+            // 3) 真实包名 → 应用名
             if (hasPkg) {
-                // 如果看起来是包名，尝试取应用名
                 if (it.pkg.indexOf('.') > 0) {
                     try {
                         android.content.pm.PackageManager pm = getPackageManager();
@@ -937,7 +1112,6 @@ public class MainActivity extends Activity {
                     } catch (Throwable ignored) {
                     }
                 }
-                // 取不到应用名就直接用采集器给的名字（可能是"蓝牙""Wi-Fi"这类语义名）
                 if (s == null || s.isEmpty()) {
                     s = it.pkg;
                 }
@@ -964,41 +1138,9 @@ public class MainActivity extends Activity {
             return s;
         }
 
-        /** 从 /data/system/packages.list 反查 uid 对应的包名（root 可读，App 读不到时返回 null） */
+        /** 从 uid 反查包名：统一走 MainActivity.uidToPkg（PackageManager 优先） */
         private String pkgNameFromUid(int uid) {
-            String cached = uidPkgCache.get(uid);
-            if (cached != null) {
-                return cached.isEmpty() ? null : cached;
-            }
-            String found = null;
-            java.io.BufferedReader r = null;
-            try {
-                r = new java.io.BufferedReader(new java.io.FileReader("/data/system/packages.list"));
-                String line;
-                while ((line = r.readLine()) != null) {
-                    String[] f = line.split("\\s+");
-                    if (f.length >= 2) {
-                        try {
-                            if (Integer.parseInt(f[1]) == uid) {
-                                found = f[0];
-                                break;
-                            }
-                        } catch (Throwable ignored) {
-                        }
-                    }
-                }
-            } catch (Throwable ignored) {
-                // App 通常读不到，退化到 SPECIAL 表
-            } finally {
-                if (r != null) {
-                    try {
-                        r.close();
-                    } catch (Throwable ignored) {
-                    }
-                }
-            }
-            uidPkgCache.put(uid, found == null ? "" : found);
-            return found;
+            return uidToPkg(uid);
         }
 
         private Drawable icon(Item it) {

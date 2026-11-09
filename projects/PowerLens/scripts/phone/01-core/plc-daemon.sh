@@ -1,28 +1,29 @@
 #!/system/bin/sh
-# plc-daemon.sh -- PowerLens 采集守护 v4（双采集器）
+# plc-daemon.sh -- PowerLens 采集守护 v5（绝对时间调度）
 #
-# ===== 架构 =====
-#   plcollect（高频，60s）→ procfs → CPU / IO         → snapshots.tsv
-#   pldims   （低频，600s）→ dumpsys → fg/bg/fgs/wl   → dims.tsv
+# ===== v4 的问题 =====
+#   用 tick 计数决定何时跑 dims：
+#     MOD=$((CPU_TICK % DIM_EVERY))
+#   但每轮实际耗时 = CPU_INT + 采集耗时 + su 开销，实测 71.8 秒而非 60 秒。
+#   导致 20 * 71.8 = 24 分钟才跑一次 dims（设定是 20 分钟）。
+#   而且守护重启后 tick 归零，dims 会推迟很久。
 #
-# ===== 为什么两个采集器 =====
-#   procfs 快（97ms）但没有「前台/后台/前台服务/唤醒锁」维度；
-#   dumpsys 慢（666ms）但有全部维度。
-#   所以：CPU 用 procfs 高频刷，维度用 dumpsys 低频补。
-#   App 侧按 dims 的占比把 CPU 分配到各维度（见 Dims.java）。
+# ===== v5 做法：绝对时间调度 =====
+#   记录「上次 dims 的 epoch 秒」，每轮比较当前时间：
+#     if [ $((NOW - LAST_DIM)) -ge $DIM_INT ]; then run_dims; fi
+#   这样无论每轮耗时多少，dims 都按真实时间间隔触发。
+#   同时也修了重启后 tick 归零的问题。
 #
-# ===== KernelSU su 边界（踩过很多次，务必遵守）=====
-#   ① su -c "cmd"               → cmd 是 root ✓
-#   ② su -c "cmd1; cmd2"        → 只有 cmd1 是 root ✗
-#   ③ su -c "sh script"         → script 是 root，但内部 cp/awk/ls 会掉回 shell ✗
-#   ④ echo x | su -c tee file   → tee 是 root ✓（写 sysfs 必须这样）
-#   ⑤ su -c "echo x > file"     → 重定向由普通 shell 执行 ✗
-#
-#   本脚本用 ① 的形式，每条命令单独 su -c，且不用重定向。
+# ===== 采集调用必须带 su（实测）=====
+#   守护脚本本身是 root（su -c "sh daemon.sh" 启动），
+#   但它 fork 出的子进程会掉回 shell 身份。
+#   实测：直接调用 plcollect → 0 UID / charge=-1（读不到 /proc/uid_cputime）
+#         su -c 调用      → 156 UID 正常
+#   所以每条采集命令都必须显式 su -c，开销 26 ms/次，可接受。
 #
 # ===== 用法 =====
 #   su -c "setsid sh /data/local/tmp/plc/plc-daemon.sh [CPU间隔] [维度间隔]"
-#   默认 60 1200（CPU 每分钟，维度每 20 分钟）
+#   默认 60 1200
 
 CPU_INT=${1:-60}
 DIM_INT=${2:-1200}
@@ -34,7 +35,7 @@ DIMS=/data/local/tmp/powerlens/dims.tsv
 LOG=/data/local/tmp/plc/daemon.log
 PIDF=/data/local/tmp/plc/daemon.pid
 
-[ -x "$BIN" ] || { echo "FATAL: 缺 $BIN" >> $LOG; exit 1; }
+[ -x "$BIN" ] || { echo "$(date '+%F %T') FATAL: 缺 $BIN" >> $LOG; exit 1; }
 
 # ---- 单实例保护 ----
 if [ -f "$PIDF" ]; then
@@ -52,33 +53,45 @@ mkdir -p /data/local/tmp/powerlens 2>/dev/null
 chmod 777 /data/local/tmp/powerlens 2>/dev/null
 chmod 666 "$STORE" "$DIMS" 2>/dev/null
 
-echo "$(date '+%F %T') plc-daemon v4 start pid=$$ cpu=${CPU_INT}s dim=${DIM_INT}s" >> $LOG
+echo "$(date '+%F %T') plc-daemon v5 start pid=$$ cpu=${CPU_INT}s dim=${DIM_INT}s" >> $LOG
 
-CPU_TICK=0
-DIM_EVERY=$((DIM_INT / CPU_INT))
-[ "$DIM_EVERY" -lt 1 ] && DIM_EVERY=1
+# ---- 绝对时间调度 ----
+NOW=$(date +%s)
+LAST_DIM=$((NOW - DIM_INT))    # 第一轮就立即跑一次 dims（建基线）
+N_CPU=0
+N_DIM=0
+ALIVE_AT=$NOW
 
 while true; do
+  NOW=$(date +%s)
+
   # ---- 高频：CPU / IO ----
   su -c "$BIN --once -f $STORE -q" >/dev/null 2>&1
   chmod 666 "$STORE" 2>/dev/null
+  N_CPU=$((N_CPU + 1))
 
-  # ---- 低频：维度 ----
-  MOD=$((CPU_TICK % DIM_EVERY))
-  if [ "$MOD" -eq 0 ] && [ -x "$DIMBIN" ]; then
+  # ---- 低频：维度（按绝对时间判断）----
+  if [ $((NOW - LAST_DIM)) -ge "$DIM_INT" ] && [ -x "$DIMBIN" ]; then
     OUT=$(su -c "$DIMBIN -f $DIMS" 2>&1)
     case "$OUT" in
-      *解析*) echo "$(date '+%F %T') dims ok: $OUT" >> $LOG ;;
-      *)      echo "$(date '+%F %T') dims FAIL: $OUT" >> $LOG ;;
+      *增量*|*基线*) echo "$(date '+%F %T') dims ok: $OUT" >> $LOG ;;
+      *)             echo "$(date '+%F %T') dims FAIL: $OUT" >> $LOG ;;
     esac
     chmod 666 "$DIMS" 2>/dev/null
+    LAST_DIM=$NOW
+    N_DIM=$((N_DIM + 1))
   fi
 
-  CPU_TICK=$((CPU_TICK + 1))
+  # ---- 心跳（每 30 分钟一次）----
+  if [ $((NOW - ALIVE_AT)) -ge 1800 ]; then
+    echo "$(date '+%F %T') alive cpu_n=$N_CPU dim_n=$N_DIM snap=$(wc -l < $STORE 2>/dev/null)L dims=$(wc -l < $DIMS 2>/dev/null)L next_dim=$(( DIM_INT - (NOW - LAST_DIM) ))s" >> $LOG
+    ALIVE_AT=$NOW
+  fi
 
-  # 心跳（每小时一次）
-  N=$(( $(date +%s) / CPU_INT % 60 ))
-  [ "$N" -eq 0 ] && echo "$(date '+%F %T') alive tick=$CPU_TICK cpu=$(wc -c < $STORE 2>/dev/null)B dims=$(wc -l < $DIMS 2>/dev/null)L" >> $LOG
-
-  sleep "$CPU_INT"
+  # ---- 睡眠：对齐到下一个整周期，避免累积漂移 ----
+  NOW2=$(date +%s)
+  ELAPSED=$((NOW2 - NOW))
+  SLEEP=$((CPU_INT - ELAPSED))
+  [ "$SLEEP" -lt 1 ] && SLEEP=1
+  sleep "$SLEEP"
 done

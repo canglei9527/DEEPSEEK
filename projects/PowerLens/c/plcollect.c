@@ -247,120 +247,105 @@ static void read_battery(bat_t *b) {
 /* ---------- 写快照 ---------- */
 
 /*
- * 系统 UID 的固定标识（纯 ASCII）。
+ * 系统 UID 的标识。
  *
- * ===== 为什么不用中文 =====
- * C 程序里直接写 UTF-8 中文会被写进数据文件，
- * 但 Android 侧读取时如果环境不是 UTF-8（实测某些 shell/locale 组合），
- * 会变成 "è Ç" 这种乱码。
- * 所以这里只写 ASCII 标识符，由 App 侧（Java，UTF-8 稳定）翻译成中文显示。
+ * ===== 教训：不要硬编码 AOSP 的 UID 语义 =====
  *
- * 命名规则：sys:<name>，App 侧按前缀识别并映射。
+ * 我按 AOSP 文档写了一张 uid→名称 表（1000=system, 1041=security…），
+ * 实战踩了两次大坑：
+ *
+ *   ① uid 1041 在这台小米上是 audioserver / audiohalservice.qti，
+ *      而我按 AOSP 写成 "security" → UI 上出现莫名其妙的「安全」条目，
+ *      用户以为是安全服务突然吃电。
+ *
+ *   ② uid 1077 在 AOSP 是 context_hub，真机是别的服务。
+ *
+ * 根因：OEM 会重新分配 UID。小米/高通在 AOSP 基础上有大量改动，
+ *       1000-1100 区间几乎认不全。
+ *
+ * ===== 现在的策略 =====
+ *   只保留【绝对确定】的少数几个（0/1000/2000），
+ *   其余全部走 /proc/<pid>/status 反查真实进程名。
+ *   查不到就诚实显示 "sys:uid<N>"，绝不猜。
+ *
+ * 这条规则适用于任何 Android 功耗工具：
+ *   宁可显示 uid 数字，也不要显示一个错的语义名。
  */
 static const char *sys_uid_name(int uid) {
     switch (uid) {
-        case 0:    return "sys:kernel";
-        case 1000: return "sys:system";
-        case 1001: return "sys:radio";
-        case 1002: return "sys:bluetooth";
-        case 1003: return "sys:gfx";
-        case 1004: return "sys:coresvc";
-        case 1006: return "sys:drm";
-        case 1007: return "sys:voicecall";
-        case 1009: return "sys:media_ext";
-        case 1010: return "sys:mediascan";
-        case 1011: return "sys:usim";
-        case 1012: return "sys:drm_cert";
-        case 1013: return "sys:media";
-        case 1014: return "sys:gps";
-        case 1015: return "sys:nfc_storage";
-        case 1016: return "sys:dictionary";
-        case 1017: return "sys:shell";
-        case 1018: return "sys:bluetooth_share";
-        case 1019: return "sys:secure_element";
-        case 1020: return "sys:deleted";
-        case 1021: return "sys:nfc";
-        case 1022: return "sys:log";
-        case 1023: return "sys:fm";
-        case 1024: return "sys:ime";
-        case 1026: return "sys:netlocation";
-        case 1027: return "sys:internal_storage";
-        case 1028: return "sys:phone";
-        case 1029: return "sys:netstack";
-        case 1030: return "sys:wifi_broadcast";
-        case 1031: return "sys:inputdev";
-        case 1032: return "sys:bluetooth2";
-        case 1033: return "sys:export";
-        case 1034: return "sys:screenshot";
-        case 1035: return "sys:dialer";
-        case 1036: return "sys:logd";
-        case 1037: return "sys:media2";
-        case 1038: return "sys:nolabel";
-        case 1039: return "sys:storage";
-        case 1040: return "sys:logbuffer";
-        case 1041: return "sys:security";
-        case 1042: return "sys:ipc";
-        case 1043: return "sys:fileshare";
-        case 1044: return "sys:draw";
-        case 1045: return "sys:clipboard";
-        case 1046: return "sys:mediasession";
-        case 1047: return "sys:wifi";
-        case 1048: return "sys:initscript";
-        case 1049: return "sys:devicesmart";
-        case 1050: return "sys:netmgmt";
-        case 1051: return "sys:ime_clipboard";
-        case 1052: return "sys:embedded";
-        case 1053: return "sys:display";
-        case 1054: return "sys:sched";
-        case 1055: return "sys:micperm";
-        case 1056: return "sys:audio";
-        case 1057: return "sys:camera_perm";
-        case 1058: return "sys:installd";
-        case 1059: return "sys:health";
-        case 1060: return "sys:permmgmt";
-        case 1061: return "sys:documents";
-        case 1062: return "sys:devicestate";
-        case 1063: return "sys:runtime";
-        case 1064: return "sys:telephonymgmt";
-        case 1065: return "sys:mediasort";
-        case 1066: return "sys:netshare";
-        case 1067: return "sys:mediashare";
-        case 1068: return "sys:camera";
-        case 1069: return "sys:teestorage";
-        case 1070: return "sys:sim";
-        case 1071: return "sys:wifiaware";
-        case 1072: return "sys:rtt";
-        case 1073: return "sys:sound_vib";
-        case 1074: return "sys:webview";
-        case 1075: return "sys:prediction";
-        case 1076: return "sys:voiceinteract";
-        case 1077: return "sys:context";
-        case 1078: return "sys:autofill";
-        case 1079: return "sys:virtcamera";
-        case 1080: return "sys:xr";
-        case 1081: return "sys:config";
-        case 1082: return "sys:comp1082";
-        case 1083: return "sys:fileshare2";
-        case 1084: return "sys:macaddr";
-        case 1085: return "sys:phonebroadcast";
-        case 1086: return "sys:creation";
-        case 1087: return "sys:searchui";
-        case 1088: return "sys:wallpaper";
-        case 1089: return "sys:vendor";
-        case 1090: return "sys:multidevice";
-        case 1091: return "sys:trace";
-        case 1092: return "sys:game";
-        case 1093: return "sys:a11y";
-        case 1094: return "sys:devconfig";
-        case 1095: return "sys:mediapower";
-        case 1096: return "sys:hwstate";
-        case 1097: return "sys:timedetect";
-        case 1098: return "sys:threadnet";
-        case 1999: return "sys:shell2";
-        case 2000: return "sys:adb_shell";   /* adbd 的 shell 用户，adb 调试通道 */
-        case 9999: return "sys:unassigned";
-        default:   return NULL;
+        case 0:    return "sys:kernel";      /* 绝对确定：内核 */
+        case 1000: return "sys:system";      /* 绝对确定：system_server */
+        case 2000: return "sys:adb_shell";   /* 绝对确定：adbd shell */
+        default:   return NULL;              /* 其余一律反查，不猜 */
     }
+}
+
+/*
+ * 从 /proc/<pid>/status 的 Name: 字段取进程名。
+ *
+ * ===== 为什么要挑，而不是取第一个 =====
+ *   同一个 UID 常有多个进程：
+ *     uid 1041 → audiohalservice.qti（HAL）+ audioserver（框架）
+ *     uid 3003 → 几十个应用进程
+ *   直接取第一个会出现 "binder:1141_2"、"android.hardwar" 这种截断名。
+ *
+ * 优先级：
+ *   1) 不含 ':' 的（排除 binder:xxx_2 这类）
+ *   2) 含 '.' 的（服务名通常带 .qti / .service 后缀）
+ *   3) 长度 >= 4 的（排除短垃圾名）
+ *   4) 都不满足就用第一个
+ */
+static const char *proc_name_of_uid(int uid) {
+    static char best[NAMEBUF];
+    static char fallback[NAMEBUF];      /* 必须是 static —— 见下 */
+    DIR *d = opendir("/proc");
+    if (!d) return NULL;
+    best[0] = 0;
+    fallback[0] = 0;                    /* 每次调用要重置 */
+    int bestScore = -1;
+
+    struct dirent *e;
+    char path[128], line[LINEBUF];
+    while ((e = readdir(d))) {
+        if (!isdigit((unsigned char)e->d_name[0])) continue;
+        int pid = atoi(e->d_name);
+        if (pid <= 0) continue;
+        snprintf(path, sizeof path, "/proc/%d/status", pid);
+        FILE *f = fopen(path, "r");
+        if (!f) continue;
+        int u = -1;
+        char nm[64] = {0};
+        while (fgets(line, sizeof line, f)) {
+            if (u < 0 && strncmp(line, "Uid:", 4) == 0) {
+                sscanf(line + 4, "%d", &u);
+            } else if (nm[0] == 0 && strncmp(line, "Name:", 5) == 0) {
+                sscanf(line + 5, "%63s", nm);
+            }
+            if (u >= 0 && nm[0]) break;
+        }
+        fclose(f);
+        if (u != uid || !nm[0]) continue;
+
+        if (fallback[0] == 0) snprintf(fallback, sizeof fallback, "%s", nm);
+
+        /* 打分 */
+        int score = 0;
+        if (!strchr(nm, ':')) score += 10;      /* 排除 binder:xxx */
+        if (strchr(nm, '.'))  score += 5;       /* 服务名常见 */
+        if (strlen(nm) >= 4)  score += 2;
+        if (strlen(nm) >= 8)  score += 1;
+        /* 惩罚明显是截断的（Linux Name 字段最多 15 字符，超长会被截） */
+        if (strlen(nm) >= 15) score -= 3;
+        if (strstr(nm, "hardwar") && strlen(nm) <= 12) score -= 5;
+
+        if (score > bestScore) {
+            bestScore = score;
+            snprintf(best, sizeof best, "%s", nm);
+        }
+    }
+    closedir(d);
+    if (best[0]) return best;
+    return fallback[0] ? fallback : NULL;
 }
 
 static int write_snapshot(const char *store, int verbose) {
@@ -389,17 +374,45 @@ static int write_snapshot(const char *store, int verbose) {
     for (int i = 0; i < g_n; i++) {
         uidrec *u = &g_u[i];
 
-        /* 系统 UID 用固定语义名，覆盖 cmdline/packages.list 的路径或误标 */
+        /*
+         * UID 命名的三级回退（顺序很重要）：
+         *
+         *   1) 绝对确定的固定名（0 / 1000 / 2000）
+         *   ② 有真实包名（含 '.'）→ 保留
+         *   ③ 没有 → 从 /proc/<pid>/status 反查真实进程名
+         *   ④ 还查不到 → 诚实显示 "sys:uid<N>"
+         *
+         * ===== 为什么不能按 AOSP 硬编码 =====
+         *   实测这台小米：uid 1041 是 audioserver，而 AOSP 文档写的是 security。
+         *   硬编码导致 UI 出现「安全」条目 —— 完全错误的归因。
+         *   宁可显示 uid 数字，也不要显示错的名字。
+         */
         const char *sn = sys_uid_name(u->uid);
         if (sn != NULL) {
+            /* 1) 绝对确定的 */
             strncpy(u->pkg, sn, NAMEBUF - 1);
             u->pkg[NAMEBUF - 1] = 0;
-        } else if (u->pkg[0] == '/' ) {
-            /* 兜底：cmdline 给的二进制路径不是包名，转成带 uid 的可读名 */
-            char tmp[NAMEBUF];
-            snprintf(tmp, sizeof tmp, "(uid %d)", u->uid);
-            strncpy(u->pkg, tmp, NAMEBUF - 1);
-            u->pkg[NAMEBUF - 1] = 0;
+        } else if (u->pkg[0] != '/' &&
+                   u->pkg[0] != '?' &&
+                   u->pkg[0] != 0 &&
+                   strchr(u->pkg, '.')) {
+            /*
+             * 2) 有真实【包名】，保留。
+             *
+             * 注意必须排除以 '/' 开头的：
+             *   /vendor/bin/hw/audiohalservice.qti  含 '.' 但这是二进制路径，不是包名。
+             *   之前少了 u->pkg[0] != '/' 的判断，导致路径被当成包名保留，
+             *   uid 1041 在 UI 上就显示成 /vendor/bin/hw/audiohalservice.qti。
+             */
+        } else {
+            /* 3) 反查真实进程名 */
+            const char *pn = proc_name_of_uid(u->uid);
+            if (pn != NULL && pn[0]) {
+                snprintf(u->pkg, NAMEBUF, "proc:%s", pn);
+            } else {
+                /* 4) 诚实兜底 */
+                snprintf(u->pkg, NAMEBUF, "sys:uid%d", u->uid);
+            }
         }
 
         unsigned long long cpu_ms = (u->utime_us + u->stime_us) / 1000ULL;

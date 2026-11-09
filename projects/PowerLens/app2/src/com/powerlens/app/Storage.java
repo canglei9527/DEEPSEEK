@@ -46,6 +46,10 @@ final class Storage {
     static final class Summary {
         long dischargeUah;
         long chargeUah;
+        /** 纯放电时长（ms）—— 不含充电段，用于算真实放电电流 */
+        long dischargeMs;
+        /** 充电时长（ms） */
+        long chargeMs;
         int points;
         int skippedSegments;
         int skippedJumps;
@@ -53,6 +57,16 @@ final class Storage {
         long firstTs;
         long lastTs;
         double ratePerHourUah;
+        /**
+         * 真实放电速率（µAh/h）—— 分母是【纯放电时长】而非全跨度。
+         *
+         * 区别：
+         *   ratePerHourUah       = 放电量 / 全跨度        （区间内含充电时偏低）
+         *   ratePerHourUahActive = 放电量 / 纯放电时长    （真实电流）
+         *
+         * UI 显示电流用后者，显示「占区间比例」用前者。
+         */
+        double ratePerHourUahActive;
     }
 
     static final class Row {
@@ -514,8 +528,26 @@ final class Storage {
             long dtMin = Math.max(1, (b[0] - a[0]) / 60000L);
             long d = a[1] - b[1];                       // µAh，正数=放电
 
-            // 物理上限：15 mAh/min（15*1000 µAh/min），下限 50 mAh
-            long cap = Math.max(50_000L, 15_000L * dtMin);
+            /*
+             * 物理上限（判「电量计跳变/校准」用）。
+             *
+             * ===== 实战教训：15 mAh/min 太紧，会误杀真实放电 =====
+             *   实测这台机器有一次：
+             *     11:35:11 → 11:41:31（6.3 分钟）掉了 110 mAh
+             *     = 1043 mA 平均电流
+             *   这是亮屏高负载的真实消耗（游戏/导航/热点），
+             *   但被 15 mAh/min（= 900 mA）判定为跳变直接丢掉，
+             *   导致总量少算 110 mAh（约 12%）。
+             *
+             * 现在放宽到 30 mAh/min（1800 mA）：
+             *   · 覆盖到 8 Gen 3 满载 + 亮屏 + 热点的极端情况
+             *   · 仍能抓住真正的电量计跳变（那种通常是几百 mAh 的突变，
+             *     比如换电池/校准，一秒跳 500+ mAh，远超 30 mAh/min × 1 = 30 mAh）
+             *
+             * 另外 dtMin 用 max(1, ...) 意味着「1 分钟内」都按 1 分钟算，
+             * 所以下限也要提到 30 mAh，否则短间隔的高速放电还是会被杀。
+             */
+            long cap = Math.max(30_000L, 30_000L * dtMin);
 
             if (d > 0) {
                 if (d > cap) {
@@ -528,8 +560,10 @@ final class Storage {
                     continue;
                 }
                 s.dischargeUah += d;
+                s.dischargeMs += (b[0] - a[0]);          // 累计真实放电时长
             } else if (d < 0) {
                 s.chargeUah += -d;
+                s.chargeMs += (b[0] - a[0]);
                 s.skippedSegments++;
             }
         }
@@ -537,6 +571,20 @@ final class Storage {
         long spanMs = s.lastTs - s.firstTs;
         if (spanMs > 60000L) {
             s.ratePerHourUah = s.dischargeUah * 3600000L / spanMs;
+        }
+
+        /*
+         * ===== 放电率的分母（重要）=====
+         *
+         * 上面 ratePerHourUah 用的是【全跨度】。
+         * 如果区间里充过电，充电那段时间没有放电，却也被算进分母，
+         * 结果就是放电率被稀释、显示偏低（实测偏差可达 30%+）。
+         *
+         * 正确的「放电速率」= 总放电量 ÷ 纯放电时长。
+         * 两个都保留：一个用于「占区间比例」，一个用于「真实电流」。
+         */
+        if (s.dischargeMs > 60000L) {
+            s.ratePerHourUahActive = s.dischargeUah * 3600000L / s.dischargeMs;
         }
         return s;
     }
