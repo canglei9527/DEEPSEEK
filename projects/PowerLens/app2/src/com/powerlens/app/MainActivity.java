@@ -726,9 +726,23 @@ public class MainActivity extends Activity {
                         // 全部口径 + 有模型电量：直接按 mAh 排
                         double m = dims.mahOf(r.uid);
                         if (m <= 0.0005d) {
-                            // 模型没算出这个 UID 的电（常见于纯 IO/内核活动），
-                            // 退回 CPU 权重，但给一个下限，避免完全消失
-                            w = r.wAll() * 0.02d;
+                            /*
+                             * 模型没算出这个 UID 的电（常见于纯 IO / 内核活动 /
+                             * dumpsys 那一行压根没有 cpu= 字段）。
+                             *
+                             * 这里的兜底必须保持【量纲一致】。
+                             * 旧写法 w = r.wAll() * 0.02 把"秒"和"mAh"混进同一个
+                             * totalW 里做除法，share 直接失真 —— 而 totalW 本身
+                             * 又用来算份额，等于用两种单位互相除。
+                             *
+                             * 正确做法：用全机【增量 CPU mAh】按 CPU 时间比例分给
+                             * 它，得到的仍是 mAh，可以和别的 UID 相加比较。
+                             */
+                            double cpuMahTot = dims.totMah[Dims.M_CPU] / 1000.0d;
+                            m = (totDcpu > 0 && cpuMahTot > 0)
+                                    ? cpuMahTot * ((double) dcpu / (double) totDcpu)
+                                    : 0d;
+                            w = m;
                         } else {
                             w = m;
                         }
@@ -955,7 +969,11 @@ public class MainActivity extends Activity {
         } else {
             sb.append("\n还没有数据，点【采集】");
         }
-        sb.append("\n每行 mAh 按权重分摊，合计 = 实测放电（已剔除充电段）");
+        if (dims.hasMah() && mode == 0) {
+            sb.append("\n每行 mAh = 实测放电 × 该进程模型电量占比，合计 = 实测放电（已剔除充电段）");
+        } else {
+            sb.append("\n每行 mAh 按权重分摊，合计 = 实测放电（已剔除充电段）");
+        }
         return sb.toString();
     }
 
@@ -1000,6 +1018,58 @@ public class MainActivity extends Activity {
             return m + "m";
         }
         return (m / 60) + "h" + (m % 60) + "m";
+    }
+
+    /**
+     * 单行"模型电量"摘要：只列非零分项，按大小取前 4，单位 mAh。
+     *
+     * 没有它的话，右侧的 mAh 与左侧的 CPU/锁/流量之间看不到推导关系，
+     * 数字仍是黑箱；有它就能当场验算，也能看出"这进程的电其实花在基带上"。
+     */
+    private static String mahPartsBrief(Item it) {
+        if (it.mahParts == null || it.modelMah <= 0.0005d) {
+            return null;
+        }
+        Integer[] idx = new Integer[Dims.M_N];
+        for (int i = 0; i < Dims.M_N; i++) {
+            idx[i] = i;
+        }
+        final double[] parts = it.mahParts;
+        java.util.Arrays.sort(idx, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer a, Integer b) {
+                return Double.compare(parts[b], parts[a]);
+            }
+        });
+        StringBuilder sb = new StringBuilder();
+        int shown = 0;
+        for (int k = 0; k < Dims.M_N && shown < 4; k++) {
+            int i = idx[k];
+            double v = parts[i];
+            if (v < 0.05d) {
+                continue;
+            }
+            if (sb.length() > 0) {
+                sb.append(' ');
+            }
+            sb.append(Dims.MAH_NAME[i]).append(' ').append(fmtMah(v));
+            shown++;
+        }
+        if (sb.length() <= 0) {
+            return null;
+        }
+        sb.append(" = ").append(fmtMah(it.modelMah)).append(" mAh");
+        return sb.toString();
+    }
+
+    private static String fmtMah(double v) {
+        if (v >= 100d) {
+            return String.format(Locale.CHINA, "%.0f", v);
+        }
+        if (v >= 10d) {
+            return String.format(Locale.CHINA, "%.1f", v);
+        }
+        return String.format(Locale.CHINA, "%.2f", v);
     }
 
     private static String bytes(long b) {
@@ -1196,7 +1266,14 @@ public class MainActivity extends Activity {
                 TextView t2 = new TextView(MainActivity.this);
                 t2.setTextSize(10f);
                 t2.setTextColor(0xFF6E7B8B);
-                t2.setSingleLine(true);
+                /*
+                 * 允许两行。setSingleLine(true) 会把"\n"后面的内容直接裁掉，
+                 * 于是"模型电量"那行永远看不见 —— 数字又变回黑箱了。
+                 */
+                t2.setSingleLine(false);
+                t2.setMaxLines(2);
+                t2.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                t2.setLineSpacing(0f, 0.9f);
                 mid.addView(t2);
 
                 ProgressBar pb = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleHorizontal);
@@ -1242,8 +1319,28 @@ public class MainActivity extends Activity {
             Item it = data.get(pos);
             h.icon.setImageDrawable(icon(it));
             h.name.setText(label(it));
-            h.sub.setText("CPU " + dur(it.cpuMs) + " · 息屏 " + dur(it.cpuOffMs)
-                    + " · 锁 " + dur(it.wlMs) + " · " + (it.trafficIsReal ? bytes(it.rx + it.tx) : "IO " + bytes(it.rx + it.tx)));
+            StringBuilder subTxt = new StringBuilder();
+            subTxt.append("CPU ").append(dur(it.cpuMs))
+                    .append(" · 息屏 ").append(dur(it.cpuOffMs))
+                    .append(" · 锁 ").append(dur(it.wlMs))
+                    .append(" · ").append(it.trafficIsReal ? bytes(it.rx + it.tx) : "IO " + bytes(it.rx + it.tx));
+            /*
+             * 把这一行的电量来源摊开。
+             *
+             * ===== 为什么必须显示 =====
+             *   归因改成 dumpsys 模型 mAh 之后，用户看到某进程 300 mAh
+             *   会问"凭什么"。原来的副标题只有 CPU/锁/流量，
+             *   跟 mAh 之间没有可见的推导关系 —— 数字仍然像黑箱。
+             *   显示"CPU 135 网络 571 屏幕 72"之后，
+             *   这一行的右侧数字与它成正比，一眼就能验算。
+             *   同时也暴露了真相：B 站的电大头是【基带和屏幕】，不是 CPU，
+             *   杀进程省不了多少，该调的是亮屏时长和后台网络。
+             */
+            String mb = mahPartsBrief(it);
+            if (mb != null) {
+                subTxt.append("\n模型电量 ").append(mb);
+            }
+            h.sub.setText(subTxt.toString());
             h.bar.setProgress((int) Math.max(0, Math.min(1000, it.share * 1000.0d)));
             h.mah.setText(it.mah > 0.05d ? String.format(Locale.CHINA, "%.1f", it.mah) : "—");
             h.pct.setText(String.format(Locale.CHINA, "%.1f%%", it.share * 100.0d));

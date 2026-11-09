@@ -164,6 +164,7 @@ static void load_prev_global(const char *dir) {
 
 static int g_verbose = 0;
 static int g_trace_uid = -1;
+static const char *g_input_file = NULL;   /* -i FILE：离线回归测试用 */
 
 static void trace(int uid, const char *what, const char *line, long long val) {
     if (!g_verbose) return;
@@ -404,8 +405,23 @@ static void parse_global(const char *line) {
 }
 
 static void run_dumpsys(void) {
-    FILE *f = popen("/system/bin/dumpsys batterystats --charged 2>/dev/null", "r");
-    if (!f) return;
+    /*
+     * -i FILE：从文件读 dumpsys 输出，而不是 popen。
+     *
+     * 为什么需要它：解析逻辑的正确性只能在【同一份输入】上回归才有意义。
+     * 线上 dumpsys 每次都变，出问题时无法区分"解析错了"还是"数据变了"。
+     * 把一次现场输出存成文件，改完代码立刻重跑同一份数据 diff 结果。
+     *   adb shell su -c 'dumpsys batterystats --charged > /data/local/tmp/bs.txt'
+     *   adb shell su -c 'pldims -i /data/local/tmp/bs.txt -d /tmp/t -v'
+     */
+    const char *cmd = g_input_file
+        ? NULL
+        : "/system/bin/dumpsys batterystats --charged 2>/dev/null";
+    FILE *f = g_input_file ? fopen(g_input_file, "r") : popen(cmd, "r");
+    if (!f) {
+        fprintf(stderr, "pldims: 打开输入失败: %s\n", strerror(errno));
+        return;
+    }
     static char line[LINEBUF];          /* 8KB，放静态区避免栈压力 */
     int cur = -1, inOffDoz = 0, expectDetail = 0;
     int inEst = 0, estDone = 0;
@@ -516,7 +532,7 @@ static void run_dumpsys(void) {
             }
         }
     }
-    pclose(f);
+    if (g_input_file) fclose(f); else pclose(f);
     if (g_verbose) {
         fprintf(stderr, "pldims: headline=%d UID=%d\n", nHead, g_cn);
         for (int i = 0; i < MAH_N; i++) {
@@ -626,6 +642,8 @@ int main(int argc, char **argv) {
             snprintf(prev, sizeof prev, "%s/dims.prev", dir);
         } else if (!strcmp(argv[i], "-v")) {
             g_verbose = 1;
+        } else if (!strcmp(argv[i], "-i") && i + 1 < argc) {
+            g_input_file = argv[++i];       /* 离线回归：从文件读 dumpsys */
         } else if (!strcmp(argv[i], "-u") && i + 1 < argc) {
             g_trace_uid = atoi(argv[++i]);
         }
