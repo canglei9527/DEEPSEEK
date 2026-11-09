@@ -11,8 +11,15 @@
 param(
     [int]$WaitMinutes = 40,
     [string]$IP = '192.168.137.22',
-    [int[]]$KnownPorts = @(40483, 36761, 5555)
+    [string]$ExpectModel = '2410DPN6CC',
+    # 用 CSV 而不是 [int[]]：powershell -File 传数组时不会拆分，
+    # "-KnownPorts 42965,40483" 会被当成单个字符串绑到 [int[]] 上，
+    # 报 "Cannot convert value "42965,40483" to type System.Int32"。
+    # 只有 -Command 调用才有数组字面量语义。
+    [string]$KnownPorts = '42965,40483,36761,5555'
 )
+$KnownPortArr = @($KnownPorts -split '[,; ]+' | Where-Object { $_ } | ForEach-Object { [int]$_ })
+if ($KnownPortArr.Count -eq 0) { $KnownPortArr = @(42965, 40483, 5555) }
 
 $ErrorActionPreference = 'Continue'
 $env:TMP = 'D:\CODEX\tmp'; $env:TEMP = 'D:\CODEX\tmp'
@@ -36,11 +43,36 @@ function Test-Shell($addr) {
   `adb mdns services` 直接列出 _adb-tls-connect._tcp 的 IP:端口，
   是官方发现机制，一次调用就够。
 #>
+function Get-Model($addr) {
+    $m = & $ADB -s $addr shell 'getprop ro.product.model' 2>&1 | Out-String
+    return ($m -split "`n" | Where-Object { $_.Trim() } | Select-Object -First 1).Trim()
+}
+
+<#
+===== 为什么必须校验型号 =====
+  mDNS 会列出【整个局域网所有】开着 adb 的设备。
+  本机实测一次列出了 9 台（M7E ×5 / M5Plus / MT9950 …），
+  没有型号锁时脚本会连上【第一台能连的】——
+  差点把 PowerLens 推到一台没有 root、batterystats 只有 2 个 UID 的 M7E 上。
+  那种设备上跑出来的全是空数据，比报错更危险（看起来"部署成功"）。
+
+  而且这台小米的 IP 和端口都会变：实测
+    192.168.137.22:40483 → 192.168.137.159:42965
+  热点重连会同时换掉两者，所以只能靠型号识别，不能靠地址。
+#>
+function Confirm-Device($addr) {
+    if (-not $ExpectModel) { return $true }
+    $m = Get-Model $addr
+    if ($m -eq $ExpectModel) { return $true }
+    Write-Host "  跳过 $addr（型号 $m != $ExpectModel）" -ForegroundColor DarkGray
+    return $false
+}
+
 function Find-ByMdns {
     $sv = & $ADB mdns services 2>&1 | Out-String
-    $lines = $sv -split "`n" | Where-Object { $_ -match 'adb-tls-connect|adb-server' }
+    $lines = $sv -split "`n" | Where-Object { $_ -match 'adb-tls-connect|adb-server|_adb\._tcp' }
     foreach ($ln in $lines) {
-        # 形如：  adb-xxxx    _adb-tls-connect._tcp.    192.168.137.22    37317
+        # 形如：  adb-xxxx    _adb-tls-connect._tcp.    192.168.137.159    42965
         $cols = ($ln -split '\s{2,}') | Where-Object { $_ }
         $ip = $null; $port = $null
         foreach ($c in $cols) {
@@ -50,29 +82,35 @@ function Find-ByMdns {
         if ($ip -and $port) {
             & $ADB connect "${ip}:${port}" 2>&1 | Out-Null
             Start-Sleep -Seconds 2
-            if (Test-Shell "${ip}:${port}") { return "${ip}:${port}" }
+            if ((Test-Shell "${ip}:${port}") -and (Confirm-Device "${ip}:${port}")) {
+                return "${ip}:${port}"
+            }
         }
     }
     return $null
 }
 
 function Find-Device {
-    # 1) mDNS（最快、能拿到新端口）
+    # 1) mDNS（最快、能拿到新端口/新 IP）
     $m = Find-ByMdns
     if ($m) { L "  mDNS 命中 $m"; return $m }
     # 2) 已知 IP + 候选端口
-    foreach ($p in $KnownPorts) {
+    foreach ($p in $KnownPortArr) {
         & $ADB connect "${IP}:${p}" 2>&1 | Out-Null
         Start-Sleep -Seconds 2
-        if (Test-Shell "${IP}:${p}") { return "${IP}:${p}" }
+        if ((Test-Shell "${IP}:${p}") -and (Confirm-Device "${IP}:${p}")) { return "${IP}:${p}" }
     }
-    # 3) 同网段其他 IP 的 adb 端口（热点会重新分配 IP）
+    # 3) 同网段其他 IP：热点重连会换 IP（实测 .22 → .159），
+    #    所以不能只试硬编码的那一个地址
     $lan = ($IP -split '\.')[0..2] -join '.'
-    $ips = @("$lan.22") + (Get-NetNeighbor -ErrorAction SilentlyContinue |
-            Where-Object { $_.IPAddress -like "$lan.*" -and $_.IPAddress -ne "$lan.1" } |
-            Select-Object -ExpandProperty IPAddress)
+    $ips = @("$lan.22", "$lan.159")
+    $neigh = Get-NetNeighbor -ErrorAction SilentlyContinue |
+        Where-Object { $_.IPAddress -like "$lan.*" -and $_.IPAddress -ne "$lan.1" } |
+        Select-Object -ExpandProperty IPAddress
+    $ips += $neigh
     foreach ($cand in ($ips | Sort-Object -Unique)) {
-        foreach ($p in @(5555, 36761, 40483)) {
+        # 端口从 mDNS 拿到的最新值优先（$KnownPorts 已含），再补常见值
+        foreach ($p in ($KnownPortArr + @(5555, 42965, 5037, 36761, 40483) | Sort-Object -Unique)) {
             try {
                 $c = New-Object System.Net.Sockets.TcpClient
                 $iar = $c.BeginConnect($cand, $p, $null, $null)
@@ -80,7 +118,9 @@ function Find-Device {
                     $c.Close()
                     & $ADB connect "${cand}:${p}" 2>&1 | Out-Null
                     Start-Sleep -Seconds 2
-                    if (Test-Shell "${cand}:${p}") { return "${cand}:${p}" }
+                    if ((Test-Shell "${cand}:${p}") -and (Confirm-Device "${cand}:${p}")) {
+                        return "${cand}:${p}"
+                    }
                 } else { $c.Close() }
             } catch {}
         }
@@ -132,7 +172,8 @@ L '=== 1. 推送二进制 ==='
 & $ADB -s $addr push "$ROOT\c\out\plcollect" /data/local/tmp/plc/plcollect 2>&1 | Out-Null
 & $ADB -s $addr push "$ROOT\scripts\deploy-v4.sh" /data/local/tmp/deploy-v4.sh 2>&1 | Out-Null
 Root 'chmod 755 /data/local/tmp/plc/pldims /data/local/tmp/plc/plcollect; chmod 644 /data/local/tmp/deploy-v4.sh' | Out-Null
-L (Root '/data/local/tmp/plc/pldims -v 2>&1 | grep -c GLOBAL').Trim() + ' 行 GLOBAL 输出（>0 说明 v3 已就位）'
+$gc = (Root '/data/local/tmp/plc/pldims -v 2>&1 | grep -c GLOBAL')
+L "  GLOBAL 输出行数: $($gc.Trim())（>0 说明 v3 已就位）"
 
 L '=== 2. 存现场 dumpsys 作离线回归输入 ==='
 Root 'dumpsys batterystats --charged > /data/local/tmp/bs-v4.txt 2>/dev/null; wc -l /data/local/tmp/bs-v4.txt'
