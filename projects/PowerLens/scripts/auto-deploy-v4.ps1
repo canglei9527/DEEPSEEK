@@ -109,6 +109,24 @@ function Sh($cmd) {
 }
 function Root($script) { Sh "su -c '$script'" }
 
+L '=== 0. 解析层回归单测（门控：不过就别装新二进制）==='
+# 这轮的 9 个 bug 全是"程序跑通、数字合法、值却错"的静默错误，
+# 线上没法判定（dumpsys 每次输出都变）。断言用真机 libc 跑同一份代码，
+# 比肉眼看输出可靠。失败即中止，不覆盖设备上正在采集的二进制。
+& $ADB -s $addr push "$ROOT\c\out\pldims_test.arm64" /data/local/tmp/pldims_test 2>&1 | Out-Null
+Root 'chmod 755 /data/local/tmp/pldims_test' | Out-Null
+$t = Root '/data/local/tmp/pldims_test'
+$t | Out-File "$OUT\unittest.txt" -Encoding UTF8
+$failLines = ($t -split "`n") | Where-Object { $_ -match 'FAIL' }
+$okLines = ($t -split "`n") | Where-Object { $_ -match '全部通过|失败' }
+$okLines | ForEach-Object { L "  $($_.Trim())" }
+$failLines | ForEach-Object { L "  $_" }
+if ($t -notmatch '全部通过') {
+    L '  ✗ 单测未通过 —— 中止部署（不要覆盖设备上的 pldims）'
+    exit 2
+}
+L '  ✓ 单测通过，继续部署'
+
 L '=== 1. 推送二进制 ==='
 & $ADB -s $addr push "$ROOT\c\out\pldims"   /data/local/tmp/plc/pldims   2>&1 | Out-Null
 & $ADB -s $addr push "$ROOT\c\out\plcollect" /data/local/tmp/plc/plcollect 2>&1 | Out-Null

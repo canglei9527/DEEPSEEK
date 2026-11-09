@@ -139,6 +139,16 @@ static char *skip_cols(char *line, int n) {
     return p;
 }
 
+/*
+ * main() 在单测编译（-DPLDIMS_TEST）时被排除。
+ * 只在 main 路径里用到的函数（now_ms/find_prev/run_dumpsys/load_prev/
+ * save_prev/save_global/load_prev_global）因此会报 unused-function。
+ *
+ * 这里【不给源码加 attribute】—— 那等于为了让测试编译干净而给生产代码
+ * 打上永久标记，属于污染。改由 build-test.ps1 单独传 -Wno-unused-function。
+ * 生产编译仍然是完整的 -Wall -Wextra，implicit-function-declaration
+ * 这类真问题照样会被抓出来。
+ */
 static void load_prev_global(const char *dir) {
     char path[256];
     snprintf(path, sizeof path, "%s/dims.global", dir);
@@ -150,13 +160,19 @@ static void load_prev_global(const char *dir) {
         int r = sscanf(line, "%lld\t%lld", &ts, &iv);
         if (r == 2) {
                 char *col = skip_cols(line, 2);      /* 跳过 ts 和 interval */
+                int filled = 0;
                 if (col) {
                     for (int i = 0; i < MAH_N && col; i++) {
-                        g_prevGlobal[i] = strtoll(col, &col, 10);
-                        if (*col == '\t') col++; else break;
+                        char *next = NULL;
+                        long long v = strtoll(col, &next, 10);
+                        if (next == col) break;
+                        g_prevGlobal[i] = v;
+                        filled++;
+                        col = (*next == '\t') ? next + 1 : next;
                     }
-                    g_havePrevGlobal = 1;
                 }
+                /* 读不满就当作没有基线 —— 半份 global 会让钳制把真值压成 0 */
+                if (filled == MAH_N) g_havePrevGlobal = 1;
             }
     }
     fclose(f);
@@ -165,6 +181,53 @@ static void load_prev_global(const char *dir) {
 static int g_verbose = 0;
 static int g_trace_uid = -1;
 static const char *g_input_file = NULL;   /* -i FILE：离线回归测试用 */
+
+/*
+ * ===== 单测开关 =====
+ *   解析逻辑的 9 个 bug 全部是"看起来跑通了、数字却是错的"这类静默错误，
+ *   靠肉眼看输出抓不住（fg 虚高 9 倍那回，输出一路都是"合法"的数字）。
+ *   所以把这些函数暴露出来，配 pldims_test.c 做【可断言的】回归：
+ *   改一次解析代码，必须先在主机上过一遍单测再推到设备上。
+ *     clang --target=x86_64-w64-windows-gnu pldims.c pldims_test.c
+ *   单测目标里 pldims 的 main() 不会执行，因此不冲突。
+ */
+#ifdef _WIN32
+/* 主机编译时 popen/pclose 叫 _popen/_pclose */
+#define popen _popen
+#define pclose _pclose
+#endif
+
+/* 前置声明：测试包装函数插在这些实现之前，C 要求先声明 */
+static long parse_dur_bounded(const char *s, const char *end);
+static long paren_after(const char *line, const char *key);
+static void parse_mah(const char *line, dimrec *r);
+static void parse_global(const char *line);
+static char *skip_cols(char *line, int n);
+
+long test_parse_dur_bounded(const char *s, const char *end) {
+    return parse_dur_bounded(s, end);
+}
+
+long test_paren_after(const char *line, const char *key) {
+    return paren_after(line, key);
+}
+
+void test_parse_mah(const char *line, long long *out12) {
+    dimrec r;
+    memset(&r, 0, sizeof r);
+    parse_mah(line, &r);
+    for (int i = 0; i < MAH_N; i++) out12[i] = r.mahUah[i];
+}
+
+void test_parse_global(const char *line, long long *out12) {
+    for (int i = 0; i < MAH_N; i++) g_globalMah[i] = 0;
+    parse_global(line);
+    for (int i = 0; i < MAH_N; i++) out12[i] = g_globalMah[i];
+}
+
+char *test_skip_cols(char *line, int n) {
+    return skip_cols(line, n);
+}
 
 static void trace(int uid, const char *what, const char *line, long long val) {
     if (!g_verbose) return;
@@ -576,12 +639,32 @@ static int load_prev(const char *path) {
                  *   → Δcpu = 135000 - 10341 = 124659（垃圾数字）
                  */
                 char *col = skip_cols(line, 8);
+                int filled = 0;
                 if (col) {
                     for (int i = 0; i < MAH_N && col; i++) {
-                        p->mahUah[i] = strtoll(col, &col, 10);
-                        if (*col == '\t') col++; else break;
+                        char *next = NULL;
+                        long long v = strtoll(col, &next, 10);
+                        if (next == col) {
+                            break;              /* 不是数字，停 */
+                        }
+                        p->mahUah[i] = v;
+                        filled++;
+                        col = (*next == '\t') ? next + 1 : next;
                     }
+                }
+                /*
+                 * ===== 读不满 12 列就【整行作废】，不能只置标志位 =====
+                 *
+                 *   p 来自 static g_prev[]，且 memset 只在【本次循环开头】做一次。
+                 *   如果某行只解析到 5 列就 break，剩下 7 列会【留着上一行的值】，
+                 *   而 g_prevHasMah 照样 =1 —— 于是拿一份半新半旧的基线去算增量，
+                 *   得出看起来合法、实则完全错误的数字，且没有任何报错。
+                 *   这类"静默半错"比崩溃难查十倍，宁可判定为无基线。
+                 */
+                if (filled == MAH_N) {
                     g_prevHasMah = 1;
+                } else {
+                    memset(p, 0, sizeof *p);
                 }
             }
         }
@@ -617,6 +700,9 @@ static void save_global(const char *dir, long long ts, long long interval) {
     fclose(f);
 }
 
+#ifdef PLDIMS_TEST
+/* 单测编译时不提供 main()，由 pldims_test.c 提供 */
+#else
 int main(int argc, char **argv) {
     char out[256], prev[256], dirbuf[256];
     snprintf(out,  sizeof out,  "%s/dims.tsv",  DEF_DIR);
@@ -626,6 +712,18 @@ int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "-f") && i + 1 < argc) {
             snprintf(out, sizeof out, "%s", argv[++i]);
+            /*
+             * -f 单独用时，dims.global 必须跟着走同一个目录。
+             * 否则 out 指向测试路径、global 却读写 DEF_DIR，
+             * 隔离测试会【污染生产基线】—— 而隔离测试的目的就是不碰生产。
+             */
+            const char *sl = strrchr(out, '/');
+            if (sl) {
+                size_t n = (size_t)(sl - out);
+                if (n >= sizeof dirbuf) { n = sizeof dirbuf - 1; }
+                memcpy(dirbuf, out, n);
+                dirbuf[n] = 0;
+            }
         } else if (!strcmp(argv[i], "-p") && i + 1 < argc) {
             snprintf(prev, sizeof prev, "%s", argv[++i]);
         } else if (!strcmp(argv[i], "-d") && i + 1 < argc) {
@@ -757,3 +855,4 @@ int main(int argc, char **argv) {
             g_prevHasMah ? "增量" : "首轮(待下轮)", out);
     return 0;
 }
+#endif /* PLDIMS_TEST */
