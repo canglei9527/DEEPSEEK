@@ -15,6 +15,7 @@ canglei9527 的公开项目集合。
 | [`projects/f28p55x-study-library-zh-cn`](projects/f28p55x-study-library-zh-cn) | F28P55x 00–19 中文开发学习资料，含译文、中英对照和原文 | PDF |
 | [`projects/flow-pilot`](projects/flow-pilot) | AI 项目维护与初始化工作流 / Reusable workflows for focused maintenance, verification, and project bootstrap | JavaScript |
 | [`projects/jingxiao-ipad-pwa`](projects/jingxiao-ipad-pwa) | Standalone offline-first iPad web app | JavaScript |
+| [`projects/PowerLens`](projects/PowerLens) | Android 功耗归因工具：C 采集器（root 侧 procfs/dumpsys 双源）+ 免 root Java UI，逐对核算消除充电伪数据，四口径归因（全部/前台/后台/前台服务），含真机实测基线与 KernelSU 踩坑记录 | Java / C |
 | [`projects/upstream-price-adjuster`](projects/upstream-price-adjuster) | D-AI upstream price adjustment and lifecycle sync console | JavaScript |
 
 ## 说明
