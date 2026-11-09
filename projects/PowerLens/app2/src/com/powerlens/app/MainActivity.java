@@ -493,6 +493,19 @@ public class MainActivity extends Activity {
         if (cached != null) {
             return cached.isEmpty() ? null : cached;
         }
+        /*
+         * ===== 系统 UID 绝对不能查包名 =====
+         *   getPackagesForUid(1000) 返回挂在 sharedUserId="android.uid.system"
+         *   下的【几十个】包，取 pkgs[0] 是随机的 —— 于是「Android 系统」
+         *   在界面上显示成 com.xiaomi.aiasst.service 这类名字。
+         *   这正是用户看到的"幽灵条目"的第二个来源（第一个是 C 侧
+         *   packages.list 覆盖，已修）。
+         *   只有应用 UID 才有"一个 UID = 一个应用"的语义。
+         */
+        if (!isAppUid(uid)) {
+            uidPkgCache.put(uid, "");
+            return null;
+        }
         String found = null;
         try {
             String[] pkgs = getPackageManager().getPackagesForUid(uid);
@@ -685,6 +698,33 @@ public class MainActivity extends Activity {
                 final boolean useMah = dims.hasMah();
                 double totModelMah = useMah ? dims.totalMah() : 0d;
                 final java.util.Set<Integer> seenUid = new java.util.HashSet<>();
+                /*
+                 * uid → 采集器已解析好的标签（proc:audioserver / 真实包名 / sys:xxx）。
+                 *
+                 * 补"没有 CPU 却有电量"的 UID 时要用它：
+                 * dims.tsv 里【没有名字列】，如果只靠 uidToPkg 现查，
+                 * 系统服务一律退化成 "uid1041" —— 用户看不出那是什么。
+                 * 而 plcollect 已经用 /proc/<pid>/status 反查过真实进程名，
+                 * 直接复用那份结果最准，也省一次 binder 调用。
+                 */
+                final Map<Integer, String> pkgByUid = new HashMap<>();
+                for (Storage.Row r : rows) {
+                    String p = r.pkg;
+                    if (p == null || p.isEmpty() || "?".equals(p) || p.startsWith("(uid")) {
+                        continue;
+                    }
+                    // 同一 uid 多个标签时，保留【第一个能看懂的】
+                    if (pkgByUid.containsKey(r.uid)) {
+                        continue;
+                    }
+                    // 旧数据可能把共享 UID 的第三方包名写到系统 UID 上
+                    // （实测 uid 1000 被标成 com.xiaomi.aiasst.service），挡掉
+                    if (!isAppUid(r.uid) && p.indexOf('.') > 0
+                            && !p.startsWith("sys:") && !p.startsWith("proc:")) {
+                        continue;
+                    }
+                    pkgByUid.put(r.uid, p);
+                }
 
                 final List<Item> items = new ArrayList<>();
                 double totalW = 0;
@@ -802,10 +842,20 @@ public class MainActivity extends Activity {
                         if (hideAggregate && isAggregate(uid)) continue;
                         Item it = new Item();
                         it.uid = uid;
-                        it.pkg = uidToPkg(uid);
-                        if (it.pkg == null || it.pkg.isEmpty()) {
-                            it.pkg = "uid" + uid;
+                        /*
+                         * dims.tsv 没有名字列。优先复用 plcollect 已解析的标签
+                         * （proc:audioserver / 真实包名 / sys:xxx），
+                         * 查不到再退 uidToPkg（只对应用 UID 有效）。
+                         * 直接写 "uid1041" 会让用户看不出那是什么服务。
+                         */
+                        String lbl = pkgByUid.get(uid);
+                        if (lbl == null) {
+                            lbl = uidToPkg(uid);
                         }
+                        if (lbl == null || lbl.isEmpty()) {
+                            lbl = "uid" + uid;
+                        }
+                        it.pkg = lbl;
                         it.weight = m;
                         it.modelMah = m;
                         it.mahParts = dims.mahPartsOf(uid);
@@ -1147,6 +1197,28 @@ public class MainActivity extends Activity {
             s = null;
             boolean hasPkg = it.pkg != null && !"?".equals(it.pkg)
                     && !it.pkg.isEmpty() && !it.pkg.startsWith("(uid");
+
+            /*
+             * ===== 历史脏数据防御：系统 UID 上的第三方包名一律不信 =====
+             *
+             *   实测本机旧快照里出现过：
+             *     uid 1000  pkg=com.xiaomi.aiasst.service
+             *   来源是早期采集器直接拿 /data/system/packages.list 覆盖 UID 名。
+             *   packages.list 里 uid 1000 挂着几十个 sharedUserId 的包，
+             *   "取最后一个/第一个"都是随机的 —— 「Android 系统」于是消失，
+             *   换成一个莫名其妙的应用名，用户看到的就是幽灵条目。
+             *
+             *   现在 C 侧已经加了 uid<10000 不覆盖的保护，但【旧数据还在文件里】：
+             *   历史区间一查就会把这些错标签读出来。
+             *   所以在显示层再挡一次：系统 UID（<10000）若带的是包名样式的标签，
+             *   丢弃它，走 sys_uid_name/proc 反查，最后诚实显示 uid N。
+             */
+            if (hasPkg && !isAppUid(it.uid)
+                    && it.pkg.indexOf('.') > 0
+                    && !it.pkg.startsWith("sys:") && !it.pkg.startsWith("proc:")) {
+                hasPkg = false;
+                it.pkg = "?";
+            }
 
             /*
              * 优先级：
