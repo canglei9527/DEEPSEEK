@@ -442,7 +442,7 @@ static void status_report(const char *store) {
     char line[LINEBUF];
     long long prev_ts = 0, prev_uah = 0;
     int prev_dis = 0, have_prev = 0;
-    long long discharge = 0, charge = 0;
+    long long discharge = 0, charge = 0, discharge_ms = 0;
     int points = 0, jumped = 0, skipped = 0;
     long long first_ts = 0, last_ts = 0;
 
@@ -489,16 +489,25 @@ static void status_report(const char *store) {
         long long dt_min = (ts - prev_ts) / 60000LL;
         if (dt_min < 1) dt_min = 1;
         long long d = prev_uah - uah;
+        long long interval_ms = ts - prev_ts;
+        if (interval_ms < 0) interval_ms = 0;
         long long cap = 15000LL * dt_min;
         if (cap < 50000LL) cap = 50000LL;
+        int in_discharge = dis || prev_dis || unknown;
 
         if (d > 0) {
             if (d > cap) { jumped++; }
-            else if (dis || prev_dis || unknown) { discharge += d; }
+            else if (in_discharge) {
+                discharge += d;
+                discharge_ms += interval_ms;
+            }
             else { skipped++; }
         } else if (d < 0) {
             /* 上升 = 充电/校准。老格式无状态列时同样按充入处理 */
             charge += -d; skipped++;
+        } else if (in_discharge) {
+            /* 平电量计读数仍是有效的放电时长，避免只按有下降的采样点计时。 */
+            discharge_ms += interval_ms;
         }
         prev_ts = ts; prev_uah = uah; prev_dis = dis;
         points++;
@@ -512,11 +521,14 @@ static void status_report(const char *store) {
     printf("跳过跳变      : %d\n", jumped);
     if (last_ts > first_ts) {
         double hours = (last_ts - first_ts) / 3600000.0;
-        if (hours > 0.01) {
-            printf("跨度          : %.2f h\n", hours);
-            printf("放电速率      : %.1f mA\n", (discharge / 1000.0) / hours);
-            printf("               : %.2f %%/h\n", (discharge / 1000.0) / hours / 60.0);
-        }
+        if (hours > 0.01) printf("总跨度        : %.2f h\n", hours);
+    }
+    if (discharge_ms > 0) {
+        double discharge_hours = discharge_ms / 3600000.0;
+        printf("有效放电时长  : %.2f h\n", discharge_hours);
+        printf("平均放电电流  : %.1f mA\n", (discharge / 1000.0) / discharge_hours);
+        printf("               : %.2f %%/h (按 6000mAh 估算)\n",
+               (discharge / 1000.0) / discharge_hours / 60.0);
     }
 }
 

@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# plc-daemon.sh -- PowerLens 采集守护 v5（绝对时间调度）
+# plc-daemon.sh -- PowerLens 采集守护 v6（维度归档与失败统计）
 #
 # ===== v4 的问题 =====
 #   用 tick 计数决定何时跑 dims：
@@ -32,6 +32,8 @@ BIN=/data/local/tmp/plc/plcollect
 DIMBIN=/data/local/tmp/plc/pldims
 STORE=/data/local/tmp/powerlens/snapshots.tsv
 DIMS=/data/local/tmp/powerlens/dims.tsv
+DIMS_DIR=/data/local/tmp/powerlens
+DIMS_ARCHIVE_DIR=/data/local/tmp/plc/dims-history
 LOG=/data/local/tmp/plc/daemon.log
 PIDF=/data/local/tmp/plc/daemon.pid
 
@@ -49,42 +51,118 @@ if [ -f "$PIDF" ]; then
 fi
 echo $$ > "$PIDF"
 
-mkdir -p /data/local/tmp/powerlens 2>/dev/null
+mkdir -p /data/local/tmp/powerlens "$DIMS_ARCHIVE_DIR" 2>/dev/null
 chmod 777 /data/local/tmp/powerlens 2>/dev/null
+chmod 700 "$DIMS_ARCHIVE_DIR" 2>/dev/null
 chmod 666 "$STORE" "$DIMS" 2>/dev/null
 
-echo "$(date '+%F %T') plc-daemon v5 start pid=$$ cpu=${CPU_INT}s dim=${DIM_INT}s" >> $LOG
+echo "$(date '+%F %T') plc-daemon v6 start pid=$$ cpu=${CPU_INT}s dim=${DIM_INT}s" >> "$LOG"
 
 # ---- 绝对时间调度 ----
 NOW=$(date +%s)
-LAST_DIM=$((NOW - DIM_INT))    # 第一轮就立即跑一次 dims（建基线）
+LAST_DIM=$((NOW - DIM_INT))    # 无历史基线时，第一轮立即建基线
+LAST_GLOBAL_MS=$(cut -f1 "$DIMS_DIR/dims.global" 2>/dev/null)
+case "$LAST_GLOBAL_MS" in
+  ''|*[!0-9]*) ;;
+  *)
+    if [ "$LAST_GLOBAL_MS" -gt 0 ] 2>/dev/null; then
+      LAST_DIM=$((LAST_GLOBAL_MS / 1000))
+      [ "$LAST_DIM" -gt "$NOW" ] && LAST_DIM=$((NOW - DIM_INT))
+    fi
+    ;;
+esac
 N_CPU=0
+N_CPU_FAIL=0
 N_DIM=0
+N_DIM_FAIL=0
+N_ARCHIVE_FAIL=0
 ALIVE_AT=$NOW
 
 while true; do
   NOW=$(date +%s)
 
   # ---- 高频：CPU / IO ----
-  su -c "$BIN --once -f $STORE -q" >/dev/null 2>&1
-  chmod 666 "$STORE" 2>/dev/null
-  N_CPU=$((N_CPU + 1))
+  if su -c "$BIN --once -f $STORE -q" >/dev/null 2>&1; then
+    chmod 666 "$STORE" 2>/dev/null
+    N_CPU=$((N_CPU + 1))
+  else
+    RC=$?
+    N_CPU_FAIL=$((N_CPU_FAIL + 1))
+    echo "$(date '+%F %T') CPU FAIL rc=$RC" >> "$LOG"
+  fi
 
   # ---- 低频：维度（按绝对时间判断）----
   if [ $((NOW - LAST_DIM)) -ge "$DIM_INT" ] && [ -x "$DIMBIN" ]; then
     OUT=$(su -c "$DIMBIN -f $DIMS" 2>&1)
+    RC=$?
     case "$OUT" in
-      *增量*|*基线*) echo "$(date '+%F %T') dims ok: $OUT" >> $LOG ;;
-      *)             echo "$(date '+%F %T') dims FAIL: $OUT" >> $LOG ;;
+      *增量*|*基线*)
+        if [ "$RC" -eq 0 ]; then
+          echo "$(date '+%F %T') dims ok: $OUT" >> "$LOG"
+          N_DIM=$((N_DIM + 1))
+
+          # pldims intentionally rewrites dims.tsv on each run. Preserve the
+          # successful interval before the next run replaces it. Keep private,
+          # append-only UID and run-metadata files per local calendar day.
+          DIM_DAY=$(date '+%Y%m%d')
+          DIM_RUNS="$DIMS_ARCHIVE_DIR/dims-runs-$DIM_DAY.tsv"
+          RUN_TS=$(awk -F '\t' 'NF { ts=$1 } END { print ts }' "$DIMS_DIR/dims.global" 2>/dev/null)
+          RUN_GLOBAL_CHECK=$(awk -F '\t' 'NF != 15 || $1 !~ /^[0-9]+$/ || $2 !~ /^[0-9]+$/ { bad=1 } END { if (NR == 1 && !bad) print "ok"; else print "bad" }' "$DIMS_DIR/dims.global" 2>/dev/null)
+          RUN_LAST_TS=$(tail -n 1 "$DIM_RUNS" 2>/dev/null | cut -f1)
+          if [ "$RUN_GLOBAL_CHECK" = "ok" ] && [ -n "$RUN_TS" ] && [ "$RUN_TS" != "$RUN_LAST_TS" ]; then
+            if cat "$DIMS_DIR/dims.global" >> "$DIM_RUNS"; then
+              chmod 600 "$DIM_RUNS" 2>/dev/null
+            else
+              N_ARCHIVE_FAIL=$((N_ARCHIVE_FAIL + 1))
+              echo "$(date '+%F %T') dims metadata archive FAIL file=$DIM_RUNS" >> "$LOG"
+            fi
+          else
+            if [ "$RUN_TS" = "$RUN_LAST_TS" ]; then
+              echo "$(date '+%F %T') dims metadata archive skipped duplicate ts=$RUN_TS" >> "$LOG"
+            else
+              N_ARCHIVE_FAIL=$((N_ARCHIVE_FAIL + 1))
+              echo "$(date '+%F %T') dims metadata archive FAIL format=$RUN_GLOBAL_CHECK ts=$RUN_TS" >> "$LOG"
+            fi
+          fi
+
+          DIM_TS=$(awk -F '\t' 'NF { ts=$1 } END { print ts }' "$DIMS" 2>/dev/null)
+          DIM_ROWS=$(wc -l < "$DIMS" 2>/dev/null)
+          DIM_CHECK=$(awk -F '\t' 'NF { rows++; if (NF != 22) bad=1; if (rows == 1) { ts=$1; interval=$9 } else if ($1 != ts || $9 != interval) bad=1 } END { if (!rows) print "empty"; else if (bad) print "bad"; else print "ok" }' "$DIMS" 2>/dev/null)
+          DIM_HIST="$DIMS_ARCHIVE_DIR/dims-history-$DIM_DAY.tsv"
+          HIST_TS=$(tail -n 1 "$DIM_HIST" 2>/dev/null | cut -f1)
+          if [ "$DIM_CHECK" = "empty" ]; then
+            echo "$(date '+%F %T') dims empty ts=$RUN_TS interval=$(cut -f2 "$DIMS_DIR/dims.global" 2>/dev/null) rows=0" >> "$LOG"
+          elif [ "$DIM_CHECK" = "ok" ] && [ -n "$DIM_TS" ] && [ "$DIM_TS" = "$RUN_TS" ] && [ "$DIM_TS" != "$HIST_TS" ]; then
+            if cat "$DIMS" >> "$DIM_HIST"; then
+              chmod 600 "$DIM_HIST" 2>/dev/null
+              echo "$(date '+%F %T') dims archived ts=$DIM_TS interval=$(cut -f2 "$DIMS_DIR/dims.global" 2>/dev/null) rows=$DIM_ROWS file=$DIM_HIST" >> "$LOG"
+            else
+              N_ARCHIVE_FAIL=$((N_ARCHIVE_FAIL + 1))
+              echo "$(date '+%F %T') dims archive FAIL file=$DIM_HIST" >> "$LOG"
+            fi
+          elif [ "$DIM_TS" = "$HIST_TS" ] && [ -n "$DIM_TS" ]; then
+            echo "$(date '+%F %T') dims archive skipped duplicate ts=$DIM_TS" >> "$LOG"
+          else
+            N_ARCHIVE_FAIL=$((N_ARCHIVE_FAIL + 1))
+            echo "$(date '+%F %T') dims archive FAIL format=$DIM_CHECK dims_ts=$DIM_TS global_ts=$RUN_TS" >> "$LOG"
+          fi
+        else
+          N_DIM_FAIL=$((N_DIM_FAIL + 1))
+          echo "$(date '+%F %T') dims FAIL rc=$RC: $OUT" >> "$LOG"
+        fi
+        ;;
+      *)
+        N_DIM_FAIL=$((N_DIM_FAIL + 1))
+        echo "$(date '+%F %T') dims FAIL rc=$RC: $OUT" >> "$LOG"
+        ;;
     esac
     chmod 666 "$DIMS" 2>/dev/null
     LAST_DIM=$NOW
-    N_DIM=$((N_DIM + 1))
   fi
 
   # ---- 心跳（每 30 分钟一次）----
   if [ $((NOW - ALIVE_AT)) -ge 1800 ]; then
-    echo "$(date '+%F %T') alive cpu_n=$N_CPU dim_n=$N_DIM snap=$(wc -l < $STORE 2>/dev/null)L dims=$(wc -l < $DIMS 2>/dev/null)L next_dim=$(( DIM_INT - (NOW - LAST_DIM) ))s" >> $LOG
+    echo "$(date '+%F %T') alive cpu_ok=$N_CPU cpu_fail=$N_CPU_FAIL dims_ok=$N_DIM dims_fail=$N_DIM_FAIL archive_fail=$N_ARCHIVE_FAIL snap=$(wc -l < $STORE 2>/dev/null)L dims=$(wc -l < $DIMS 2>/dev/null)L next_dim=$(( DIM_INT - (NOW - LAST_DIM) ))s" >> $LOG
     ALIVE_AT=$NOW
   fi
 

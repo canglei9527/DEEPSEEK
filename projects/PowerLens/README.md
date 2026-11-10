@@ -71,6 +71,13 @@ PowerLens 的做法：
 `pldims` 输出的是**增量**（`Δfg = fg_now - fg_prev`），不是累计值。
 用累计值排序等于「开机以来谁在前台待得久」，与当前区间无关 —— 这是踩过的坑。
 
+### 后台维度历史
+
+`dims.tsv` 保留最新一批，便于 App 读取；守护进程 v6 会把每次成功的 UID 维度追加到
+`/data/local/tmp/plc/dims-history/dims-history-YYYYMMDD.tsv`，并把全局基线追加到
+同目录的 `dims-runs-YYYYMMDD.tsv`。目录仅 shell/root 可访问；通过 root ADB 可导出分析。
+归档从 v6 部署后开始，不会补造被旧版覆盖的历史批次。
+
 ---
 
 ## 电量核算算法（核心）

@@ -1,2 +1,3 @@
 projects/f28p55x-study-library-zh-cn/译文/00_TMS320F28P55x_技术参考手册_中文.pdf filter=lfs diff=lfs merge=lfs -text
 projects/f28p55x-study-library-zh-cn/中英对照/00_TMS320F28P55x_Technical_Reference_Manual_SPRUJ53D_ZH.pdf filter=lfs diff=lfs merge=lfs -text
+projects/PowerLens/scripts/phone/01-core/plc-daemon.sh text eol=lf
