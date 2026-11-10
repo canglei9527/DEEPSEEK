@@ -1,0 +1,91 @@
+﻿host_time,charge_counter_uAh,current_now_uA,capacity_pct,battery_status,wakefulness,jd_standby_bucket,jd_notification_appop,jd_pids,jd_cpuinfo
+2026-11-08 18:10:06,4045000,347000,69,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,5.1% 21973/com.jingdong.app.mall: 3.2% user + 1.9% kernel / faults: 42151 minor 40987 major
+2026-11-08 18:10:16,4043000,371000,69,Discharging,,,,,
+2026-11-08 18:10:27,4042000,138000,69,Discharging,,,,,
+2026-11-08 18:10:37,4042000,163000,69,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,5.1% 21973/com.jingdong.app.mall: 3.2% user + 1.9% kernel / faults: 42151 minor 40987 major
+2026-11-08 18:10:48,4041000,305000,69,Discharging,,,,,
+2026-11-08 18:10:58,4040000,492000,69,Discharging,,,,,
+2026-11-08 18:11:08,4038000,176000,69,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,5.1% 21973/com.jingdong.app.mall: 3.2% user + 1.9% kernel / faults: 42151 minor 40987 major
+2026-11-08 18:11:19,4036000,579000,69,Discharging,,,,,
+2026-11-08 18:11:29,4034000,264000,69,Discharging,,,,,
+2026-11-08 18:11:39,4033000,277000,69,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,5.1% 21973/com.jingdong.app.mall: 3.2% user + 1.9% kernel / faults: 42151 minor 40987 major
+2026-11-08 18:11:50,4033000,313000,69,Discharging,,,,,
+2026-11-08 18:12:00,4032000,315000,69,Discharging,,,,,
+2026-11-08 18:12:11,4031000,239000,69,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,5.7% 21973/com.jingdong.app.mall: 4% user + 1.7% kernel / faults: 42549 minor 3019 major
+2026-11-08 18:12:22,4030000,263000,69,Discharging,,,,,
+2026-11-08 18:12:32,4030000,173000,69,Discharging,,,,,
+2026-11-08 18:12:42,4029000,231000,69,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,5.7% 21973/com.jingdong.app.mall: 4% user + 1.7% kernel / faults: 42549 minor 3019 major
+2026-11-08 18:12:53,4028000,139000,69,Discharging,,,,,
+2026-11-08 18:13:03,4027000,157000,69,Discharging,,,,,
+2026-11-08 18:13:13,4027000,167000,69,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,6.9% 21973/com.jingdong.app.mall: 5.1% user + 1.7% kernel / faults: 17109 minor 228 major
+2026-11-08 18:13:24,4026000,224000,69,Discharging,,,,,
+2026-11-08 18:13:34,4026000,258000,69,Discharging,,,,,
+2026-11-08 18:13:44,4025000,126000,69,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,6.9% 21973/com.jingdong.app.mall: 5.1% user + 1.7% kernel / faults: 17109 minor 228 major
+2026-11-08 18:13:55,4025000,138000,69,Discharging,,,,,
+2026-11-08 18:14:05,4024000,172000,69,Discharging,,,,,
+2026-11-08 18:14:16,4023000,128000,68,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,5.7% 21973/com.jingdong.app.mall: 4% user + 1.6% kernel / faults: 19002 minor 154 major
+2026-11-08 18:14:26,4023000,330000,68,Discharging,,,,,
+2026-11-08 18:14:37,4022000,115000,68,Discharging,,,,,
+2026-11-08 18:14:47,4021000,627000,68,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,5.7% 21973/com.jingdong.app.mall: 4% user + 1.6% kernel / faults: 19002 minor 154 major
+2026-11-08 18:14:58,4020000,118000,68,Discharging,,,,,
+2026-11-08 18:15:08,4020000,120000,68,Discharging,,,,,
+2026-11-08 18:15:18,4019000,186000,68,Discharging,mWakefulness=Awake,40,POST_NOTIFICATION: allow,21973,5.7% 21973/com.jingdong.app.mall: 4% user + 1.6% kernel / faults: 19002 minor 154 major
+2026-11-08 18:15:29,4019000,111000,68,Discharging,,,,,
+2026-11-08 18:15:39,4018000,303000,68,Discharging,,,,,
+2026-11-08 18:15:49,4017000,63000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,5.7% 21973/com.jingdong.app.mall: 4% user + 1.6% kernel / faults: 19002 minor 154 major
+2026-11-08 18:16:00,4017000,239000,68,Discharging,,,,,
+2026-11-08 18:16:10,4017000,133000,68,Discharging,,,,,
+2026-11-08 18:16:21,4016000,163000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,5.7% 21973/com.jingdong.app.mall: 4% user + 1.6% kernel / faults: 19002 minor 154 major
+2026-11-08 18:16:33,4016000,24000,68,Discharging,,,,,
+2026-11-08 18:16:43,4015000,121000,68,Discharging,,,,,
+2026-11-08 18:16:53,4015000,19000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,5.7% 21973/com.jingdong.app.mall: 4% user + 1.6% kernel / faults: 19002 minor 154 major
+2026-11-08 18:17:05,4015000,67000,68,Discharging,,,,,
+2026-11-08 18:17:15,4014000,204000,68,Discharging,,,,,
+2026-11-08 18:17:25,4014000,115000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,0.3% 21973/com.jingdong.app.mall: 0.1% user + 0.1% kernel / faults: 3766 minor 457 major
+2026-11-08 18:17:36,4014000,91000,68,Discharging,,,,,
+2026-11-08 18:17:47,4013000,24000,68,Discharging,,,,,
+2026-11-08 18:17:57,4013000,127000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,0.7% 21973/com.jingdong.app.mall: 0.5% user + 0.1% kernel / faults: 2896 minor 109 major
+2026-11-08 18:18:09,4013000,53000,68,Discharging,,,,,
+2026-11-08 18:18:19,4013000,131000,68,Discharging,,,,,
+2026-11-08 18:18:29,4011000,56000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,0.7% 21973/com.jingdong.app.mall: 0.5% user + 0.1% kernel / faults: 2896 minor 109 major
+2026-11-08 18:18:40,4011000,78000,68,Discharging,,,,,
+2026-11-08 18:18:50,4011000,91000,68,Discharging,,,,,
+2026-11-08 18:19:00,4011000,128000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,0.3% 29880/com.jingdong.app.mall:widgetProcess: 0.1% user + 0.2% kernel / faults: 1517 minor 3153 major
+2026-11-08 18:19:12,4010000,234000,68,Discharging,,,,,
+2026-11-08 18:19:22,4010000,205000,68,Discharging,,,,,
+2026-11-08 18:19:33,4009000,145000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,0.3% 29880/com.jingdong.app.mall:widgetProcess: 0.1% user + 0.2% kernel / faults: 1517 minor 3153 major
+2026-11-08 18:19:44,4009000,132000,68,Discharging,,,,,
+2026-11-08 18:19:54,4009000,62000,68,Discharging,,,,,
+2026-11-08 18:20:05,4008000,97000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,0.3% 29880/com.jingdong.app.mall:widgetProcess: 0.1% user + 0.2% kernel / faults: 1517 minor 3153 major
+2026-11-08 18:20:17,4008000,188000,68,Discharging,,,,,
+2026-11-08 18:20:27,4007000,36000,68,Discharging,,,,,
+2026-11-08 18:20:37,4007000,62000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,0.3% 29880/com.jingdong.app.mall:widgetProcess: 0.1% user + 0.2% kernel / faults: 1517 minor 3153 major
+2026-11-08 18:20:49,4007000,162000,68,Discharging,,,,,
+2026-11-08 18:20:59,4006000,23000,68,Discharging,,,,,
+2026-11-08 18:21:10,4006000,39000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,0.3% 29880/com.jingdong.app.mall:widgetProcess: 0.1% user + 0.2% kernel / faults: 1517 minor 3153 major
+2026-11-08 18:21:21,4006000,112000,68,Discharging,,,,,
+2026-11-08 18:21:31,4006000,60000,68,Discharging,,,,,
+2026-11-08 18:21:42,4005000,83000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,
+2026-11-08 18:21:53,4005000,148000,68,Discharging,,,,,
+2026-11-08 18:22:03,4005000,73000,68,Discharging,,,,,
+2026-11-08 18:22:14,4004000,51000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,
+2026-11-08 18:22:25,4004000,113000,68,Discharging,,,,,
+2026-11-08 18:22:36,4004000,79000,68,Discharging,,,,,
+2026-11-08 18:22:46,4004000,217000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,
+2026-11-08 18:22:57,4003000,87000,68,Discharging,,,,,
+2026-11-08 18:23:07,4002000,221000,68,Discharging,,,,,
+2026-11-08 18:23:17,4002000,204000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,
+2026-11-08 18:23:28,4001000,191000,68,Discharging,,,,,
+2026-11-08 18:23:39,4001000,158000,68,Discharging,,,,,
+2026-11-08 18:23:49,4001000,57000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,
+2026-11-08 18:24:00,4000000,51000,68,Discharging,,,,,
+2026-11-08 18:24:10,4000000,38000,68,Discharging,,,,,
+2026-11-08 18:24:21,4000000,21000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,
+2026-11-08 18:24:32,3999000,43000,68,Discharging,,,,,
+2026-11-08 18:24:42,3999000,133000,68,Discharging,,,,,
+2026-11-08 18:24:53,3999000,125000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,
+2026-11-08 18:25:04,3999000,219000,68,Discharging,,,,,
+2026-11-08 18:25:14,3999000,182000,68,Discharging,,,,,
+2026-11-08 18:25:25,3997000,102000,68,Discharging,mWakefulness=Dozing,40,POST_NOTIFICATION: allow,21973,
+2026-11-08 18:25:36,3997000,42000,68,Discharging,,,,,
+2026-11-08 18:25:46,3996000,57000,68,Discharging,,,,,

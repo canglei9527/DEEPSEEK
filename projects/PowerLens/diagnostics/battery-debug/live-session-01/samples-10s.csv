@@ -1,0 +1,11 @@
+timestamp,level,charge_counter_uah,temp_tenths_c,status,wakefulness,focus
+2026-11-08T17:24:07.9820693+08:00,78,4600000,300,3,Awake,mCurrentFocus=Window{3345677 u0 com.taobao.taobao/com.taobao.tao.welcome.Welcome}
+2026-11-08T17:24:18.5425307+08:00,78,4600000,300,3,Awake,mCurrentFocus=Window{3345677 u0 com.taobao.taobao/com.taobao.tao.welcome.Welcome}
+2026-11-08T17:24:28.8715704+08:00,78,4600000,300,3,Awake,mCurrentFocus=Window{3345677 u0 com.taobao.taobao/com.taobao.tao.welcome.Welcome}
+2026-11-08T17:24:39.1996801+08:00,78,4600000,300,3,Awake,mCurrentFocus=Window{3345677 u0 com.taobao.taobao/com.taobao.tao.welcome.Welcome}
+2026-11-08T17:24:49.6244197+08:00,78,4600000,300,3,Awake,mCurrentFocus=Window{3345677 u0 com.taobao.taobao/com.taobao.tao.welcome.Welcome}
+2026-11-08T17:24:59.9608787+08:00,78,4600000,300,3,Awake,mCurrentFocus=Window{3345677 u0 com.taobao.taobao/com.taobao.tao.welcome.Welcome}
+2026-11-08T17:25:10.3303396+08:00,78,4600000,300,3,Awake,mCurrentFocus=Window{3345677 u0 com.taobao.taobao/com.taobao.tao.welcome.Welcome}
+2026-11-08T17:25:20.7438424+08:00,78,4600000,300,3,Awake,mCurrentFocus=Window{3345677 u0 com.taobao.taobao/com.taobao.tao.welcome.Welcome}
+2026-11-08T17:25:31.1371443+08:00,78,4600000,300,3,Awake,mCurrentFocus=Window{f3f87f7 u0 com.taobao.taobao/com.taobao.themis.container.app.TMSActivity}
+2026-11-08T17:25:41.3884047+08:00,78,4600000,300,3,Awake,mCurrentFocus=Window{f6609e0 u0 com.taobao.taobao/com.taobao.themis.container.app.TMSActivity}

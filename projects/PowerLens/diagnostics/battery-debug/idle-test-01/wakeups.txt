@@ -1,0 +1,83 @@
+CPU wakeup stats:
+  Config:
+    wakeup_stats_retention_ms=+3d0h0m0s0ms
+    wakeup_matching_window_ms=+1s0ms
+    waking_activity_retention_ms=+5m0s0ms
+  
+  Irq device map:
+    Loaded from xml resource: 0x117000d
+    Map:
+      pm8xxx_rtc_alarm: [Alarm]
+  
+  Recent waking activity:
+    Subsystem Alarm:
+      -1m56s872ms: u0a344 [SVC ], 
+      -3m23s419ms: u0a209 [IMPF], 
+      -4m56s983ms: u0a344 [SVC ], 
+      -5m45s10ms: u0a343 [SVC ], 
+    Subsystem Sensor:
+      -10s52ms: 1000 [PER ], 
+      -25s71ms: 1000 [PER ], 
+      -40s47ms: 1000 [PER ], 
+      -43s788ms: 1000 [PER ], 
+      -49s703ms: 1000 [PER ], 
+      -53s416ms: 1000 [PER ], 
+      -55s65ms: 1000 [PER ], 
+      -56s986ms: 1000 [PER ], 
+      -1m10s42ms: 1000 [PER ], 
+      -1m19s916ms: 1000 [PER ], 
+      -1m25s60ms: 1000 [PER ], 
+      -1m32s644ms: 1000 [PER ], 
+      -1m35s673ms: 1000 [PER ], 
+      -1m40s37ms: 1000 [PER ], 
+      -1m55s55ms: 1000 [PER ], 
+      -2m10s74ms: 1000 [PER ], 
+      -2m16s17ms: 1000 [PER ], 
+      -2m17s167ms: 1000 [PER ], 
+      -2m18s661ms: 1000 [PER ], 
+      -2m19s903ms: 1000 [PER ], 
+      -2m21s211ms: 1000 [PER ], 
+      -2m22s558ms: 1000 [PER ], 
+      -2m23s602ms: 1000 [PER ], 
+      -2m25s9ms: 1000 [PER ], 
+      -2m25s943ms: 1000 [PER ], 
+      -2m27s193ms: 1000 [PER ], 
+      -2m28s561ms: 1000 [PER ], 
+      -2m30s306ms: 1000 [PER ], 
+      -2m31s896ms: 1000 [PER ], 
+      -2m33s658ms: 1000 [PER ], 
+      -2m35s374ms: 1000 [PER ], 
+      -2m40s36ms: 1000 [PER ], 
+      -2m55s58ms: 1000 [PER ], 
+      -3m10s76ms: 1000 [PER ], 
+      -3m25s15ms: 1000 [PER ], 
+      -3m25s57ms: 1000 [PER ], 
+      -3m40s37ms: 1000 [PER ], 
+      -3m55s60ms: 1000 [PER ], 
+      -4m9s994ms: 1000 [PER ], 
+      -4m10s36ms: 1000 [PER ], 
+      -4m25s17ms: 1000 [PER ], 
+      -4m25s59ms: 1000 [PER ], 
+      -4m30s331ms: 1000 [PER ], 
+      -4m40s47ms: 1000 [PER ], 
+      -4m55s24ms: 1000 [PER ], 
+      -4m55s66ms: 1000 [PER ], 
+      -5m10s42ms: 1000 [PER ], 
+  
+  Current proc-state map (113):
+    1000:PER , 1001:PER , 1002:PER , 1027:PER , 1037:NONE, 1068:PER , 1073:PER , 2000:NONE, 2918:PER , 6100:CEM , 6101:CEM , 6102:NONE, 6110:CEM , 6120:PER , u0a84:PER , u0a85:CEM , u0a87:CEM , u0a89:NONE, u0a91:SVC , u0a92:NONE, u0a94:CACC, u0a95:NONE, u0a102:NONE, u0a105:NONE, u0a114:NONE, u0a115:PER , u0a118:PER , u0a120:NONE, u0a123:NONE, u0a124:CEM , u0a125:NONE, u0a126:NONE, u0a127:NONE, u0a129:NONE, u0a130:FGS , u0a131:NONE, u0a132:CEM , u0a133:CEM , u0a134:BTOP, u0a136:CEM , u0a137:BFGS, u0a138:BFGS, u0a139:TRNB, u0a141:NONE, u0a145:CEM , u0a146:CEM , u0a147:BFGS, u0a149:NONE, u0a152:PER , u0a156:CEM , u0a160:PER , u0a164:CEM , u0a165:CEM , u0a166:CEM , u0a167:CEM , u0a170:CEM , u0a172:CEM , u0a174:CACC, u0a175:NONE, u0a176:NONE, u0a178:FGS , u0a179:CEM , u0a182:NONE, u0a183:CEM , u0a186:NONE, u0a188:PER , u0a190:BFGS, u0a194:BFGS, u0a195:PER , u0a198:NONE, u0a199:BFGS, u0a204:CEM , u0a205:CEM , u0a209:IMPF, u0a214:TRNB, u0a221:NONE, u0a225:NONE, u0a229:PER , u0a230:PER , u0a232:PER , u0a237:NONE, u0a238:CEM , u0a239:NONE, u0a240:PER , u0a249:NONE, u0a252:BFGS, u0a260:CEM , u0a262:CEM , u0a265:NONE, u0a266:PER , u0a271:NONE, u0a277:CEM , u0a279:CEM , u0a284:CEM , u0a286:CEM , u0a288:CEM , u0a289:CEM , u0a290:CEM , u0a291:CEM , u0a292:CEM , u0a293:CEM , u0a298:CEM , u0a306:CEM , u0a307:SVC , u0a308:FGS , u0a310:BFGS, u0a343:TOP , u0a344:SVC , u0a345:CAC , u0a351:FGS , u0a402:NONE, u0a418:NONE, u0ai9000:CACC
+  
+  Wakeup events:
+    -26m9s19ms:
+      Wakeup{mType=1, mElapsedMillis=1114400, mUptimeMillis=855657, mDevices=[IrqDevice{mLine=217, mDevice='pm8xxx_rtc_alarm'}], mResponsibleSubsystems={1=true}}
+      Attribution: Alarm [1000 PER , u0a343 SVC ]
+    -29m31s21ms:
+      Wakeup{mType=1, mElapsedMillis=912398, mUptimeMillis=774379, mDevices=[IrqDevice{mLine=217, mDevice='pm8xxx_rtc_alarm'}], mResponsibleSubsystems={1=true}}
+      Attribution: Alarm [u0a344 SVC ]
+    -30m41s58ms:
+      Wakeup{mType=1, mElapsedMillis=842361, mUptimeMillis=767820, mDevices=[IrqDevice{mLine=217, mDevice='pm8xxx_rtc_alarm'}], mResponsibleSubsystems={1=true}}
+      Attribution: Alarm [1000 PER ]
+  Attribution stats:
+    Subsystem Alarm: 3/3
+    Total: 3
+

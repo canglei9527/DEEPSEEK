@@ -1,0 +1,84 @@
+﻿2026-11-08 18:43:24 starting; end=2026-11-09 00:00:00 Asia/Shanghai; cadence=30s battery, 5m details, 15m batterystats --charged
+2026-11-08 18:45:26 detail=1 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 18:47:00 starting; end=2026-11-09 00:00:00 Asia/Shanghai; cadence=30s battery, 5m details, 15m batterystats --charged
+2026-11-08 18:47:47 starting; end=2026-11-09 00:00:00 Asia/Shanghai; cadence=30s battery, 5m details, 15m batterystats --charged
+2026-11-08 18:50:20 detail=1 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 18:51:31 starting; end=2026-11-09 00:00:00 Asia/Shanghai; cadence=30s battery, 5m details, 15m batterystats --charged
+2026-11-08 18:55:05 detail=1 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:00:11 detail=2 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:05:17 detail=3 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:10:22 detail=4 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:15:00 detail=5 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:20:05 detail=6 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:25:11 detail=7 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:30:18 detail=8 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:35:24 detail=9 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:40:29 detail=10 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:45:06 detail=11 adb=device doze=  mState=IDLE_MAINTENANCE mLightState=OVERRIDE
+2026-11-08 19:50:11 detail=12 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 19:55:17 detail=13 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 20:00:24 detail=14 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 20:05:29 detail=15 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 20:10:04 detail=16 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 20:15:14 detail=17 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 20:20:18 detail=18 adb=device doze=  mState=ACTIVE mLightState=ACTIVE
+2026-11-08 20:25:24 detail=19 adb=device doze=  mState=QUICK_DOZE_DELAY mLightState=INACTIVE
+2026-11-08 20:30:00 detail=20 adb=device doze=  mState=ACTIVE mLightState=ACTIVE
+2026-11-08 20:30:31 detail=21 adb=device doze=  mState=ACTIVE mLightState=ACTIVE
+2026-11-08 20:35:05 detail=22 adb=device doze=  mState=ACTIVE mLightState=ACTIVE
+2026-11-08 20:40:10 detail=23 adb=device doze=  mState=QUICK_DOZE_DELAY mLightState=INACTIVE
+2026-11-08 20:45:17 detail=24 adb=device doze=  mState=QUICK_DOZE_DELAY mLightState=INACTIVE
+2026-11-08 20:50:22 detail=25 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 20:55:30 detail=26 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 21:00:05 detail=27 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 21:05:11 detail=28 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 21:10:20 detail=29 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 21:15:26 detail=30 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 21:20:01 detail=31 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 21:25:10 detail=32 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 21:30:16 detail=33 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 21:35:22 detail=34 adb=device doze=  mState=ACTIVE mLightState=ACTIVE
+2026-11-08 21:40:28 detail=35 adb=device doze=  mState=ACTIVE mLightState=ACTIVE
+2026-11-08 21:45:02 detail=36 adb=device doze=  mState=QUICK_DOZE_DELAY mLightState=INACTIVE
+2026-11-08 21:50:08 detail=37 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 21:55:15 detail=38 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 22:00:21 detail=39 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 22:05:26 detail=40 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 22:10:04 detail=41 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 22:15:09 detail=42 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 22:20:14 detail=43 adb=device doze=  mState=ACTIVE mLightState=ACTIVE
+2026-11-08 22:25:19 detail=44 adb=device doze=  mState=ACTIVE mLightState=ACTIVE
+2026-11-08 22:30:23 detail=45 adb=device doze=  mState=ACTIVE mLightState=ACTIVE
+2026-11-08 22:35:27 detail=46 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 22:40:04 detail=47 adb=device doze=  mState=ACTIVE mLightState=ACTIVE
+2026-11-08 22:45:09 detail=48 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 22:50:16 detail=49 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 22:55:22 detail=50 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:00:27 detail=51 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:05:03 detail=52 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:10:10 detail=53 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:15:15 detail=54 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:20:21 detail=55 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:25:28 detail=56 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:30:03 detail=57 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:35:07 detail=58 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:40:14 detail=59 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:45:20 detail=60 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:50:25 detail=61 adb=device doze=  mState=IDLE mLightState=OVERRIDE
+2026-11-08 23:51:59 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:52:32 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:53:04 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:53:36 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:54:08 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:54:41 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:55:13 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:55:13 detail=62 adb= doze=
+2026-11-08 23:55:45 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:56:18 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:56:50 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:57:22 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:57:54 reconnect: already connected to 192.168.1.89:45051
+2026-11-08 23:58:27 reconnect: cannot connect to 192.168.1.89:45051: 鐢变簬鐩爣璁＄畻鏈虹Н鏋佹嫆缁濓紝鏃犳硶杩炴帴銆?(10061)
+2026-11-08 23:59:01 reconnect: cannot connect to 192.168.1.89:45051: 鐢变簬鐩爣璁＄畻鏈虹Н鏋佹嫆缁濓紝鏃犳硶杩炴帴銆?(10061)
+2026-11-08 23:59:36 reconnect: cannot connect to 192.168.1.89:45051: 鐢变簬鐩爣璁＄畻鏈虹Н鏋佹嫆缁濓紝鏃犳硶杩炴帴銆?(10061)
+2026-11-09 00:00:13 completed

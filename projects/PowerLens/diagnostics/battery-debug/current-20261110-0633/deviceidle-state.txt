@@ -1,0 +1,4 @@
+  mScreenOn=false
+  mScreenLocked=true
+  mCharging=true
+  mState=ACTIVE mLightState=ACTIVE

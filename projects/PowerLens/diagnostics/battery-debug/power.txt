@@ -1,0 +1,1406 @@
+POWER MANAGER (dumpsys power)
+
+Power Manager State:
+  Settings power_manager_constants:
+    no_cached_wake_locks=true
+  mDirty=0x0
+  mWakefulness=Awake
+  mWakefulnessChanging=false
+  mIsPowered=false
+  mPlugType=0
+  mBatteryLevel=80
+  mDreamsBatteryLevelDrain=0
+  mDockState=0
+  mStayOn=false
+  mProximityPositive=false
+  mBootCompleted=true
+  mSystemReady=true
+  mEnhancedDischargeTimeElapsed=0
+  mLastEnhancedDischargeTimeUpdatedElapsed=0
+  mEnhancedDischargePredictionIsPersonalized=false
+  mUseAutoSuspend=true
+  mHalAutoSuspendModeEnabled=false
+  mHalInteractiveModeEnabled=true
+  mWakeLockSummary=0x0
+  mNotifyLongScheduled=+5s263ms
+  mNotifyLongDispatched=-55s51ms
+  mNotifyLongNextCheck=(none)
+  mRequestWaitForNegativeProximity=false
+  mInterceptedPowerKeyForProximity=false
+  mSandmanScheduled=false
+  mBatteryLevelLow=false
+  mLightDeviceIdleMode=false
+  mDeviceIdleMode=false
+  mDeviceIdleWhitelist=[1001, 2000, 6100, 6102, 10087, 10091, 10130, 10131, 10134, 10139, 10142, 10145, 10147, 10149, 10152, 10165, 10172, 10174, 10175, 10178, 10190, 10192, 10199, 10204, 10209, 10213, 10214, 10215, 10219, 10230, 10244, 10247, 10249, 10260, 10273, 10275, 10276, 10277, 10278, 10279, 10280, 10282, 10284, 10285, 10286, 10287, 10288, 10290, 10291, 10292, 10293, 10294, 10295, 10296, 10297, 10298, 10299, 10300, 10301, 10302, 10304, 10305, 10306, 10307, 10308, 10309, 10310, 10311, 10312, 10313, 10314, 10315, 10317, 10318, 10319, 10321, 10322, 10324, 10325, 10326, 10327, 10328, 10330, 10331, 10332, 10333, 10334, 10335, 10336, 10337, 10339, 10341, 10342, 10343, 10344, 10346, 10347, 10349, 10351, 10353, 10354, 10355, 10356, 10357, 10358, 10359, 10361, 10362, 10364, 10365, 10366, 10367, 10368, 10369, 10373, 10374, 10375, 10376, 10377, 10378, 10379, 10380, 10381, 10382, 10383, 10384, 10385, 10386, 10387, 10390, 10391, 10392, 10393, 10394, 10395, 10396, 10397, 10398, 10399, 10400, 10405, 10406, 10407, 10409, 10410, 10411, 10412, 10413, 10414, 10415, 10419, 10420, 10421, 10422, 10424, 10426]
+  mDeviceIdleTempWhitelist=[]
+  mLowPowerStandbyActive=false
+  mLastWakeTime=869393 (866714 ms ago)
+  mLastSleepTime=809152 (926955 ms ago)
+  mLastSleepReason=power_button
+  mLastGlobalWakeTimeRealtime=1202988 (533119 ms ago)
+  mLastGlobalSleepTimeRealtime=991999 (744108 ms ago)
+  mLastInteractivePowerHintTime=1687924 (48183 ms ago)
+  mLastScreenBrightnessBoostTime=0 (1736107 ms ago)
+  mScreenBrightnessBoostInProgress=false
+  mHoldingWakeLockSuspendBlocker=false
+  mHoldingDisplaySuspendBlocker=true
+  mLastFlipTime=0
+  mIsFaceDown=false
+
+Settings and Configuration:
+  mDecoupleHalAutoSuspendModeFromDisplayConfig=true
+  mDecoupleHalInteractiveModeFromDisplayConfig=false
+  mWakeUpWhenPluggedOrUnpluggedConfig=true
+  mWakeUpWhenPluggedOrUnpluggedInTheaterModeConfig=false
+  mTheaterModeEnabled=false
+  mKeepDreamingWhenUnplugging=false
+  mSuspendWhenScreenOffDueToProximityConfig=false
+  mDreamsSupportedConfig=false
+  mDreamsEnabledByDefaultConfig=true
+  mDreamsActivatedOnSleepByDefaultConfig=false
+  mDreamsActivatedOnDockByDefaultConfig=true
+  mDreamsActivatedWhilePosturedByDefaultConfig=false
+  mDreamsEnabledOnBatteryConfig=false
+  mDreamsBatteryLevelMinimumWhenPoweredConfig=-1
+  mDreamsBatteryLevelMinimumWhenNotPoweredConfig=15
+  mDreamsBatteryLevelDrainCutoffConfig=5
+  mDreamsEnabledSetting=true
+  mDreamsActivateOnSleepSetting=false
+  mDreamsActivateOnDockSetting=true
+  mDreamsActivateWhilePosturedSetting=false
+  mDozeAfterScreenOff=true
+  mBrightWhenDozingConfig=false
+  mMinimumScreenOffTimeoutConfig=6000
+  mMaximumScreenDimDurationConfig=18000
+  mMaximumScreenDimRatioConfig=0.29999995
+  mAttentiveTimeoutConfig=-1
+  mAttentiveTimeoutSetting=-1
+  mAttentiveWarningDurationConfig=30000
+  mScreenOffTimeoutSetting=600000
+  mSleepTimeoutSetting=-1
+  mMaximumScreenOffTimeoutFromDeviceAdmin=9223372036854775807 (enforced=false)
+  mStayOnWhilePluggedInSetting=0
+  mUserActivityTimeoutOverrideFromWindowManager=-1
+  mUserInactiveOverrideFromWindowManager=false
+  mDozeScreenStateOverrideFromDreamManager=2
+  mDrawWakeLockOverrideFromSidekick=false
+  mDozeScreenBrightnessOverrideFromDreamManager=255
+  mUseNormalBrightnessForDoze=false
+  mScreenBrightnessMinimum=8.54597E-4
+  mScreenBrightnessMaximum=1.0
+  mScreenBrightnessDefault=0.037419118
+  mDoubleTapWakeEnabled=false
+  mForegroundProfile=0
+  mUserId=0
+
+Attentive timeout: -1 ms
+Sleep timeout: -1 ms
+Screen off timeout: 600000 ms
+Screen dim duration: 18000 ms
+mScreenProjectionEnabled: false
+mHangUpEnabled: false
+mSynergyModeEnable: false
+mIsKeyguardHasShownWhenExitHangup: true
+mSituatedDimmingDueToSynergy: false
+mLastRequestDimmingTime: 0
+mPendingSetDirtyDueToRequestDimming: false
+mUserActivityTimeoutOverrideFromMirrorManager: -1
+mSituatedDimmingDueToAttention: false
+mTouchInteractiveUnavailable: false
+mIsPowerSuperSaveModeEnabled: false
+mIsPowerSaveModeEnabled: false
+mAlwaysOnEnabled: false
+mIsFullAod: true
+mIsSubFullAod: false
+mBeingHangUp: false
+mDisableRotationDueToHangUp: false
+
+mIsFreeFormOrSplitWindowMode: false
+
+UID states (changing=false changed=false):
+  UID 1000:   ACTIVE  count=0 state=0
+  UID 1001:   ACTIVE  count=0 state=0
+  UID 1002:   ACTIVE  count=0 state=0
+  UID 1027:   ACTIVE  count=0 state=0
+  UID 1068:   ACTIVE  count=0 state=0
+  UID 1073:   ACTIVE  count=0 state=0
+  UID 2918:   ACTIVE  count=0 state=0
+  UID 6100: INACTIVE  count=0 state=19
+  UID 6101: INACTIVE  count=0 state=19
+  UID 6110: INACTIVE  count=0 state=19
+  UID 6120:   ACTIVE  count=0 state=0
+  UID u0a84:   ACTIVE  count=0 state=0
+  UID u0a85: INACTIVE  count=0 state=19
+  UID u0a87: INACTIVE  count=0 state=19
+  UID u0a91: INACTIVE  count=0 state=10
+  UID u0a94:   ACTIVE  count=0 state=3
+  UID u0a102: INACTIVE  count=0 state=19
+  UID u0a115:   ACTIVE  count=0 state=0
+  UID u0a118:   ACTIVE  count=0 state=0
+  UID u0a124: INACTIVE  count=0 state=19
+  UID u0a126: INACTIVE  count=0 state=19
+  UID u0a130:   ACTIVE  count=0 state=4
+  UID u0a132: INACTIVE  count=0 state=19
+  UID u0a133: INACTIVE  count=0 state=19
+  UID u0a134:   ACTIVE  count=0 state=5
+  UID u0a136: INACTIVE  count=0 state=19
+  UID u0a137:   ACTIVE  count=0 state=5
+  UID u0a138:   ACTIVE  count=0 state=5
+  UID u0a139: INACTIVE  count=0 state=8
+  UID u0a141: INACTIVE  count=0 state=19
+  UID u0a145: INACTIVE  count=0 state=19
+  UID u0a146:   ACTIVE  count=0 state=19
+  UID u0a147:   ACTIVE  count=0 state=5
+  UID u0a152:   ACTIVE  count=0 state=0
+  UID u0a156: INACTIVE  count=0 state=19
+  UID u0a160:   ACTIVE  count=0 state=0
+  UID u0a164: INACTIVE  count=0 state=19
+  UID u0a165: INACTIVE  count=0 state=19
+  UID u0a166: INACTIVE  count=0 state=19
+  UID u0a167: INACTIVE  count=0 state=19
+  UID u0a170: INACTIVE  count=0 state=19
+  UID u0a172: INACTIVE  count=0 state=19
+  UID u0a174:   ACTIVE  count=0 state=3
+  UID u0a178:   ACTIVE  count=0 state=4
+  UID u0a179: INACTIVE  count=0 state=19
+  UID u0a183: INACTIVE  count=0 state=19
+  UID u0a186: INACTIVE  count=0 state=19
+  UID u0a188:   ACTIVE  count=0 state=0
+  UID u0a190:   ACTIVE  count=0 state=5
+  UID u0a194:   ACTIVE  count=0 state=3
+  UID u0a195:   ACTIVE  count=0 state=0
+  UID u0a198: INACTIVE  count=0 state=19
+  UID u0a199:   ACTIVE  count=0 state=5
+  UID u0a204: INACTIVE  count=0 state=19
+  UID u0a205: INACTIVE  count=0 state=19
+  UID u0a209:   ACTIVE  count=0 state=6
+  UID u0a214: INACTIVE  count=0 state=8
+  UID u0a229:   ACTIVE  count=0 state=0
+  UID u0a230:   ACTIVE  count=0 state=0
+  UID u0a232:   ACTIVE  count=0 state=0
+  UID u0a238: INACTIVE  count=0 state=19
+  UID u0a240:   ACTIVE  count=0 state=0
+  UID u0a252:   ACTIVE  count=0 state=5
+  UID u0a260: INACTIVE  count=0 state=19
+  UID u0a262: INACTIVE  count=0 state=19
+  UID u0a266:   ACTIVE  count=0 state=0
+  UID u0a277: INACTIVE  count=0 state=19
+  UID u0a279: INACTIVE  count=0 state=19
+  UID u0a284: INACTIVE  count=0 state=19
+  UID u0a286: INACTIVE  count=0 state=19
+  UID u0a288: INACTIVE  count=0 state=19
+  UID u0a290: INACTIVE  count=0 state=19
+  UID u0a291: INACTIVE  count=0 state=19
+  UID u0a292: INACTIVE  count=0 state=19
+  UID u0a298: INACTIVE  count=0 state=19
+  UID u0a306: INACTIVE  count=0 state=19
+  UID u0a308:   ACTIVE  count=0 state=4
+  UID u0a310:   ACTIVE  count=0 state=5
+  UID u0a343:   ACTIVE  count=0 state=10
+  UID u0a344: INACTIVE  count=0 state=10
+  UID u0a345: INACTIVE  count=0 state=16
+  UID u0a351:   ACTIVE  count=0 state=4
+  UID u0ai9000: INACTIVE  count=0 state=17
+
+Looper state:
+  Looper (PowerManagerService, tid 73) {26fdcf7}
+    (MessageQueue is using Legacy implementation)
+    Message 0: { when=+636ms what=1 target=com.android.server.display.AutomaticBrightnessController$AutomaticBrightnessHandler }
+    Message 1: { when=+735ms what=0 target=com.android.server.display.DualSensorPolicy$DualSensorPolicyHandler }
+    Message 2: { when=+5s260ms what=4 target=android.os.Handler }
+    Message 3: { when=+8m51s814ms what=1 target=android.os.Handler }
+    (Total messages: 4, polling=true, quitting=false)
+    Dump time: 2026-11-08 17:01:25.062 GMT+08:00
+    Package: system_server
+    Current looper: Looper (PowerManagerService, tid=4106)
+
+
+Wake Locks: size=0
+
+Suspend Blockers: size=5
+  PowerManagerService.Booting: ref count=0 []
+  PowerManagerService.WakeLocks: ref count=0 []
+  PowerManagerService.Display: ref count=1 [holding display: (11-08 16:46:58.205)]
+  PowerManagerService.Broadcasts: ref count=0 []
+  PowerManagerService.WirelessChargerDetector: ref count=0 []
+
+Display Power: com.android.server.power.PowerManagerService$2@cfe8764
+
+Battery saving stats:
+  Battery Saver is currently: OFF
+    Times full enabled: 0
+    Times adaptive enabled: 0
+  
+  Drain stats:
+                     Battery saver OFF                          ON
+  NonDoze NonIntr:      4m      9mAh(  0%)    133.2mAh/h          0m      0mAh(  0%)      0.0mAh/h
+             Intr:     11m    104mAh(  2%)    525.6mAh/h          0m      0mAh(  0%)      0.0mAh/h
+  Deep    NonIntr:      3m      4mAh(  0%)     61.5mAh/h          0m      0mAh(  0%)      0.0mAh/h
+             Intr:      0m      0mAh(  0%)      0.0mAh/h          0m      0mAh(  0%)      0.0mAh/h
+  Light   NonIntr:      0m      0mAh(  0%)      0.0mAh/h          0m      0mAh(  0%)      0.0mAh/h
+             Intr:      0m      0mAh(  0%)      0.0mAh/h          0m      0mAh(  0%)      0.0mAh/h
+
+Battery saver policy (*NOTE* they only apply when battery saver is ON):
+  Settings: battery_saver_constants
+    value: 
+  Settings: (overlay)
+    value: 
+  DeviceConfig: battery_saver
+    location_mode: 
+  mAccessibilityEnabled=true
+  mAutomotiveProjectionActive=false
+  mPolicyLevel=0
+  
+  Policy 'default full'
+    advertise_is_enabled=true
+    disable_vibration=false
+    disable_animation=false
+    defer_full_backup=true
+    defer_keyvalue_backup=true
+    enable_firewall=true
+    enable_datasaver=false
+    disable_launch_boost=false
+    enable_brightness_adjustment=false
+    adjust_brightness_factor=0.5
+    location_mode=3
+    force_all_apps_standby=true
+    force_background_check=true
+    disable_optional_sensors=true
+    disable_aod=true
+    soundtrigger_mode=0
+    enable_quick_doze=true
+    enable_night_mode=false
+  
+  Policy 'current full'
+    advertise_is_enabled=true
+    disable_vibration=false
+    disable_animation=false
+    defer_full_backup=true
+    defer_keyvalue_backup=true
+    enable_firewall=true
+    enable_datasaver=false
+    disable_launch_boost=false
+    enable_brightness_adjustment=false
+    adjust_brightness_factor=0.5
+    location_mode=3
+    force_all_apps_standby=true
+    force_background_check=true
+    disable_optional_sensors=true
+    disable_aod=true
+    soundtrigger_mode=0
+    enable_quick_doze=true
+    enable_night_mode=false
+  
+  Policy 'default adaptive'
+    advertise_is_enabled=false
+    disable_vibration=false
+    disable_animation=false
+    defer_full_backup=false
+    defer_keyvalue_backup=false
+    enable_firewall=false
+    enable_datasaver=false
+    disable_launch_boost=false
+    enable_brightness_adjustment=false
+    adjust_brightness_factor=1.0
+    location_mode=0
+    force_all_apps_standby=false
+    force_background_check=false
+    disable_optional_sensors=false
+    disable_aod=false
+    soundtrigger_mode=0
+    enable_quick_doze=false
+    enable_night_mode=false
+  
+  Policy 'current adaptive'
+    advertise_is_enabled=false
+    disable_vibration=false
+    disable_animation=false
+    defer_full_backup=false
+    defer_keyvalue_backup=false
+    enable_firewall=false
+    enable_datasaver=false
+    disable_launch_boost=false
+    enable_brightness_adjustment=false
+    adjust_brightness_factor=1.0
+    location_mode=0
+    force_all_apps_standby=false
+    force_background_check=false
+    disable_optional_sensors=false
+    disable_aod=false
+    soundtrigger_mode=0
+    enable_quick_doze=false
+    enable_night_mode=false
+  
+  Policy 'effective'
+    advertise_is_enabled=false
+    disable_vibration=false
+    disable_animation=false
+    defer_full_backup=false
+    defer_keyvalue_backup=false
+    enable_firewall=false
+    enable_datasaver=false
+    disable_launch_boost=false
+    enable_brightness_adjustment=false
+    adjust_brightness_factor=1.0
+    location_mode=0
+    force_all_apps_standby=false
+    force_background_check=false
+    disable_optional_sensors=false
+    disable_aod=false
+    soundtrigger_mode=0
+    enable_quick_doze=false
+    enable_night_mode=false
+
+Battery saver state machine:
+  Enabled=false
+    full=false
+    adaptive=false
+  mState=1
+  mLastChangedIntReason=0
+  mLastChangedStrReason=null
+  mBootCompleted=true
+  mSettingsLoaded=true
+  mBatteryStatusSet=true
+  mIsPowered=false
+  mBatteryLevel=80
+  mIsBatteryLevelLow=false
+  mSettingAutomaticBatterySaver=0
+  mSettingBatterySaverEnabled=false
+  mSettingBatterySaverEnabledSticky=false
+  mSettingBatterySaverStickyAutoDisableEnabled=true
+  mSettingBatterySaverStickyAutoDisableThreshold=90
+  mSettingBatterySaverTriggerThreshold=0
+  mBatterySaverStickyBehaviourDisabled=false
+  mBatterySaverTurnedOffNotificationEnabled=false
+  mDynamicPowerSavingsDefaultDisableThreshold=80
+  mDynamicPowerSavingsDisableThreshold=80
+  mDynamicPowerSavingsEnableBatterySaver=false
+  mLastAdaptiveBatterySaverChangedExternallyElapsed=0
+AttentionDetector:
+ mIsSettingEnabled=true
+ mMaxExtensionMillis=900000
+ mPreDimCheckDurationMillis=2000
+ mEffectivePostDimTimeout=0
+ mLastUserActivityTime(excludingAttention)=1687924
+ mAttentionServiceSupported=true
+ mRequested=false
+
+Profile power states: size=0
+Display Group User Activity:
+  displayGroupId=0
+  userActivitySummary=0x1
+  lastUserActivityTime=1687924 (48187 ms ago)
+  lastUserActivityTimeNoChangeLights=0 (1736111 ms ago)
+  mWakeLockSummary=0x0
+
+Wireless Charger Detector State:
+  mGravitySensor={Sensor name="gravity  Non-wakeup", vendor="QTI", version=1, type=9, maxRange=156.91, resolution=0.01, power=0.515, minDelay=5000}
+  mPoweredWirelessly=false
+  mAtRest=false
+  mRestX=0.0, mRestY=0.0, mRestZ=0.0
+  mDetectionInProgress=false
+  mDetectionStartTime=0 (never)
+  mMustUpdateRestPosition=false
+  mTotalSamples=0
+  mMovingSamples=0
+  mFirstSampleX=0.0, mFirstSampleY=0.0, mFirstSampleZ=0.0
+  mLastSampleX=0.0, mLastSampleY=0.0, mLastSampleZ=0.0
+Notifier:
+Partial Wakelock Log:
+Wake Lock Log
+  11-08 16:27:09.073 - 1001 (com.android.providers.telephony,...) - ACQ CdmaInboundSmsHandler (partial)
+  11-08 16:27:09.146 - 1001 (com.android.providers.telephony,...) - ACQ CdmaInboundSmsHandler (partial)
+  11-08 16:27:09.848 - 1001 (com.android.providers.telephony,...) - ACQ GsmCellBroadcastHandler (partial)
+  11-08 16:27:09.848 - 1001 (com.android.providers.telephony,...) - ACQ CellBroadcastHandler (partial)
+  11-08 16:27:09.849 - 1001 (com.android.providers.telephony,...) - ACQ CdmaServiceCategoryProgramHandler (partial)
+  11-08 16:27:23.766 - 10134 (com.google.android.gms) - ACQ wake:com.google.android.gms/.chimera.GmsIntentOperationService - 913 (partial)
+  11-08 16:27:23.780 - 10134 (com.google.android.gms) - ACQ Checkin Service (partial)
+  11-08 16:27:56.035 - 1001 (com.android.providers.telephony,...) - ACQ GsmInboundSmsHandler (partial)
+  11-08 16:28:10.363 - 10134 (com.google.android.gms) - ACQ *alarm* (partial)
+  11-08 16:54:17.862 - 10343 (com.tencent.mm) - ACQ *alarm* (partial)
+  11-08 16:56:28.458 - 1001 (com.android.providers.telephony,...) - ACQ RILJ_ACK_WL (partial)
+  11-08 16:56:30.361 - 10209 (com.xiaomi.xmsf) - ACQ *alarm* (partial)
+  11-08 16:56:52.514 - 10344 (com.tencent.mobileqq) - ACQ *alarm* (partial)
+  11-08 16:57:08.106 - 1000 (System) - ACQ *alarm* (partial)
+  11-08 16:57:30.371 - 1000 (System) - ACQ *alarm* (partial)
+  11-08 16:57:47.893 - 10343 (com.tencent.mm) - ACQ *alarm* (partial)
+  11-08 16:57:59.716 - 1000 (System) - ACQ *launch* (partial)
+  11-08 16:58:00.001 - 1000 (System) - ACQ *alarm* (partial)
+  11-08 16:58:00.002 - 1000 (System) - REL *alarm*
+  11-08 16:58:00.003 - 1000 (System) - REL *launch*
+  11-08 16:58:00.303 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 16:58:01.302 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 16:58:01.304 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 16:58:01.335 - 10152 (com.qualcomm.qcrilmsgtunnel,...) - ACQ QcrilOemhookMsgTunnel (partial)
+  11-08 16:58:01.337 - 10152 (com.qualcomm.qcrilmsgtunnel,...) - REL QcrilOemhookMsgTunnel
+  11-08 16:58:01.749 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 16:58:01.757 - 1000 (System) - REL NetworkStats
+  11-08 16:58:01.781 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 16:58:01.805 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 16:58:01.988 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 16:58:03.158 - 10344 (com.tencent.mobileqq) - ACQ *alarm* (partial)
+  11-08 16:58:03.161 - 10344 (com.tencent.mobileqq) - REL *alarm*
+  11-08 16:58:03.163 - 10344 (com.tencent.mobileqq) - ACQ *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService (partial)
+  11-08 16:58:03.164 - 10344 (com.tencent.mobileqq) - ACQ *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService (partial)
+  11-08 16:58:03.169 - 10344 (com.tencent.mobileqq) - REL *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService
+  11-08 16:58:03.174 - 10344 (com.tencent.mobileqq) - REL *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService
+  11-08 16:58:04.808 - 1000 (System) - ACQ *launch* (partial)
+  11-08 16:58:04.884 - 1000 (System) - REL *launch*
+  11-08 16:58:05.957 - 1000 (System) - ACQ *vibrator* (partial)
+  11-08 16:58:06.094 - 1000 (System) - REL *vibrator*
+  11-08 16:58:06.813 - 10344 (com.tencent.mobileqq) - ACQ *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService (partial)
+  11-08 16:58:06.814 - 10344 (com.tencent.mobileqq) - ACQ *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService (partial)
+  11-08 16:58:06.818 - 10344 (com.tencent.mobileqq) - REL *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService
+  11-08 16:58:06.819 - 10344 (com.tencent.mobileqq) - REL *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService
+  11-08 16:58:07.784 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 16:58:07.993 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 16:58:08.321 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 16:58:08.327 - 1000 (System) - REL NetworkStats
+  11-08 16:58:08.474 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 16:58:08.477 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 16:58:08.477 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 16:58:08.978 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 16:58:13.651 - 10152 (com.qualcomm.qcrilmsgtunnel,...) - ACQ QcrilOemhookMsgTunnel (partial)
+  11-08 16:58:13.655 - 10152 (com.qualcomm.qcrilmsgtunnel,...) - REL QcrilOemhookMsgTunnel
+  11-08 16:58:13.784 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 16:58:14.005 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 16:58:17.080 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 16:58:17.095 - 1000 (System) - REL NetworkStats
+  11-08 16:58:19.794 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 16:58:20.022 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 16:58:25.784 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 16:58:26.011 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 16:58:28.567 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 16:58:28.572 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 16:58:28.572 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 16:58:28.755 - 1000 (System) - ACQ *alarm* (partial)
+  11-08 16:58:28.760 - 1000 (System) - REL *alarm*
+  11-08 16:58:29.075 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 16:58:30.418 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 16:58:31.419 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 16:58:31.423 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 16:58:31.786 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 16:58:31.927 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 16:58:32.014 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 16:58:37.791 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 16:58:38.020 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 16:58:40.234 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 16:58:40.239 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 16:58:40.241 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 16:58:40.241 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:MsgPush (partial)
+  11-08 16:58:40.742 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 16:58:43.786 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 16:58:44.018 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 16:58:45.244 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:MsgPush
+  11-08 16:58:49.790 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 16:58:50.019 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 16:58:55.660 - 10308 (com.mi.health) - ACQ *alarm* (partial)
+  11-08 16:58:55.673 - 10343 (com.tencent.mm) - REL *alarm*
+  11-08 16:58:55.674 - 10308 (com.mi.health) - ACQ *job*r/com.mi.health/com.xiaomi.fitness.sync.SyncJobService (partial)
+  11-08 16:58:55.675 - 10308 (com.mi.health) - ACQ *job*r/com.mi.health/com.xiaomi.fitness.sync.SyncJobService (partial)
+  11-08 16:58:55.678 - 10308 (com.mi.health) - REL *job*r/com.mi.health/com.xiaomi.fitness.sync.SyncJobService
+  11-08 16:58:55.679 - 6110 (com.xiaomi.finddevice) - ACQ *job*r/com.xiaomi.finddevice/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 16:58:55.680 - 6110 (com.xiaomi.finddevice) - ACQ *job*r/com.xiaomi.finddevice/androidx.work.impl.background.systemjob.SystemJobService (partial)
+  11-08 16:58:55.685 - 6110 (com.xiaomi.finddevice) - REL *job*r/com.xiaomi.finddevice/androidx.work.impl.background.systemjob.SystemJobService
+  11-08 16:58:55.697 - 1002 (com.xiaomi.bluetooth,...) - ACQ bluetooth_timer (partial)
+  11-08 16:58:55.697 - 6110 (com.xiaomi.finddevice) - REL *job*r/com.xiaomi.finddevice/androidx.work.impl.background.systemjob.SystemJobService
+  11-08 16:58:55.704 - 10308 (com.mi.health) - REL *job*r/com.mi.health/com.xiaomi.fitness.sync.SyncJobService
+  11-08 16:58:55.867 - 10298 (com.xiaomi.vipaccount) - ACQ *alarm* (partial)
+  11-08 16:58:55.873 - 10298 (com.xiaomi.vipaccount) - REL *alarm*
+  11-08 16:58:56.698 - 1002 (com.xiaomi.bluetooth,...) - REL bluetooth_timer
+  11-08 16:58:57.647 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 16:58:57.655 - 1000 (System) - REL NetworkStats
+  11-08 16:58:58.755 - 1000 (System) - ACQ *alarm* (partial)
+  11-08 16:58:58.759 - 1000 (System) - REL *alarm*
+  11-08 16:58:59.857 - 1000 (System) - ACQ *location*:GnssLocationProvider (partial)
+  11-08 16:58:59.866 - 1000 (System) - REL *location*:GnssLocationProvider
+  11-08 16:58:59.874 - 10139 (com.xiaomi.metoknlp) - ACQ com.xiaomi.location.c.c.e (partial)
+  11-08 16:58:59.883 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:58:59.883 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:58:59.883 - 10139 (com.xiaomi.metoknlp) - ACQ *telephony-radio* (partial)
+  11-08 16:58:59.888 - 10139 (com.xiaomi.metoknlp) - REL *telephony-radio*
+  11-08 16:58:59.888 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:58:59.888 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:00.005 - 1000 (System) - ACQ *alarm* (partial)
+  11-08 16:59:00.006 - 1000 (System) - REL *alarm*
+  11-08 16:59:02.591 - 1000 (System) - ACQ *location* (partial)
+  11-08 16:59:02.592 - 1000 (System) - REL *location*
+  11-08 16:59:02.876 - 10139 (com.xiaomi.metoknlp) - REL com.xiaomi.location.c.c.e
+  11-08 16:59:08.326 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 16:59:08.385 - 1000 (System) - REL NetworkStats
+  11-08 16:59:09.912 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:09.913 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:09.913 - 10139 (com.xiaomi.metoknlp) - ACQ *telephony-radio* (partial)
+  11-08 16:59:09.922 - 10139 (com.xiaomi.metoknlp) - REL *telephony-radio*
+  11-08 16:59:09.922 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:09.923 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:13.612 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 16:59:13.615 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 16:59:13.615 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 16:59:14.118 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 16:59:19.954 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:19.955 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:19.955 - 10139 (com.xiaomi.metoknlp) - ACQ *telephony-radio* (partial)
+  11-08 16:59:19.965 - 10139 (com.xiaomi.metoknlp) - REL *telephony-radio*
+  11-08 16:59:19.965 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:19.966 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:25.364 - 1000 (System) - ACQ *alarm* (partial)
+  11-08 16:59:25.369 - 1000 (System) - REL *alarm*
+  11-08 16:59:25.940 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:25.942 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:25.942 - 1000 (System) - ACQ *telephony-radio* (partial)
+  11-08 16:59:25.949 - 1000 (System) - REL *telephony-radio*
+  11-08 16:59:25.949 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:25.949 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:30.008 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:30.008 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:30.008 - 10139 (com.xiaomi.metoknlp) - ACQ *telephony-radio* (partial)
+  11-08 16:59:30.016 - 10139 (com.xiaomi.metoknlp) - REL *telephony-radio*
+  11-08 16:59:30.016 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:30.016 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:36.776 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 16:59:36.787 - 1000 (System) - REL NetworkStats
+  11-08 16:59:40.052 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:40.052 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:40.052 - 10139 (com.xiaomi.metoknlp) - ACQ *telephony-radio* (partial)
+  11-08 16:59:40.060 - 10139 (com.xiaomi.metoknlp) - REL *telephony-radio*
+  11-08 16:59:40.060 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:40.061 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:50.096 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:50.096 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:50.096 - 10139 (com.xiaomi.metoknlp) - ACQ *telephony-radio* (partial)
+  11-08 16:59:50.107 - 10139 (com.xiaomi.metoknlp) - REL *telephony-radio*
+  11-08 16:59:50.107 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 16:59:50.108 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 16:59:52.529 - 10344 (com.tencent.mobileqq) - ACQ *alarm* (partial)
+  11-08 16:59:52.532 - 10344 (com.tencent.mobileqq) - REL *alarm*
+  11-08 17:00:00.005 - 1000 (System) - ACQ *alarm* (partial)
+  11-08 17:00:00.015 - 1001 (com.android.providers.telephony,...) - REL *alarm*
+  11-08 17:00:00.136 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:00.137 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:00.137 - 10139 (com.xiaomi.metoknlp) - ACQ *telephony-radio* (partial)
+  11-08 17:00:00.144 - 10139 (com.xiaomi.metoknlp) - REL *telephony-radio*
+  11-08 17:00:00.144 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:00.144 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:00.331 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:00.331 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:00.331 - 1000 (System) - ACQ *telephony-radio* (partial)
+  11-08 17:00:00.334 - 1000 (System) - REL *telephony-radio*
+  11-08 17:00:00.334 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:00.334 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:00.410 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:00.410 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:00.410 - 1000 (System) - ACQ *telephony-radio* (partial)
+  11-08 17:00:00.412 - 1000 (System) - REL *telephony-radio*
+  11-08 17:00:00.412 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:00.413 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:06.868 - 1000 (System) - ACQ *vibrator* (partial)
+  11-08 17:00:06.953 - 1000 (System) - REL *vibrator*
+  11-08 17:00:08.255 - 10308 (com.mi.health) - ACQ *job*r/com.mi.health/com.xiaomi.fitness.keep_alive.KeepAliveJobSchedulerService (partial)
+  11-08 17:00:08.256 - 10308 (com.mi.health) - ACQ *job*r/com.mi.health/com.xiaomi.fitness.keep_alive.KeepAliveJobSchedulerService (partial)
+  11-08 17:00:08.263 - 10308 (com.mi.health) - REL *job*r/com.mi.health/com.xiaomi.fitness.keep_alive.KeepAliveJobSchedulerService
+  11-08 17:00:08.272 - 10308 (com.mi.health) - REL *job*r/com.mi.health/com.xiaomi.fitness.keep_alive.KeepAliveJobSchedulerService
+  11-08 17:00:08.321 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:00:08.328 - 1000 (System) - REL NetworkStats
+  11-08 17:00:08.366 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:08.367 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:08.577 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:08.579 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:08.876 - 10147 (com.miui.home) - ACQ *vibrator* (partial)
+  11-08 17:00:08.959 - 10147 (com.miui.home) - REL *vibrator*
+  11-08 17:00:09.792 - 10147 (com.miui.home) - ACQ *launch* (partial)
+  11-08 17:00:09.798 - 10147 (com.miui.home) - REL *launch*
+  11-08 17:00:09.834 - 1000 (System) - ACQ NotificationManagerService:post:android (partial)
+  11-08 17:00:10.000 - 10343 (com.tencent.mm) - ACQ *launch* (partial)
+  11-08 17:00:10.053 - 1000 (System) - REL NotificationManagerService:post:android
+  11-08 17:00:10.121 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.134 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.141 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.144 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.211 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.212 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.215 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.215 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.227 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.227 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.228 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.229 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.230 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.230 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.231 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.240 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.262 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.263 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.264 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.264 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.265 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.265 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.265 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.266 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.266 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.267 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.297 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.298 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.298 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.299 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.300 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.300 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.300 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.301 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.301 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.301 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.314 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.317 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.318 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.319 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.319 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.319 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.333 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.333 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.333 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.334 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.334 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.335 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.344 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.347 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.348 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.350 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.350 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.351 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.353 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.353 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.354 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.370 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.374 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.375 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.376 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.377 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.377 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.537 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.537 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.540 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.541 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.556 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.561 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.565 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.566 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.566 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.567 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.599 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.601 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.603 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.603 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.603 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:10.606 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:10.614 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.616 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.617 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.622 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.624 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.629 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.630 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.631 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.631 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.631 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.632 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.635 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.637 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.637 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.637 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.637 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.640 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.642 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.644 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.645 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.681 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.695 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.696 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.697 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.697 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.697 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.712 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.713 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.713 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.713 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.753 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.755 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.756 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.758 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.758 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.760 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.765 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.768 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.768 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.768 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.827 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.827 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.827 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.827 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.828 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.828 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.850 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:10.852 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:10.864 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.864 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.867 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.869 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.879 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.879 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.880 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.881 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.882 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.885 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.888 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.890 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.890 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.893 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.897 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.897 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.897 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.897 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:10.977 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:10.977 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:10.978 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:10.979 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:10.982 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:10.982 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.046 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.051 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.051 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.052 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.053 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.065 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.070 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.071 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.072 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.074 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.088 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.089 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.089 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.089 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.100 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.107 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.107 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.108 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.108 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.108 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.109 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.109 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.110 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.110 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.110 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.122 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.126 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.126 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.126 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.126 - 10343 (com.tencent.mm) - REL *launch*
+  11-08 17:00:11.127 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.146 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.148 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.149 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.149 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.188 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.188 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.189 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.189 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.190 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.192 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.193 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.193 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.194 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.194 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.226 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.228 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.228 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.228 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.229 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.229 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.230 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.230 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.230 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.232 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.234 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.234 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.236 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.238 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.286 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:00:11.300 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.310 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.312 - 1000 (System) - REL NetworkStats
+  11-08 17:00:11.313 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.316 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.316 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.316 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.318 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.320 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.321 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.322 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.354 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.355 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.356 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.356 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.356 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.356 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.373 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.375 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.386 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.387 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.437 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.443 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.444 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.444 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.444 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.456 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.457 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.460 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.460 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.461 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.461 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.462 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.463 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.463 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.464 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.464 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.484 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.486 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.487 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.489 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.545 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.547 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.548 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.548 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.548 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.549 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.557 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.560 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.560 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.560 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.581 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.582 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.583 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.583 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.583 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.583 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.657 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.657 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.658 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.658 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.669 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.670 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.681 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.681 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.682 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.682 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.725 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.732 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.748 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.749 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.756 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.757 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.757 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.758 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.763 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.766 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.770 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.771 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.772 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.774 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.789 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.795 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.796 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.797 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.797 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.797 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.895 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.895 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:11.895 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:11.896 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:11.900 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.901 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.902 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:11.902 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:11.903 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:11.903 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.006 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.006 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:12.006 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:12.006 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.008 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.008 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.009 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.009 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.012 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.012 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.029 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.029 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:12.030 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:12.030 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.031 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.032 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.033 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.033 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.033 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.034 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.142 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.146 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:12.148 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:12.148 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.152 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.153 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.153 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.154 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.171 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.174 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.183 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.185 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.187 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.187 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.218 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.239 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.240 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.241 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.243 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.650 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:12.703 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 17:00:12.833 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 17:00:12.836 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 17:00:12.845 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 17:00:12.847 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 17:00:12.848 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 17:00:12.904 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:12.907 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.907 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.909 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.909 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.909 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.909 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.971 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.974 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:12.975 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:12.975 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:12.978 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.979 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.980 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:12.980 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:12.981 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:12.981 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:13.034 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:13.034 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:13.034 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:13.035 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:13.036 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:13.036 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:13.037 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:13.037 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:13.038 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:13.038 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:13.246 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:13.248 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:13.254 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:13.255 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:13.349 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 17:00:13.535 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:13.833 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 17:00:13.834 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 17:00:13.940 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:00:13.954 - 1000 (System) - REL NetworkStats
+  11-08 17:00:13.956 - 10165 (com.miui.micloudsync,...) - ACQ *job*r/com.miui.cloudservice/.state.userinfo.ImmediatelyQueryCloudQuotaJobService (partial)
+  11-08 17:00:13.956 - 10165 (com.miui.micloudsync,...) - ACQ *job*r/com.miui.cloudservice/.state.userinfo.ImmediatelyQueryCloudQuotaJobService (partial)
+  11-08 17:00:13.957 - 10165 (com.miui.micloudsync,...) - REL *job*r/com.miui.cloudservice/.state.userinfo.ImmediatelyQueryCloudQuotaJobService
+  11-08 17:00:13.958 - 10165 (com.miui.micloudsync,...) - ACQ *job*r/com.miui.cloudservice/.state.userinfo.ImmediatelyQueryMemberInfoJobService (partial)
+  11-08 17:00:13.958 - 10165 (com.miui.micloudsync,...) - ACQ *job*r/com.miui.cloudservice/.state.userinfo.ImmediatelyQueryMemberInfoJobService (partial)
+  11-08 17:00:13.959 - 10165 (com.miui.micloudsync,...) - REL *job*r/com.miui.cloudservice/.state.userinfo.ImmediatelyQueryMemberInfoJobService
+  11-08 17:00:14.229 - 10165 (com.miui.micloudsync,...) - REL *job*r/com.miui.cloudservice/.state.userinfo.ImmediatelyQueryMemberInfoJobService
+  11-08 17:00:14.249 - 10165 (com.miui.micloudsync,...) - REL *job*r/com.miui.cloudservice/.state.userinfo.ImmediatelyQueryCloudQuotaJobService
+  11-08 17:00:14.256 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:14.256 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:14.257 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:14.257 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:14.310 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:14.335 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 17:00:15.020 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:15.021 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:15.022 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:15.038 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:15.049 - 10152 (com.qualcomm.qcrilmsgtunnel,...) - ACQ QcrilOemhookMsgTunnel (partial)
+  11-08 17:00:15.053 - 10152 (com.qualcomm.qcrilmsgtunnel,...) - REL QcrilOemhookMsgTunnel
+  11-08 17:00:15.521 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:15.685 - 10147 (com.miui.home) - ACQ *vibrator* (partial)
+  11-08 17:00:15.774 - 10147 (com.miui.home) - REL *vibrator*
+  11-08 17:00:15.935 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:15.943 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:16.042 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:16.042 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:16.042 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:16.043 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:16.093 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:16.117 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 17:00:16.153 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:16.155 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:16.482 - 10147 (com.miui.home) - ACQ *vibrator* (partial)
+  11-08 17:00:16.564 - 10147 (com.miui.home) - REL *vibrator*
+  11-08 17:00:17.050 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:17.055 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:17.057 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:17.059 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:17.118 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 17:00:17.118 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 17:00:17.552 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:17.618 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 17:00:17.664 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:17.673 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:17.673 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:17.674 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:17.932 - 1000 (System) - ACQ *launch* (partial)
+  11-08 17:00:18.030 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:00:18.051 - 1000 (System) - REL NetworkStats
+  11-08 17:00:18.053 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:00:18.054 - 1000 (System) - REL NetworkStats
+  11-08 17:00:18.056 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:00:18.058 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.060 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:18.060 - 1000 (System) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.061 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:18.061 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:18.062 - 1000 (System) - REL NetworkStats
+  11-08 17:00:18.062 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:18.063 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:18.064 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:00:18.064 - 1000 (System) - REL *telephony-radio*
+  11-08 17:00:18.064 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.065 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:18.069 - 1000 (System) - REL NetworkStats
+  11-08 17:00:18.099 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:00:18.106 - 1000 (System) - REL NetworkStats
+  11-08 17:00:18.115 - 1000 (System) - REL *launch*
+  11-08 17:00:18.115 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:18.167 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:18.563 - 1001 (com.android.providers.telephony,...) - ACQ RILJ_ACK_WL (partial)
+  11-08 17:00:18.563 - 10232 (org.codeaurora.ims) - ACQ NotifyRegistrantLock (partial)
+  11-08 17:00:18.568 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.568 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:18.568 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.573 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:18.573 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.573 - 10115 (vendor.qti.iwlan,...) - ACQ IWLAN_PROXY_WL (partial)
+  11-08 17:00:18.573 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:18.574 - 10115 (vendor.qti.iwlan,...) - REL IWLAN_PROXY_WL
+  11-08 17:00:18.641 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.641 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:18.641 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.643 - 10115 (vendor.qti.iwlan,...) - ACQ IWLAN_PROXY_WL (partial)
+  11-08 17:00:18.644 - 10115 (vendor.qti.iwlan,...) - REL IWLAN_PROXY_WL
+  11-08 17:00:18.648 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:18.648 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.649 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:18.674 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.675 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:18.675 - 10130 (com.xiaomi.aicr) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.677 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:18.677 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:18.678 - 10130 (com.xiaomi.aicr) - REL *telephony-radio*
+  11-08 17:00:18.678 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:18.678 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:18.678 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:18.679 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:18.729 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:18.841 - 1001 (com.android.providers.telephony,...) - REL RILJ_ACK_WL
+  11-08 17:00:18.842 - 10232 (org.codeaurora.ims) - REL NotifyRegistrantLock
+  11-08 17:00:20.165 - 10232 (org.codeaurora.ims) - ACQ NotifyRegistrantLock (partial)
+  11-08 17:00:20.165 - 1001 (com.android.providers.telephony,...) - ACQ RILJ_ACK_WL (partial)
+  11-08 17:00:20.166 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:20.166 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:20.166 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:20.167 - 10115 (vendor.qti.iwlan,...) - ACQ IWLAN_PROXY_WL (partial)
+  11-08 17:00:20.170 - 10115 (vendor.qti.iwlan,...) - REL IWLAN_PROXY_WL
+  11-08 17:00:20.174 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:20.174 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:00:20.175 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:00:20.368 - 1001 (com.android.providers.telephony,...) - REL RILJ_ACK_WL
+  11-08 17:00:20.368 - 10232 (org.codeaurora.ims) - REL NotifyRegistrantLock
+  11-08 17:00:22.664 - 10344 (com.tencent.mobileqq) - ACQ *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService (partial)
+  11-08 17:00:22.664 - 10344 (com.tencent.mobileqq) - ACQ *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService (partial)
+  11-08 17:00:22.669 - 10344 (com.tencent.mobileqq) - REL *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService
+  11-08 17:00:22.673 - 10344 (com.tencent.mobileqq) - REL *job*r/com.tencent.mobileqq/.msf.service.MSFAliveJobService
+  11-08 17:00:22.980 - 10152 (com.qualcomm.qcrilmsgtunnel,...) - ACQ QcrilOemhookMsgTunnel (partial)
+  11-08 17:00:22.984 - 10152 (com.qualcomm.qcrilmsgtunnel,...) - REL QcrilOemhookMsgTunnel
+  11-08 17:00:25.360 - 10209 (com.xiaomi.xmsf) - ACQ *alarm* (partial)
+  11-08 17:00:25.382 - 10209 (com.xiaomi.xmsf) - REL *alarm*
+  11-08 17:00:25.414 - 10209 (com.xiaomi.xmsf) - ACQ NotificationManagerService:post:com.xiaomi.shop (partial)
+  11-08 17:00:25.630 - 10209 (com.xiaomi.xmsf) - REL NotificationManagerService:post:com.xiaomi.shop
+  11-08 17:00:30.322 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 17:00:30.329 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 17:00:30.330 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 17:00:30.835 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 17:00:36.267 - 10343 (com.tencent.mm) - ACQ *launch* (partial)
+  11-08 17:00:36.302 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:36.307 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.308 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.309 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.346 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.357 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:36.364 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:36.365 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.373 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.374 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.379 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.381 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.382 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.383 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.384 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:36.384 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:36.385 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.385 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.400 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:36.402 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:36.407 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.408 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.409 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.410 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.414 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.418 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.419 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.419 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:36.419 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:36.419 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.440 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.440 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.440 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:36.441 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:36.441 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.443 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.451 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.454 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:36.458 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:36.460 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.464 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.465 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.466 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.467 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.467 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.467 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.467 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.468 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.470 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.473 - 10343 (com.tencent.mm) - REL *launch*
+  11-08 17:00:36.490 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.491 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.491 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.491 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.610 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:36.614 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:36.695 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.695 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:36.697 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:36.698 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.708 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.708 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.711 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:36.711 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:36.712 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:36.712 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:36.817 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:00:36.831 - 1000 (System) - REL NetworkStats
+  11-08 17:00:37.200 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:37.266 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:37.270 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:37.320 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:37.324 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.324 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:37.324 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:37.376 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.461 - 1000 (System) - ACQ *launch* (partial)
+  11-08 17:00:37.468 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:37.469 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.471 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:37.471 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:37.485 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:37.496 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:37.496 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:37.496 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.497 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:37.509 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:37.522 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.525 - 1000 (System) - REL *launch*
+  11-08 17:00:37.550 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:37.558 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:37.600 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:37.602 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:37.607 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:37.608 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:37.616 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:37.617 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.621 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:37.627 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.628 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:37.629 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:37.708 - 1000 (System) - ACQ NotificationManagerService:post:android (partial)
+  11-08 17:00:37.718 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:37.719 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:37.722 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:37.722 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:37.725 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:37.735 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.736 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:37.737 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.738 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:37.746 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:37.766 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:37.766 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:37.766 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:37.766 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:37.768 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:37.770 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:37.812 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:37.813 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.813 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:37.814 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:37.814 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:37.815 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:37.853 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:00:37.858 - 1000 (System) - REL NetworkStats
+  11-08 17:00:37.917 - 1000 (System) - REL NotificationManagerService:post:android
+  11-08 17:00:38.006 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:38.215 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:38.267 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:38.473 - 1000 (System) - ACQ *vibrator* (partial)
+  11-08 17:00:38.499 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:38.500 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:38.501 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:38.502 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:38.587 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:38.591 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:38.591 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:38.593 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:38.891 - 1000 (System) - REL *vibrator*
+  11-08 17:00:39.089 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:39.504 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:39.504 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:39.505 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:39.505 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:39.559 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:39.596 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:39.597 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:39.598 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:39.599 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:39.651 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:42.497 - 10343 (com.tencent.mm) - ACQ MicroMsg.MMAutoAuth (partial)
+  11-08 17:00:42.501 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:42.502 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:42.504 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:43.000 - 10343 (com.tencent.mm) - REL MicroMsg.MMAutoAuth
+  11-08 17:00:43.508 - 10343 (com.tencent.mm) - ACQ MicroMsg:ReentrantGuard (partial)
+  11-08 17:00:43.509 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:43.511 - 10343 (com.tencent.mm) - ACQ MicroMsg.PlatformCommC2JavaCallBack (partial)
+  11-08 17:00:43.512 - 10343 (com.tencent.mm) - REL MicroMsg:ReentrantGuard
+  11-08 17:00:43.564 - 10343 (com.tencent.mm) - REL MicroMsg.PlatformCommC2JavaCallBack
+  11-08 17:00:43.800 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:44.018 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:47.107 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 17:00:47.116 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 17:00:47.116 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:Alarm (partial)
+  11-08 17:00:47.120 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 17:00:47.618 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:Alarm
+  11-08 17:00:48.122 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 17:00:48.126 - 10344 (com.tencent.mobileqq) - ACQ MSF:WakeLock:kernel (partial)
+  11-08 17:00:48.627 - 10344 (com.tencent.mobileqq) - REL MSF:WakeLock:kernel
+  11-08 17:00:49.802 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:50.024 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:00:55.801 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:00:56.023 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:01:00.005 - 1000 (System) - ACQ *alarm* (partial)
+  11-08 17:01:00.006 - 1000 (System) - REL *alarm*
+  11-08 17:01:01.813 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:01:02.041 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:01:02.047 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:01:02.074 - 1000 (System) - REL NetworkStats
+  11-08 17:01:07.809 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:01:08.040 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:01:08.045 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:01:08.077 - 1000 (System) - REL NetworkStats
+  11-08 17:01:13.807 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:01:14.038 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:01:19.809 - 10351 (com.omarea.vtools) - ACQ NotificationManagerService:post:com.omarea.vtools (partial)
+  11-08 17:01:20.033 - 10351 (com.omarea.vtools) - REL NotificationManagerService:post:com.omarea.vtools
+  11-08 17:01:23.432 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:01:23.432 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:01:23.432 - 1000 (System) - ACQ *telephony-radio* (partial)
+  11-08 17:01:23.436 - 1000 (System) - REL *telephony-radio*
+  11-08 17:01:23.436 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:01:23.436 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:01:24.293 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:01:24.293 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:01:24.293 - 1000 (System) - ACQ *telephony-radio* (partial)
+  11-08 17:01:24.296 - 1000 (System) - REL *telephony-radio*
+  11-08 17:01:24.296 - 1001 (com.android.providers.telephony,...) - ACQ *telephony-radio* (partial)
+  11-08 17:01:24.296 - 1001 (com.android.providers.telephony,...) - REL *telephony-radio*
+  11-08 17:01:24.849 - 1000 (System) - ACQ NetworkStats (partial)
+  11-08 17:01:24.870 - 1000 (System) - REL NetworkStats
+  -
+  Events: 928, Time-Resets: 87
+  Buffer, Bytes used: 3063
+  Tag Database: size(64), entries: 64, Bytes used: 5820
+
+Full Wakelock Log:
+Wake Lock Log
+  -
+  Events: 0, Time-Resets: 0
+  Buffer, Bytes used: 0
+  Tag Database: size(16), entries: 0, Bytes used: 128
+
+
+Wakefulness Session Observer:
+default timeout: 600000
+override timeout: -1
+  Wakefulness Session Power Group powerGroupId: 0
+    current wakefulness: 1
+    current user activity event: 0
+    current user activity duration: 48385
+    previous user activity event: 2
+    previous user activity duration: 48393
+    is in override timeout: false
+    mIsInteractive: true
+    current screen policy: 3
+    current screen policy duration: 866746
+    previous screen policy: 1
+    past screen policy duration: 59268
+
+FaceDownDetector:
+  mFaceDown=false
+  mActive=false
+  mLastFlipTime=0
+  mSensorMaxLatencyMicros=2000000
+  mUserInteractionBackoffMillis=60000
+  mPreviousResultTime=0
+  mPreviousResultType=1
+  mMillisSaved=0
+  mZAccelerationThreshold=-9.5
+  mAccelerationThreshold=0.2
+  mTimeThreshold=PT1S
+  mEnabledOverride=true
+AmbientDisplaySuppressionController:
+ ambientDisplaySuppressed=false
+ mSuppressionTokens={}
+
+Low Power Standby Controller:
+  mIsActive=false
+  mIsEnabled=false
+  mSupportedConfig=false
+  mEnabledByDefaultConfig=false
+  mStandbyTimeoutConfig=0
+  mEnableCustomPolicy=false
+  Allowed UIDs=[]
+  
+  UID allowed reasons:
+
+ScreenTimeoutOverridePolicy:
+  mScreenTimeoutOverrideConfig=-1
+  mLastAutoReleaseReason=-1
+PowerManagerFlags:
+ enable_early_screen_timeout_detector:                 true (def:true)
+ improve_wakelock_latency:                             true (def:true)
+ per_display_wake_by_touch:                            true (def:true)
+ framework_wakelock_info:                              false (def:false)
+ move_wsc_logging_to_notifier:                         true (def:true)
+ wakelock_attribution_via_workchain:                   true (def:true)
+ disable_frozen_process_wakelocks:                     false (def:false)

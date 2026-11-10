@@ -1,0 +1,13 @@
+/sys/power/suspend_stats/fail=13 
+/sys/power/suspend_stats/failed_freeze=8 
+/sys/power/suspend_stats/failed_prepare=0 
+/sys/power/suspend_stats/failed_resume=0 
+/sys/power/suspend_stats/failed_resume_early=0 
+/sys/power/suspend_stats/failed_resume_noirq=0 
+/sys/power/suspend_stats/failed_suspend=5 
+/sys/power/suspend_stats/failed_suspend_late=0 
+/sys/power/suspend_stats/failed_suspend_noirq=0 
+/sys/power/suspend_stats/last_failed_dev=alarmtimer.0.auto 
+/sys/power/suspend_stats/last_failed_errno=-16 
+/sys/power/suspend_stats/last_failed_step=freeze 
+/sys/power/suspend_stats/success=102 

@@ -1,0 +1,50 @@
+Sun Nov  8 19:15:15 CST 2026
+POWER_MANAGER
+  mWakefulness=Dozing
+  mIsPowered=false
+  mWakeLockSummary=0x40
+  mLightDeviceIdleMode=false
+  mDeviceIdleMode=true
+Wake Locks: size=1
+  DOZE_WAKE_LOCK                    'dream:doze' ACQ=-15m54s341ms (uid=1000 pid=3473 pkg=android)
+Suspend Blockers: size=5
+  PowerManagerService.WakeLocks: ref count=0 []
+  PowerManagerService.Display: ref count=0 []
+  mIsPowered=false
+  mWakeLockSummary=0x40
+PCI_ENDPOINT
+/sys/bus/pci/devices/0000:01:00.0/vendor
+0x17cb
+/sys/bus/pci/devices/0000:01:00.0/device
+0x110e
+/sys/bus/pci/devices/0000:01:00.0/class
+0x028000
+/sys/bus/pci/devices/0000:01:00.0/uevent
+DRIVER=cnss_pci
+OF_NAME=cnss_pci0
+OF_FULLNAME=/soc/pcie@1c00000/pcie0_rp/cnss_pci0
+OF_COMPATIBLE_N=0
+PCI_CLASS=28000
+PCI_ID=17CB:110E
+PCI_SUBSYS_ID=17CB:110E
+PCI_SLOT_NAME=0000:01:00.0
+MODALIAS=pci:v000017CBd0000110Esv000017CBsd0000110Ebc02sc80i00
+../../../../../../../bus/pci/drivers/cnss_pci
+TIMERFD_MATCHES
+/proc/1052/fd:
+/proc/13515/fd:
+/proc/3473/fd:
+lrwx------ 1 root root 64 2026-11-08 19:15 167 -> anon_inode:[timerfd]
+lrwx------ 1 root root 64 2026-11-08 19:15 230 -> anon_inode:[timerfd]
+lrwx------ 1 root root 64 2026-11-08 19:15 231 -> anon_inode:[timerfd]
+lrwx------ 1 root root 64 2026-11-08 19:15 232 -> anon_inode:[timerfd]
+lrwx------ 1 root root 64 2026-11-08 19:15 266 -> anon_inode:[timerfd]
+lrwx------ 1 root root 64 2026-11-08 19:15 267 -> anon_inode:[timerfd]
+lrwx------ 1 root root 64 2026-11-08 19:15 268 -> anon_inode:[timerfd]
+BACKGROUND_PROCESS_ARGUMENTS
+1052 /system/bin/hw/android.system.suspend-service 
+3473 system_server                                                                                      
+13515 /data/user/0/com.omarea.vtools/files/scene-daemon 
+2845 /data/adb/ksu/bin/busybox sh /data/adb/modules/MiuiVariableThermal/service.sh 
+2930 /data/adb/ksu/bin/busybox sh /data/adb/modules/idle_battery_saver/service.sh 
+12506 /data/adb/ksu/bin/busybox sh /data/adb/modules/cosmicmap_adblock/service.sh 

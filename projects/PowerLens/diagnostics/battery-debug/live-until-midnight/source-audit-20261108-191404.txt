@@ -1,0 +1,81 @@
+Sun Nov  8 19:14:05 CST 2026
+uid=0(root) gid=0(root) groups=0(root) context=u:r:su:s0
+100
+SUSPEND_CONTROL
+Wakeups:
+WakeupInfo{name: Abort: Pending Wakeup Sources: [timerfd], count: 2031}
+WakeupInfo{name: Abort: Last active Wakeup Source: 3-000e, count: 31}
+WakeupInfo{name: Abort: Device 0000:01:00.0 failed to suspend: error -11, count: 63}
+WakeupInfo{name: Abort: Pending Wakeup Sources: qcom_rx_wakelock, count: 162}
+WakeupInfo{name: Abort: Last active Wakeup Source: qrtr_ws, count: 10}
+WakeupInfo{name: Abort: Device alarmtimer.0.auto failed to suspend: error -16, count: 42}
+WakeupInfo{name: -1 modem, count: 28}
+WakeupInfo{name: Abort: Pending Wakeup Sources: NETLINK, count: 20}
+WakeupInfo{name: Abort: Last active Wakeup Source: qcom_rx_wakelock, count: 78}
+WakeupInfo{name: unknown, count: 2}
+WakeupInfo{name: Abort: Some devices failed to suspend, or early wake event detected, count: 5}
+WakeupInfo{name: Abort: Last active Wakeup Source: eventpoll, count: 6}
+WakeupInfo{name: Abort: Pending Wakeup Sources: [timerfd] [timerfd], count: 17}
+WakeupInfo{name: Abort: Pending Wakeup Sources: IPA_CLIENT_APPS_WAN_LOW_LAT_CONS rmnet_ctl IPA_CLIENT_APPS_LAN_CONS, count: 4}
+WakeupInfo{name: Abort: Pending Wakeup Sources: IPA_CLIENT_APPS_WAN_LOW_LAT_CONS IPA_CLIENT_APPS_WAN_COAL_CONS rmnet_ctl, count: 4}
+WakeupInfo{name: Abort: Pending Wakeup Sources: IPA_CLIENT_APPS_WAN_LOW_LAT_CONS rmnet_ctl, count: 9}
+WakeupInfo{name: Abort: Pending Wakeup Sources: IPA_CLIENT_APPS_WAN_LOW_LAT_CONS rmnet_ipa1281071684 rmnet_ctl, count: 2}
+WakeupInfo{name: Abort: One or more tasks refusing to freeze, count: 3}
+WakeupInfo{name: Abort: Device 0000:01:00.0 failed to suspend noirq: error -11, count: 4}
+WakeupInfo{name: Abort: Pending Wakeup Sources: hal_bluetooth_lock 898000.qcom,qup_uart, count: 1}
+WakeupInfo{name: Abort: Pending Wakeup Sources: 3-000e, count: 2}
+WakeupInfo{name: -1 adsp, count: 2}
+WakeupInfo{name: Abort: Pending Wakeup Sources: smp2p-sleepstate, count: 2}
+WakeupInfo{name: Abort: Pending Wakeup Sources: qcom_rx_wakelock IPA_CLIENT_APPS_WAN_LOW_LAT_CONS rmnet_ipa1281071684 rmnet_ctl IPA_CLIENT_APPS_LAN_CONS, count: 1}
+WakeupInfo{name: Abort: Pending Wakeup Sources: IPA_CLIENT_APPS_LAN_CONS, count: 9}
+WakeupInfo{name: Abort: Pending Wakeup Sources: qcom_rx_wakelock RMNET_SHS IPA_CLIENT_APPS_WAN_LOW_LAT_CONS IPA_CLIENT_APPS_WAN_COAL_CONS rmnet_ipa1281071684 rmnet_ctl, count: 1}
+WakeupInfo{name: Abort: late suspend of alarmtimer.0.auto device failed, count: 3}
+WakeupInfo{name: Abort: Pending Wakeup Sources: qcom_rx_wakelock IPA_CLIENT_APPS_WAN_LOW_LAT_CONS rmnet_ctl, count: 1}
+WakeupInfo{name: Abort: Pending Wakeup Sources: rmnet_ctl, count: 1}
+WakeupInfo{name: Abort: late suspend of 0000:01:00.0 device failed, count: 4}
+WakeupInfo{name: 217 pm8xxx_rtc_alarm, count: 3}
+
+
+----- Suspend Stats -----
+success: 2076
+fail: 475
+failed_freeze: 293
+failed_prepare: 0
+failed_suspend: 168
+failed_suspend_late: 7
+failed_suspend_noirq: 4
+failed_resume: 0
+failed_resume_early: 0
+failed_resume_noirq: 0
+last_hw_sleep: 0
+total_hw_sleep: 0
+max_hw_sleep: 0
+
+Last Failures:
+    last_failed_dev: 0000:01:00.0
+    last_failed_errno: -16
+    last_failed_step: suspend
+----------
+
+
+Suspend Info:
+suspend attempts: 2551
+failed suspends: 475
+short suspends: 0
+total suspend time: 36893489772765 ms
+short suspend time: 0 ms
+suspend overhead: 598120 ms
+failed suspend overhead: 88761 ms
+new backoffs: 339
+backoff continuations: 136
+total sleep time between suspends: 477800 ms
+
+RECENT_WAKE
+Abort: Pending Wakeup Sources: [timerfd] PROCESSES
+ 1052  1000 android.system.suspend-service
+ 2845     0 busybox
+ 2930     0 busybox
+ 2983  2000 adbd
+ 3473  1000 system_server
+12506     0 busybox
+13515     0 scene-daemon

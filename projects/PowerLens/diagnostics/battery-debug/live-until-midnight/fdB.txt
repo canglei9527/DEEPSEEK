@@ -1,0 +1,900 @@
+﻿pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (20, 178104103)
+it_interval: (30, 0)
+pos:	0
+flags:	02
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (6556, 962205621)
+it_interval: (10650, 953325362)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 1
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 1
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (50, 384591543)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (7092, 443495053)
+it_interval: (10918, 694031562)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (7092, 752294271)
+it_interval: (10918, 848436093)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (7096, 335108334)
+it_interval: (10920, 639852812)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (21, 732921778)
+it_interval: (33, 258282746)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (182, 183140416)
+it_interval: (213, 244682590)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (21, 866851889)
+it_interval: (33, 258584465)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (26, 782824746)
+it_interval: (33, 269656496)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (7098, 63562082)
+it_interval: (10921, 504115363)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (14744, 138084009)
+it_interval: (14744, 541381040)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (7112, 624231140)
+it_interval: (10928, 784459215)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (7091, 602691096)
+it_interval: (10918, 273694271)
+pos:	0
+flags:	02000002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (0, 867293179)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (7110, 145913171)
+it_interval: (10927, 545315361)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (7092, 167722553)
+it_interval: (10918, 556225156)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (7095, 701151720)
+it_interval: (10920, 322944427)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (7112, 626200775)
+it_interval: (10928, 785478798)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (261, 169102455)
+it_interval: (1667, 345985562)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 9
+ticks: 0
+settime flags: 00
+it_value: (468, 219389794)
+it_interval: (1200, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02
+mnt_id:	13
+ino:	2052
+clockid: 7
+ticks: 0
+settime flags: 01
+it_value: (8869, 948567513)
+it_interval: (0, 0)
+pos:	0
+flags:	02000002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (3282, 620294156)
+it_interval: (3600, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 79088646)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (1, 911132969)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 79136875)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (2, 957744173)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (5, 528150158)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (1, 911106875)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (1, 911093125)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (17, 295066932)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 9
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 1
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02
+mnt_id:	13
+ino:	2052
+clockid: 0
+ticks: 0
+settime flags: 00
+it_value: (71662, 282907184)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (9118, 81740373)
+it_interval: (11931, 513495238)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (633, 285933703)
+it_interval: (2196, 890170566)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (633, 525751102)
+it_interval: (2196, 924431504)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (9088, 947043249)
+it_interval: (11916, 946161129)
+pos:	0
+flags:	02000002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02
+mnt_id:	13
+ino:	2052
+clockid: 7
+ticks: 0
+settime flags: 01
+it_value: (67381, 500372706)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 1
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 1
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02000002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 8
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 0
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 9
+ticks: 0
+settime flags: 01
+it_value: (47, 92339225)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 7
+ticks: 0
+settime flags: 01
+it_value: (1282, 459328756)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 0
+ticks: 0
+settime flags: 03
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 1
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02
+mnt_id:	13
+ino:	2052
+clockid: 9
+ticks: 0
+settime flags: 00
+it_value: (1675, 866343593)
+it_interval: (21600, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 9
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02
+mnt_id:	13
+ino:	2052
+clockid: 9
+ticks: 0
+settime flags: 00
+it_value: (1675, 871214427)
+it_interval: (3600, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 9
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 9
+ticks: 0
+settime flags: 00
+it_value: (441, 680704697)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 7
+ticks: 0
+settime flags: 00
+it_value: (68, 498701886)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 9
+ticks: 0
+settime flags: 00
+it_value: (407, 630289354)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 7
+ticks: 0
+settime flags: 00
+it_value: (113, 216289093)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 1
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	04002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (2, 853331563)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 1
+settime flags: 01
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02004002
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (0, 0)
+it_interval: (0, 0)
+pos:	0
+flags:	02
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (2, 319702395)
+it_interval: (5, 0)
+pos:	0
+flags:	02
+mnt_id:	13
+ino:	2052
+clockid: 1
+ticks: 0
+settime flags: 00
+it_value: (2, 334421353)
+it_interval: (5, 0)

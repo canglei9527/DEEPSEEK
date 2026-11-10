@@ -1,0 +1,26 @@
+Current Battery Service state:
+  AC powered: false
+  USB powered: false
+  Wireless powered: false
+  Dock powered: false
+  Max charging current: 0
+ Time when the latest updated value of the Max charging current was sent via battery changed broadcast: +11s596ms
+  Max charging voltage: 0
+  Charge counter: 4260000
+  status: 3
+  health: 2
+  present: true
+  level: 72
+  scale: 100
+  voltage: 4040
+ Time when the latest updated value of the voltage was sent via battery changed broadcast: +1h21m37s582ms
+ The last voltage value sent via the battery changed broadcast: 4040
+  temperature: 360
+  technology: Li-poly
+  Charging state: 0
+  Charging policy: 0
+  Capacity level: 3
+MiuiBatteryService first usage time:
+  mSetBatteryUsageTimeCount=0
+  mNtpTime=-1
+  mParseNtpTime=

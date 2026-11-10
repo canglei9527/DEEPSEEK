@@ -1,0 +1,4 @@
+﻿host_time,device_epoch,charge_counter,current_now,current_avg,capacity,status,wakefulness,jd_standby_bucket,jd_notification_appop,jd_pids,jd_cpuinfo
+2026-11-08 18:06:55,1794132416,,,,,,,10,POST_NOTIFICATION: allow,21973,6% 21973/com.jingdong.app.mall: 4.1% user + 1.9% kernel / faults: 5798 minor 15 major
+2026-11-08 18:07:26,1794132446,,,,,,,10,POST_NOTIFICATION: allow,21973,not sampled
+2026-11-08 18:07:56,1794132477,,,,,,,10,POST_NOTIFICATION: allow,21973,12% 21973/com.jingdong.app.mall: 9.4% user + 3.1% kernel / faults: 30107 minor 4615 major

@@ -1,0 +1,1 @@
+{"ts":"00:38:33","service":"up","screen":"on","cpu_cur":1017600,"cpu_max":1017600,"cpu_orig":1689600,"cpu_off":0,"cpu_limited":1,"lim_cfg":1,"cores":0,"cores_n":0,"cores_cfg":1,"doze":1,"doze_sec":300,"doze_ok":2,"doze_per_app":1,"doze_deep":0,"scan":1,"standby":0,"notify":0,"sensor":0,"sensor_cfg":0,"trace":0,"trace_cfg":1,"cleaner":1,"window_range":"-","inactive_now":0}

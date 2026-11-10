@@ -1,0 +1,110 @@
+CPU wakeup stats:
+  Config:
+    wakeup_stats_retention_ms=+3d0h0m0s0ms
+    wakeup_matching_window_ms=+1s0ms
+    waking_activity_retention_ms=+5m0s0ms
+  
+  Irq device map:
+    Loaded from xml resource: 0x117000d
+    Map:
+      pm8xxx_rtc_alarm: [Alarm]
+  
+  Recent waking activity:
+    Subsystem Alarm:
+      -42s42ms: 1000 [PER ], 
+      -42s449ms: u0a344 [CEM ], 
+      -1m24s570ms: u0a344 [SVC ], 
+      -2m50s37ms: u0a209 [IMPF], 
+      -3m27s193ms: u0a344 [SVC ], 
+      -4m6s508ms: u0a393 [TOP ], 
+      -4m38s144ms: u0a368 [SVC ], 
+      -5m13s858ms: 1000 [PER ], 
+      -5m21s662ms: u0a343 [SVC ], 
+    Subsystem Sensor:
+      -449ms: 1000 [PER ], 
+      -2s849ms: 1000 [PER ], 
+      -4s338ms: 1000 [PER ], 
+      -5s354ms: 1000 [PER ], 
+      -8s304ms: 1000 [PER ], 
+      -11s489ms: 1000 [PER ], 
+      -12s669ms: 1000 [PER ], 
+      -17s796ms: 1000 [PER ], 
+      -18s997ms: 1000 [PER ], 
+      -23s344ms: 1000 [PER ], 
+      -25s354ms: 1000 [PER ], 
+      -32s269ms: 1000 [PER ], 
+      -34s20ms: 1000 [PER ], 
+      -36s650ms: 1000 [PER ], 
+      -41s724ms: 1000 [PER ], 
+      -43s494ms: 1000 [PER ], 
+      -46s679ms: 1000 [PER ], 
+      -47s920ms: 1000 [PER ], 
+      -49s423ms: 1000 [PER ], 
+      -51s102ms: 1000 [PER ], 
+      -52s382ms: 1000 [PER ], 
+      -57s417ms: 1000 [PER ], 
+      -1m0s132ms: 1000 [PER ], 
+      -1m4s23ms: 1000 [PER ], 
+      -1m5s578ms: 1000 [PER ], 
+      -1m10s5ms: 1000 [PER ], 
+      -1m19s3ms: 1000 [PER ], 
+      -1m32s474ms: 1001 [PER ], 
+      -1m34s25ms: 1000 [PER ], 
+      -1m42s719ms: 1000 [PER ], 
+      -1m46s873ms: 1000 [PER ], 
+      -1m49s218ms: 1000 [PER ], 
+      -1m50s486ms: 1000 [PER ], 
+      -1m53s159ms: 1000 [PER ], 
+      -1m56s289ms: 1000 [PER ], 
+      -1m57s397ms: 1000 [PER ], 
+      -1m58s589ms: 1000 [PER ], 
+      -2m1s367ms: 1000 [PER ], 
+      -2m2s961ms: 1000 [PER ], 
+      -2m4s14ms: 1000 [PER ], 
+      -2m5s609ms: 1000 [PER ], 
+      -2m5s767ms: u0a341 [TOP ], 
+      -2m6s666ms: 1000 [PER ], 
+      -2m19s8ms: 1000 [PER ], 
+      -2m27s374ms: 1000 [PER ], 
+      -2m33s988ms: 1000 [PER ], 
+      -2m35s539ms: 1000 [PER ], 
+      -2m36s738ms: 1000 [PER ], 
+      -2m37s889ms: 1000 [PER ], 
+      -2m49s10ms: 1000 [PER ], 
+      -3m3s990ms: 1000 [PER ], 
+      -3m13s477ms: 1000 [PER ], 
+      -3m14s702ms: 1000 [PER ], 
+      -3m17s194ms: 1000 [PER ], 
+      -3m19s12ms: 1000 [PER ], 
+      -3m33s993ms: 1000 [PER ], 
+      -3m49s15ms: 1000 [PER ], 
+      -4m3s995ms: 1000 [PER ], 
+      -4m19s18ms: 1000 [PER ], 
+      -4m22s897ms: 1000 [PER ], 
+      -4m33s998ms: 1000 [PER ], 
+      -4m36s977ms: 1000 [PER ], 
+      -4m43s426ms: 1000 [PER ], 
+      -4m44s769ms: 1000 [PER ], 
+      -4m45s944ms: 1000 [PER ], 
+      -4m49s21ms: 1000 [PER ], 
+      -4m50s199ms: 1000 [PER ], 
+      -4m56s91ms: 1000 [PER ], 
+      -4m57s341ms: 1000 [PER ], 
+  
+  Current proc-state map (126):
+    1000:PER , 1001:PER , 1002:PER , 1027:PER , 1037:NONE, 1068:PER , 1073:PER , 2000:NONE, 2918:PER , 6100:NONE, 6101:NONE, 6102:NONE, 6110:FGS , 6120:PER , u0a84:PER , u0a85:CEM , u0a87:CEM , u0a89:NONE, u0a91:SVC , u0a92:NONE, u0a94:CACC, u0a95:NONE, u0a102:NONE, u0a105:NONE, u0a114:NONE, u0a115:PER , u0a118:PER , u0a120:NONE, u0a123:NONE, u0a124:LAST, u0a125:NONE, u0a126:NONE, u0a127:NONE, u0a129:NONE, u0a130:FGS , u0a131:NONE, u0a132:NONE, u0a133:NONE, u0a134:BFGS, u0a136:NONE, u0a137:BFGS, u0a138:BFGS, u0a139:TRNB, u0a141:NONE, u0a145:NONE, u0a146:CEM , u0a147:BFGS, u0a149:NONE, u0a152:PER , u0a156:NONE, u0a160:PER , u0a164:NONE, u0a165:CEM , u0a166:NONE, u0a167:CEM , u0a168:CEM , u0a170:NONE, u0a172:CEM , u0a174:CACC, u0a175:NONE, u0a176:NONE, u0a178:BTOP, u0a179:FGS , u0a182:NONE, u0a183:CEM , u0a186:NONE, u0a188:PER , u0a190:BFGS, u0a194:BFGS, u0a195:PER , u0a197:NONE, u0a198:NONE, u0a199:BFGS, u0a204:CEM , u0a205:NONE, u0a209:IMPF, u0a214:TRNB, u0a221:NONE, u0a225:NONE, u0a229:PER , u0a230:PER , u0a232:PER , u0a237:NONE, u0a238:NONE, u0a239:NONE, u0a240:PER , u0a249:NONE, u0a252:BFGS, u0a260:CEM , u0a262:CEM , u0a265:NONE, u0a266:PER , u0a271:NONE, u0a277:NONE, u0a279:NONE, u0a284:NONE, u0a286:CEM , u0a288:CEM , u0a289:NONE, u0a290:NONE, u0a291:NONE, u0a292:NONE, u0a293:CEM , u0a298:NONE, u0a306:CEM , u0a307:SVC , u0a308:BTOP, u0a310:BFGS, u0a329:CEM , u0a336:LAST, u0a341:TOP , u0a342:CAC , u0a343:SVC , u0a344:SVC , u0a345:CAC , u0a351:FGS , u0a368:CAC , u0a393:CAC , u0a402:NONE, u0a418:NONE, u0ai9000:CACC, u0i1:CACC, u0i2:CACC, u0i3:BTOP, u0i4:SVC , u0i5:LAST
+  
+  Wakeup events:
+    -56m55s637ms:
+      Wakeup{mType=1, mElapsedMillis=1114400, mUptimeMillis=855657, mDevices=[IrqDevice{mLine=217, mDevice='pm8xxx_rtc_alarm'}], mResponsibleSubsystems={1=true}}
+      Attribution: Alarm [1000 PER , u0a343 SVC ]
+    -1h0m17s639ms:
+      Wakeup{mType=1, mElapsedMillis=912398, mUptimeMillis=774379, mDevices=[IrqDevice{mLine=217, mDevice='pm8xxx_rtc_alarm'}], mResponsibleSubsystems={1=true}}
+      Attribution: Alarm [u0a344 SVC ]
+    -1h1m27s676ms:
+      Wakeup{mType=1, mElapsedMillis=842361, mUptimeMillis=767820, mDevices=[IrqDevice{mLine=217, mDevice='pm8xxx_rtc_alarm'}], mResponsibleSubsystems={1=true}}
+      Attribution: Alarm [1000 PER ]
+  Attribution stats:
+    Subsystem Alarm: 3/3
+    Total: 3
+

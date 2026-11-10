@@ -1,0 +1,78 @@
+===/data/adb/modules/MiuiVariableThermal
+id=MiuiVariableThermal
+name=MIUI动态温控
+version=20230324
+versionCode=2023032400
+author=top大佬(酷安)
+description=[ 当前温控：系统默认 ] 利用MIUI云温控，使充电场景、游戏场景在温控层面用不同档位的快充和性能无限制，普通场景自动恢复系统默认温控，可配置MIUI旁路供电、锁定屏幕刷新率，配置路径：/data/adb/modules/MiuiVariableThermal/config.conf，日志log.log。 
+# ##
+===/data/adb/modules/WorkSettingPro
+id=WorkSettingPro
+name=爱玩机工具箱（应用核心功能拓展）
+versionCode=1901
+author=小白杨
+version=19.02(极速稳定版)
+description=用于扩展爱玩机工具箱一些功能，旨在系统OTA并无需挂载解锁系统system即可达到修改系统目的，非MIUI设备不会刷入MIUI高级设置核心文件，内含adb与fastboot工具包，若出现设置错误卸载重装自动还原
+
+
+
+#☆☆☆☆☆☆☆☆☆☆☆☆备注1：3D Touch功能无法打开的的:请在/system/etc/device_features/.xml文件内加入代码:                                                                                        <bool name="support_force_touch">true</bool>                                                               
+===/data/adb/modules/cosmicmap_adblock
+id=cosmicmap_adblock
+name=CosmicMap 广告拦截 (AdBlock)
+version=v1.9
+versionCode=2026110514
+author=CosmicMap
+description=系统广告/快应用/OAID 拦截 + 109445 条 hosts（开机自建 bind mount + SELinux system_file 标签，换 root 框架也生效）
+===/data/adb/modules/disablebaa
+name=关闭小米电池老化锁压锁容
+id=disablebaa
+version=v1.0
+versionCode=260702
+author=ivybridge
+description=当前电池循环数：438，尝试伪装为39。伪装模式：xm power，baa服务不存在或已禁用。
+===/data/adb/modules/idle_battery_saver
+id=idle_battery_saver
+name=息屏省电（Idle Battery Saver）
+version=v3.46
+versionCode=50
+author=筱夜
+description=澎湃OS4 息屏省电：Doze加速（可深度档激进抑制后台）+ 关闭常开扫描 + 息屏关核 + 超大核限频 + 息屏停止手势传感器 + 免生效时间段 + App Standby + 内置系统清理（一键清理/定时清理/诊断日志开关，首次安装可选激活，升级保留原配置）+ KSU原生WebUI实时状态与配置修改（保存即热重载）。支持直接覆盖安装，卸载/停用自动还原。兼容 KernelSU / Magisk。
+===/data/adb/modules/qpace_lkm
+id=qpace_lkm
+name=QPaCE内核模块
+version=2.5
+versionCode=250
+author=myflavor
+description=为SM8850开启高通硬件级内存压缩引擎
+===/data/adb/modules/scene_systemless
+id=scene_systemless
+name=Scene的附加模块
+version=v1.4.0
+versionCode=140
+author=嘟嘟ski
+description=Scene的辅助模块，使用Scene部分功能时可免于直接操作系统文件
+minMagisk=17000===/data/adb/modules/xm15_baa_change_all
+id=xm15_baa_change_all
+name=小米15系列充电BAA修改（三合一自动识别）
+version=v3.0
+versionCode=2
+author=酷安@特困碳酸
+description=合并小米15/小米15Pro/小米15Ultra三个充电BAA修改文件，开机自动识别机型并挂载对应的BAA_config电池配置，强制循环等级idx为1，解除因循环导致的锁容。支持澎湃OS4官方包以及没有修改BAA的官改包
+===/data/adb/modules/zygisk_lsposed
+id=zygisk_lsposed
+name=LSPosed
+version=v2.2.0 (7854)
+versionCode=7854
+author=LSPosed Developers
+description=Another enhanced implementation of Xposed Framework. Supports Android 9 ~ 17. Requires Zygisk enabled.
+updateJson=https://lsposed.zip/update.json
+actionIcon=launcher.png
+===/data/adb/modules/zygisksu
+id=zygisksu
+name=Zygisk Next
+version=1.5.0 (843-5217106-release)
+versionCode=843
+author=5ec1cff, Nullptr, aviraxp
+description=[✅zygote, Root: ✅KernelSU (40545), ZL, 1 service(s) injected] Standalone implementation of Zygisk.
+updateJson=https://lsposed.zip/zygisk-next/update.json

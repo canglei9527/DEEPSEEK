@@ -1,0 +1,80 @@
+2026-11-09 21:21:48 dims ok: pldims: 增量 122/172 UID，间隔 20.7 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 21:31:09 alive cpu_n=172 dim_n=11 snap=49583L dims=122L next_dim=638s
+2026-11-09 21:42:11 dims ok: pldims: 增量 103/172 UID，间隔 20.4 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 22:01:11 alive cpu_n=202 dim_n=12 snap=53964L dims=103L next_dim=59s
+2026-11-09 22:02:13 dims ok: pldims: 增量 75/172 UID，间隔 20.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 22:24:21 dims ok: pldims: 增量 104/172 UID，间隔 22.1 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 22:32:27 alive cpu_n=224 dim_n=14 snap=57176L dims=104L next_dim=705s
+2026-11-09 22:34:49 plc-daemon v5 start pid=24046 cpu=60s dim=300s
+2026-11-09 22:34:57 dims ok: pldims: 增量 102/172 UID，间隔 10.6 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 22:41:37 dims ok: pldims: 增量 102/172 UID，间隔 6.7 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 22:48:12 dims ok: pldims: 增量 103/172 UID，间隔 6.6 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 22:55:03 dims ok: pldims: 增量 103/172 UID，间隔 6.9 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 23:00:57 dims ok: pldims: 增量 105/172 UID，间隔 5.9 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 23:05:07 alive cpu_n=15 dim_n=5 snap=59512L dims=105L next_dim=43s
+2026-11-09 23:07:31 dims ok: pldims: 增量 103/172 UID，间隔 6.6 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 23:13:59 dims ok: pldims: 增量 103/172 UID，间隔 6.5 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 23:20:33 dims ok: pldims: 增量 104/172 UID，间隔 6.6 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 23:27:09 dims ok: pldims: 增量 104/172 UID，间隔 6.6 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 23:32:56 dims ok: pldims: 增量 103/172 UID，间隔 5.8 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 23:37:19 alive cpu_n=30 dim_n=10 snap=61702L dims=103L next_dim=32s
+2026-11-09 23:39:38 dims ok: pldims: 增量 103/172 UID，间隔 6.7 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 23:45:30 dims ok: pldims: 增量 103/172 UID，间隔 5.9 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 23:50:41 dims ok: pldims: 增量 109/172 UID，间隔 5.2 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-09 23:55:42 dims ok: pldims: 增量 97/172 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:00:42 dims ok: pldims: 增量 101/172 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:06:39 dims ok: pldims: 增量 100/172 UID，间隔 6.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:07:39 alive cpu_n=52 dim_n=16 snap=64924L dims=100L next_dim=240s
+2026-11-10 00:11:39 dims ok: pldims: 增量 91/172 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:16:39 dims ok: pldims: 增量 72/172 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:21:57 dims ok: pldims: 增量 99/172 UID，间隔 5.3 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:28:30 dims ok: pldims: 增量 100/172 UID，间隔 6.6 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:33:37 dims ok: pldims: 增量 103/172 UID，间隔 5.1 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:39:03 dims ok: pldims: 增量 102/172 UID，间隔 5.4 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:39:03 alive cpu_n=77 dim_n=22 snap=68619L dims=102L next_dim=300s
+2026-11-10 00:46:02 dims ok: pldims: 增量 100/172 UID，间隔 7.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:51:47 dims ok: pldims: 增量 104/174 UID，间隔 5.8 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 00:56:47 dims ok: pldims: 增量 77/174 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:01:49 dims ok: pldims: 增量 80/174 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:06:50 dims ok: pldims: 增量 74/174 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:09:48 alive cpu_n=103 dim_n=27 snap=72504L dims=74L next_dim=120s
+2026-11-10 01:11:50 dims ok: pldims: 增量 76/174 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:16:51 dims ok: pldims: 增量 84/174 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:21:51 dims ok: pldims: 增量 73/174 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:26:53 dims ok: pldims: 增量 101/174 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:31:52 dims ok: pldims: 增量 98/174 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:37:12 dims ok: pldims: 增量 105/174 UID，间隔 5.3 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:41:37 alive cpu_n=132 dim_n=33 snap=76870L dims=105L next_dim=31s
+2026-11-10 01:43:58 dims ok: pldims: 增量 101/174 UID，间隔 6.8 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:50:42 dims ok: pldims: 增量 102/174 UID，间隔 6.7 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 01:55:42 dims ok: pldims: 增量 102/174 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 02:01:45 dims ok: pldims: 增量 104/174 UID，间隔 6.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 02:38:56 dims ok: pldims: 增量 104/174 UID，间隔 37.2 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 02:38:56 alive cpu_n=142 dim_n=38 snap=78361L dims=104L next_dim=300s
+2026-11-10 04:22:30 dims ok: pldims: 增量 104/174 UID，间隔 103.6 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 04:22:30 alive cpu_n=143 dim_n=39 snap=78511L dims=104L next_dim=300s
+2026-11-10 04:51:33 dims ok: pldims: 增量 104/174 UID，间隔 29.1 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 04:52:33 alive cpu_n=145 dim_n=40 snap=78811L dims=104L next_dim=239s
+2026-11-10 04:56:58 dims ok: pldims: 增量 105/174 UID，间隔 5.4 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:01:58 dims ok: pldims: 增量 105/176 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:06:58 dims ok: pldims: 增量 65/176 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:11:57 dims ok: pldims: 增量 79/176 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:16:57 dims ok: pldims: 增量 65/176 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:21:59 dims ok: pldims: 增量 66/176 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:22:57 alive cpu_n=175 dim_n=46 snap=83363L dims=66L next_dim=240s
+2026-11-10 05:26:58 dims ok: pldims: 增量 66/176 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:31:59 dims ok: pldims: 增量 82/176 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:37:00 dims ok: pldims: 增量 59/141 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:41:59 dims ok: pldims: 增量 138/176 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:46:58 dims ok: pldims: 增量 92/204 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:51:59 dims ok: pldims: 增量 69/204 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 05:52:58 alive cpu_n=205 dim_n=52 snap=88186L dims=69L next_dim=240s
+2026-11-10 05:57:00 dims ok: pldims: 增量 57/204 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 06:01:59 dims ok: pldims: 增量 62/204 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 06:06:59 dims ok: pldims: 增量 62/204 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 06:12:00 dims ok: pldims: 增量 58/204 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 06:17:01 dims ok: pldims: 增量 59/204 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 06:22:02 dims ok: pldims: 增量 60/204 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 06:23:00 alive cpu_n=235 dim_n=58 snap=93856L dims=60L next_dim=240s
+2026-11-10 06:27:01 dims ok: pldims: 增量 61/204 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
+2026-11-10 06:32:01 dims ok: pldims: 增量 63/204 UID，间隔 5.0 分钟，mah=增量 -> /data/local/tmp/powerlens/dims.tsv
