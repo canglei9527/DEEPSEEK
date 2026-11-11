@@ -1,0 +1,248 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1016" height="496" viewBox="0 0 1016 496"><rect width="1016" height="496" fill="#0d1117"/>
+<text x="118" y="30" fill="#e6edf3" font-size="17" font-family="sans-serif">频率组合能效（Mop/s per W，越亮越好）</text>
+<text x="118" y="52" fill="#8b949e" font-size="11" font-family="sans-serif">列=policy0 小核群频率(MHz)  行=policy6 大核群频率(MHz)</text>
+<text x="152" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">557</text>
+<text x="220" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">749</text>
+<text x="288" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">960</text>
+<text x="356" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">1152</text>
+<text x="424" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">1363</text>
+<text x="492" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">1555</text>
+<text x="560" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">1786</text>
+<text x="628" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">1997</text>
+<text x="696" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">2227</text>
+<text x="764" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">2400</text>
+<text x="832" y="76" fill="#8b949e" font-size="10" text-anchor="middle" font-family="monospace">2746</text>
+<text x="108" y="104" fill="#8b949e" font-size="10" text-anchor="end" font-family="monospace">1018</text>
+<rect x="118" y="84" width="66" height="30" fill="rgb(13,17,23)"/>
+<text x="151" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">194</text>
+<rect x="186" y="84" width="66" height="30" fill="rgb(18,33,32)"/>
+<text x="219" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">235</text>
+<rect x="254" y="84" width="66" height="30" fill="rgb(26,55,45)"/>
+<text x="287" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">288</text>
+<rect x="322" y="84" width="66" height="30" fill="rgb(32,72,55)"/>
+<text x="355" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">328</text>
+<rect x="390" y="84" width="66" height="30" fill="rgb(38,87,64)"/>
+<text x="423" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">365</text>
+<rect x="458" y="84" width="66" height="30" fill="rgb(44,104,74)"/>
+<text x="491" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">406</text>
+<rect x="526" y="84" width="66" height="30" fill="rgb(50,123,85)"/>
+<text x="559" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">450</text>
+<rect x="594" y="84" width="66" height="30" fill="rgb(56,139,94)"/>
+<text x="627" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">490</text>
+<rect x="662" y="84" width="66" height="30" fill="rgb(63,157,105)"/>
+<text x="695" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">534</text>
+<rect x="730" y="84" width="66" height="30" fill="rgb(67,169,112)"/>
+<text x="763" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">562</text>
+<rect x="798" y="84" width="66" height="30" fill="rgb(68,172,114)"/>
+<text x="831" y="103" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">571</text>
+<text x="108" y="136" fill="#8b949e" font-size="10" text-anchor="end" font-family="monospace">1210</text>
+<rect x="118" y="116" width="66" height="30" fill="rgb(14,21,25)"/>
+<text x="151" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">204</text>
+<rect x="186" y="116" width="66" height="30" fill="rgb(20,37,34)"/>
+<text x="219" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">243</text>
+<rect x="254" y="116" width="66" height="30" fill="rgb(28,59,47)"/>
+<text x="287" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">296</text>
+<rect x="322" y="116" width="66" height="30" fill="rgb(33,75,57)"/>
+<text x="355" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">335</text>
+<rect x="390" y="116" width="66" height="30" fill="rgb(39,90,65)"/>
+<text x="423" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">371</text>
+<rect x="458" y="116" width="66" height="30" fill="rgb(45,106,75)"/>
+<text x="491" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">411</text>
+<rect x="526" y="116" width="66" height="30" fill="rgb(51,124,86)"/>
+<text x="559" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">455</text>
+<rect x="594" y="116" width="66" height="30" fill="rgb(57,140,95)"/>
+<text x="627" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">493</text>
+<rect x="662" y="116" width="66" height="30" fill="rgb(63,158,106)"/>
+<text x="695" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">537</text>
+<rect x="730" y="116" width="66" height="30" fill="rgb(67,170,112)"/>
+<text x="763" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">565</text>
+<rect x="798" y="116" width="66" height="30" fill="rgb(69,175,115)"/>
+<text x="831" y="135" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">578</text>
+<text x="108" y="168" fill="#8b949e" font-size="10" text-anchor="end" font-family="monospace">1402</text>
+<rect x="118" y="148" width="66" height="30" fill="rgb(15,24,27)"/>
+<text x="151" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">212</text>
+<rect x="186" y="148" width="66" height="30" fill="rgb(21,40,36)"/>
+<text x="219" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">251</text>
+<rect x="254" y="148" width="66" height="30" fill="rgb(29,61,49)"/>
+<text x="287" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">302</text>
+<rect x="322" y="148" width="66" height="30" fill="rgb(34,77,58)"/>
+<text x="355" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">341</text>
+<rect x="390" y="148" width="66" height="30" fill="rgb(39,92,66)"/>
+<text x="423" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">376</text>
+<rect x="458" y="148" width="66" height="30" fill="rgb(45,108,76)"/>
+<text x="491" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">415</text>
+<rect x="526" y="148" width="66" height="30" fill="rgb(51,125,86)"/>
+<text x="559" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">457</text>
+<rect x="594" y="148" width="66" height="30" fill="rgb(57,141,95)"/>
+<text x="627" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">495</text>
+<rect x="662" y="148" width="66" height="30" fill="rgb(63,158,106)"/>
+<text x="695" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">537</text>
+<rect x="730" y="148" width="66" height="30" fill="rgb(67,170,112)"/>
+<text x="763" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">564</text>
+<rect x="798" y="148" width="66" height="30" fill="rgb(70,178,117)"/>
+<text x="831" y="167" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">584</text>
+<text x="108" y="200" fill="#8b949e" font-size="10" text-anchor="end" font-family="monospace">1690</text>
+<rect x="118" y="180" width="66" height="30" fill="rgb(16,25,28)"/>
+<text x="151" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">215</text>
+<rect x="186" y="180" width="66" height="30" fill="rgb(21,40,36)"/>
+<text x="219" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">250</text>
+<rect x="254" y="180" width="66" height="30" fill="rgb(28,59,48)"/>
+<text x="287" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">298</text>
+<rect x="322" y="180" width="66" height="30" fill="rgb(33,74,56)"/>
+<text x="355" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">333</text>
+<rect x="390" y="180" width="66" height="30" fill="rgb(38,87,64)"/>
+<text x="423" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">366</text>
+<rect x="458" y="180" width="66" height="30" fill="rgb(43,102,73)"/>
+<text x="491" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">402</text>
+<rect x="526" y="180" width="66" height="30" fill="rgb(49,119,82)"/>
+<text x="559" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">441</text>
+<rect x="594" y="180" width="66" height="30" fill="rgb(54,133,91)"/>
+<text x="627" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">476</text>
+<rect x="662" y="180" width="66" height="30" fill="rgb(60,150,100)"/>
+<text x="695" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">516</text>
+<rect x="730" y="180" width="66" height="30" fill="rgb(64,160,107)"/>
+<text x="763" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">541</text>
+<rect x="798" y="180" width="66" height="30" fill="rgb(70,176,116)"/>
+<text x="831" y="199" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">579</text>
+<text x="108" y="232" fill="#8b949e" font-size="10" text-anchor="end" font-family="monospace">1958</text>
+<rect x="118" y="212" width="66" height="30" fill="rgb(19,36,34)"/>
+<text x="151" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">241</text>
+<rect x="186" y="212" width="66" height="30" fill="rgb(25,51,43)"/>
+<text x="219" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">278</text>
+<rect x="254" y="212" width="66" height="30" fill="rgb(32,72,55)"/>
+<text x="287" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">328</text>
+<rect x="322" y="212" width="66" height="30" fill="rgb(38,87,64)"/>
+<text x="355" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">364</text>
+<rect x="390" y="212" width="66" height="30" fill="rgb(43,101,72)"/>
+<text x="423" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">397</text>
+<rect x="458" y="212" width="66" height="30" fill="rgb(48,116,81)"/>
+<text x="491" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">435</text>
+<rect x="526" y="212" width="66" height="30" fill="rgb(54,133,91)"/>
+<text x="559" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">475</text>
+<rect x="594" y="212" width="66" height="30" fill="rgb(60,148,99)"/>
+<text x="627" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">511</text>
+<rect x="662" y="212" width="66" height="30" fill="rgb(66,165,109)"/>
+<text x="695" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">552</text>
+<rect x="730" y="212" width="66" height="30" fill="rgb(69,175,116)"/>
+<text x="763" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">578</text>
+<rect x="798" y="212" width="66" height="30" fill="rgb(74,188,123)"/>
+<text x="831" y="231" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">608</text>
+<text x="108" y="264" fill="#8b949e" font-size="10" text-anchor="end" font-family="monospace">2246</text>
+<rect x="118" y="244" width="66" height="30" fill="rgb(19,34,33)"/>
+<text x="151" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">236</text>
+<rect x="186" y="244" width="66" height="30" fill="rgb(24,47,41)"/>
+<text x="219" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">269</text>
+<rect x="254" y="244" width="66" height="30" fill="rgb(30,66,52)"/>
+<text x="287" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">314</text>
+<rect x="322" y="244" width="66" height="30" fill="rgb(35,80,60)"/>
+<text x="355" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">347</text>
+<rect x="390" y="244" width="66" height="30" fill="rgb(40,92,67)"/>
+<text x="423" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">377</text>
+<rect x="458" y="244" width="66" height="30" fill="rgb(45,106,75)"/>
+<text x="491" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">411</text>
+<rect x="526" y="244" width="66" height="30" fill="rgb(50,121,84)"/>
+<text x="559" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">448</text>
+<rect x="594" y="244" width="66" height="30" fill="rgb(55,135,92)"/>
+<text x="627" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">481</text>
+<rect x="662" y="244" width="66" height="30" fill="rgb(60,150,101)"/>
+<text x="695" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">518</text>
+<rect x="730" y="244" width="66" height="30" fill="rgb(64,160,107)"/>
+<text x="763" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">542</text>
+<rect x="798" y="244" width="66" height="30" fill="rgb(69,175,115)"/>
+<text x="831" y="263" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">578</text>
+<text x="108" y="296" fill="#8b949e" font-size="10" text-anchor="end" font-family="monospace">2438</text>
+<rect x="118" y="276" width="66" height="30" fill="rgb(23,45,39)"/>
+<text x="151" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">262</text>
+<rect x="186" y="276" width="66" height="30" fill="rgb(28,59,47)"/>
+<text x="219" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">297</text>
+<rect x="254" y="276" width="66" height="30" fill="rgb(35,79,59)"/>
+<text x="287" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">345</text>
+<rect x="322" y="276" width="66" height="30" fill="rgb(40,93,67)"/>
+<text x="355" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">380</text>
+<rect x="390" y="276" width="66" height="30" fill="rgb(45,106,75)"/>
+<text x="423" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">411</text>
+<rect x="458" y="276" width="66" height="30" fill="rgb(50,121,84)"/>
+<text x="491" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">447</text>
+<rect x="526" y="276" width="66" height="30" fill="rgb(56,137,93)"/>
+<text x="559" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">485</text>
+<rect x="594" y="276" width="66" height="30" fill="rgb(61,151,101)"/>
+<text x="627" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">519</text>
+<rect x="662" y="276" width="66" height="30" fill="rgb(66,167,111)"/>
+<text x="695" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">558</text>
+<rect x="730" y="276" width="66" height="30" fill="rgb(70,178,117)"/>
+<text x="763" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">583</text>
+<rect x="798" y="276" width="66" height="30" fill="rgb(76,193,126)"/>
+<text x="831" y="295" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">619</text>
+<text x="108" y="328" fill="#8b949e" font-size="10" text-anchor="end" font-family="monospace">2650</text>
+<rect x="118" y="308" width="66" height="30" fill="rgb(22,44,39)"/>
+<text x="151" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">261</text>
+<rect x="186" y="308" width="66" height="30" fill="rgb(27,58,47)"/>
+<text x="219" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">294</text>
+<rect x="254" y="308" width="66" height="30" fill="rgb(34,77,58)"/>
+<text x="287" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">340</text>
+<rect x="322" y="308" width="66" height="30" fill="rgb(39,90,66)"/>
+<text x="355" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">372</text>
+<rect x="390" y="308" width="66" height="30" fill="rgb(43,103,73)"/>
+<text x="423" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">402</text>
+<rect x="458" y="308" width="66" height="30" fill="rgb(48,117,81)"/>
+<text x="491" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">436</text>
+<rect x="526" y="308" width="66" height="30" fill="rgb(54,132,90)"/>
+<text x="559" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">472</text>
+<rect x="594" y="308" width="66" height="30" fill="rgb(59,145,98)"/>
+<text x="627" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">505</text>
+<rect x="662" y="308" width="66" height="30" fill="rgb(64,161,107)"/>
+<text x="695" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">542</text>
+<rect x="730" y="308" width="66" height="30" fill="rgb(68,170,113)"/>
+<text x="763" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">566</text>
+<rect x="798" y="308" width="66" height="30" fill="rgb(73,185,121)"/>
+<text x="831" y="327" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">601</text>
+<text x="108" y="360" fill="#8b949e" font-size="10" text-anchor="end" font-family="monospace">2842</text>
+<rect x="118" y="340" width="66" height="30" fill="rgb(24,50,42)"/>
+<text x="151" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">274</text>
+<rect x="186" y="340" width="66" height="30" fill="rgb(29,63,50)"/>
+<text x="219" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">307</text>
+<rect x="254" y="340" width="66" height="30" fill="rgb(36,82,61)"/>
+<text x="287" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">354</text>
+<rect x="322" y="340" width="66" height="30" fill="rgb(41,96,69)"/>
+<text x="355" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">386</text>
+<rect x="390" y="340" width="66" height="30" fill="rgb(45,108,76)"/>
+<text x="423" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">416</text>
+<rect x="458" y="340" width="66" height="30" fill="rgb(50,122,84)"/>
+<text x="491" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">450</text>
+<rect x="526" y="340" width="66" height="30" fill="rgb(56,138,93)"/>
+<text x="559" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">486</text>
+<rect x="594" y="340" width="66" height="30" fill="rgb(61,151,101)"/>
+<text x="627" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">519</text>
+<rect x="662" y="340" width="66" height="30" fill="rgb(66,166,110)"/>
+<text x="695" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">556</text>
+<rect x="730" y="340" width="66" height="30" fill="rgb(70,176,116)"/>
+<text x="763" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">580</text>
+<rect x="798" y="340" width="66" height="30" fill="rgb(75,191,124)"/>
+<text x="831" y="359" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">615</text>
+<text x="108" y="392" fill="#8b949e" font-size="10" text-anchor="end" font-family="monospace">3072</text>
+<rect x="118" y="372" width="66" height="30" fill="rgb(24,49,42)"/>
+<text x="151" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">273</text>
+<rect x="186" y="372" width="66" height="30" fill="rgb(29,62,49)"/>
+<text x="219" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">305</text>
+<rect x="254" y="372" width="66" height="30" fill="rgb(35,80,60)"/>
+<text x="287" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">348</text>
+<rect x="322" y="372" width="66" height="30" fill="rgb(40,93,67)"/>
+<text x="355" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">380</text>
+<rect x="390" y="372" width="66" height="30" fill="rgb(44,105,74)"/>
+<text x="423" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">408</text>
+<rect x="458" y="372" width="66" height="30" fill="rgb(49,118,82)"/>
+<text x="491" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">440</text>
+<rect x="526" y="372" width="66" height="30" fill="rgb(54,133,91)"/>
+<text x="559" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">475</text>
+<rect x="594" y="372" width="66" height="30" fill="rgb(59,146,98)"/>
+<text x="627" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">506</text>
+<rect x="662" y="372" width="66" height="30" fill="rgb(64,160,107)"/>
+<text x="695" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">541</text>
+<rect x="730" y="372" width="66" height="30" fill="rgb(67,170,112)"/>
+<text x="763" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">564</text>
+<rect x="798" y="372" width="66" height="30" fill="rgb(72,184,120)"/>
+<text x="831" y="391" fill="#e6edf3" font-size="9" text-anchor="middle" font-family="monospace">598</text>
+<rect x="797" y="275" width="68" height="32" fill="none" stroke="#ffd33d" stroke-width="2.5"/>
+<text x="118" y="434" fill="#ffd33d" font-size="13" font-family="sans-serif">模型最优：小核 2746 MHz + 大核 2438 MHz = 619 Mop/s/W</text>
+<text x="118" y="456" fill="#ff8b00" font-size="11" font-family="sans-serif">本图为单核功率按核数外推的估算，非实测；与单核实测最优（policy0 2400MHz）不一致，仅用于看趋势。</text>
+</svg>

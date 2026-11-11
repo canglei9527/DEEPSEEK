@@ -2,7 +2,14 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
-data/
+# data/ 整体不入库（原始 log/csv 体积大且每台设备不同），
+# 但能效实测的结论文件必须可追溯，所以用 data/* 而非 data/ 来留例外：
+# Git 不会进入被忽略的目录，`data/` 写法会让下面的 ! 规则完全失效。
+data/*
+!data/EEFF-RESULTS.md
+!data/eeff.tsv
+!data/eeff_combo.tsv
+!data/plots/
 reports/
 build/
 *.egg-info/

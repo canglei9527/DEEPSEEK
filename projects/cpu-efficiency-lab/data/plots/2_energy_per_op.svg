@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="560" viewBox="0 0 940 560"><rect width="940" height="560" fill="#0d1117"/>
+<text x="82" y="30" fill="#e6edf3" font-size="18" font-family="sans-serif">能效 vs 频率（越低越省电）★=最优频点</text>
+<line x1="82" y1="494.0" x2="740" y2="494.0" stroke="#21262d"/>
+<text x="74" y="498.0" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">8.422</text>
+<text x="82.0" y="514" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">557</text>
+<line x1="82" y1="406.4" x2="740" y2="406.4" stroke="#21262d"/>
+<text x="74" y="410.4" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">12.59</text>
+<text x="213.6" y="514" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">1060</text>
+<line x1="82" y1="318.8" x2="740" y2="318.8" stroke="#21262d"/>
+<text x="74" y="322.8" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">16.76</text>
+<text x="345.2" y="514" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">1563</text>
+<line x1="82" y1="231.2" x2="740" y2="231.2" stroke="#21262d"/>
+<text x="74" y="235.2" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">20.92</text>
+<text x="476.8" y="514" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">2066</text>
+<line x1="82" y1="143.6" x2="740" y2="143.6" stroke="#21262d"/>
+<text x="74" y="147.6" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">25.09</text>
+<text x="608.4" y="514" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">2569</text>
+<line x1="82" y1="56.0" x2="740" y2="56.0" stroke="#21262d"/>
+<text x="74" y="60.0" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">29.26</text>
+<text x="740.0" y="514" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">3072</text>
+<text x="411" y="546" fill="#8b949e" font-size="13" text-anchor="middle" font-family="sans-serif">频率 (MHz)</text>
+<text x="22" y="275" fill="#8b949e" font-size="13" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 22 275)">能耗 (nJ/op)</text>
+<polyline points="82.0,56.0 132.2,203.1 187.5,343.3 237.7,387.6 293.0,406.0 343.2,437.7 403.5,458.7 458.7,473.8 519.0,489.5 564.2,494.0 654.6,492.0" fill="none" stroke="#4c9aff" stroke-width="2"/>
+<circle cx="82.0" cy="56.0" r="2.8" fill="#4c9aff"/>
+<circle cx="132.2" cy="203.1" r="2.8" fill="#4c9aff"/>
+<circle cx="187.5" cy="343.3" r="2.8" fill="#4c9aff"/>
+<circle cx="237.7" cy="387.6" r="2.8" fill="#4c9aff"/>
+<circle cx="293.0" cy="406.0" r="2.8" fill="#4c9aff"/>
+<circle cx="343.2" cy="437.7" r="2.8" fill="#4c9aff"/>
+<circle cx="403.5" cy="458.7" r="2.8" fill="#4c9aff"/>
+<circle cx="458.7" cy="473.8" r="2.8" fill="#4c9aff"/>
+<circle cx="519.0" cy="489.5" r="2.8" fill="#4c9aff"/>
+<circle cx="564.2" cy="494.0" r="2.8" fill="#4c9aff"/>
+<circle cx="654.6" cy="492.0" r="2.8" fill="#4c9aff"/>
+<circle cx="564.2" cy="494.0" r="8" fill="none" stroke="#ffd33d" stroke-width="2"/>
+<text x="564.2" y="481.0" fill="#ffd33d" font-size="11" text-anchor="middle" font-family="monospace">2400MHz</text>
+<line x1="752" y1="60" x2="774" y2="60" stroke="#4c9aff" stroke-width="2.5"/>
+<text x="780" y="64" fill="#c9d1d9" font-size="12" font-family="sans-serif">policy0 小核群</text>
+<polyline points="202.5,254.4 252.8,310.6 303.0,349.8 378.4,375.3 448.7,428.6 524.0,430.6 574.2,465.3 629.5,467.9 679.7,483.0 740.0,484.9" fill="none" stroke="#36b37e" stroke-width="2"/>
+<circle cx="202.5" cy="254.4" r="2.8" fill="#36b37e"/>
+<circle cx="252.8" cy="310.6" r="2.8" fill="#36b37e"/>
+<circle cx="303.0" cy="349.8" r="2.8" fill="#36b37e"/>
+<circle cx="378.4" cy="375.3" r="2.8" fill="#36b37e"/>
+<circle cx="448.7" cy="428.6" r="2.8" fill="#36b37e"/>
+<circle cx="524.0" cy="430.6" r="2.8" fill="#36b37e"/>
+<circle cx="574.2" cy="465.3" r="2.8" fill="#36b37e"/>
+<circle cx="629.5" cy="467.9" r="2.8" fill="#36b37e"/>
+<circle cx="679.7" cy="483.0" r="2.8" fill="#36b37e"/>
+<circle cx="740.0" cy="484.9" r="2.8" fill="#36b37e"/>
+<circle cx="740.0" cy="484.9" r="8" fill="none" stroke="#ffd33d" stroke-width="2"/>
+<text x="740.0" y="471.9" fill="#ffd33d" font-size="11" text-anchor="middle" font-family="monospace">3072MHz</text>
+<line x1="752" y1="78" x2="774" y2="78" stroke="#36b37e" stroke-width="2.5"/>
+<text x="780" y="82" fill="#c9d1d9" font-size="12" font-family="sans-serif">policy6 大核群</text>
+</svg>

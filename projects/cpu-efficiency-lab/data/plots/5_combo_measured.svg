@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="778" height="422" viewBox="0 0 778 422"><rect width="778" height="422" fill="#0d1117"/>
+<text x="128" y="30" fill="#e6edf3" font-size="17" font-family="sans-serif">频率组合能效 —— 8 核满载【实测】</text>
+<text x="128" y="52" fill="#8b949e" font-size="11" font-family="sans-serif">列=policy0 小核群(MHz) 行=policy6 大核群(MHz) 数值=整机 Mop/s per W；括号内为整机吞吐 Mop/s</text>
+<text x="128" y="70" fill="#36b37e" font-size="11" font-family="sans-serif">黄圈=能效最优  蓝框=吞吐最优（两者不重合）</text>
+<text x="174" y="82" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">1152</text>
+<text x="266" y="82" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">1555</text>
+<text x="358" y="82" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">1997</text>
+<text x="450" y="82" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">2400</text>
+<text x="542" y="82" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">2746</text>
+<text x="116" y="116" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">1402</text>
+<rect x="128" y="92" width="89" height="37" fill="rgb(41,96,69)"/>
+<text x="172" y="110" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">387</text>
+<text x="172" y="124" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(630)</text>
+<rect x="220" y="92" width="89" height="37" fill="rgb(63,157,104)"/>
+<text x="264" y="110" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">442</text>
+<text x="264" y="124" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(793)</text>
+<rect x="312" y="92" width="89" height="37" fill="rgb(76,193,126)"/>
+<text x="356" y="110" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">475</text>
+<text x="356" y="124" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(982)</text>
+<rect x="404" y="92" width="89" height="37" fill="rgb(64,160,106)"/>
+<text x="448" y="110" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">445</text>
+<text x="448" y="124" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1153)</text>
+<rect x="496" y="92" width="89" height="37" fill="rgb(60,150,100)"/>
+<text x="540" y="110" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">436</text>
+<text x="540" y="124" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1294)</text>
+<text x="116" y="156" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">1958</text>
+<rect x="128" y="132" width="89" height="37" fill="rgb(43,102,72)"/>
+<text x="172" y="150" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">392</text>
+<text x="172" y="164" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(707)</text>
+<rect x="220" y="132" width="89" height="37" fill="rgb(59,146,98)"/>
+<text x="264" y="150" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">432</text>
+<text x="264" y="164" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(868)</text>
+<rect x="312" y="132" width="89" height="37" fill="rgb(59,147,99)"/>
+<text x="356" y="150" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">433</text>
+<text x="356" y="164" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1060)</text>
+<rect x="404" y="132" width="89" height="37" fill="rgb(59,148,99)"/>
+<text x="448" y="150" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">434</text>
+<text x="448" y="164" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1235)</text>
+<rect x="496" y="132" width="89" height="37" fill="rgb(62,154,103)"/>
+<text x="540" y="150" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">440</text>
+<text x="540" y="164" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1379)</text>
+<text x="116" y="196" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">2438</text>
+<rect x="128" y="172" width="89" height="37" fill="rgb(33,75,57)"/>
+<text x="172" y="190" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">367</text>
+<text x="172" y="204" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(777)</text>
+<rect x="220" y="172" width="89" height="37" fill="rgb(39,89,65)"/>
+<text x="264" y="190" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">381</text>
+<text x="264" y="204" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(940)</text>
+<rect x="312" y="172" width="89" height="37" fill="rgb(63,158,105)"/>
+<text x="356" y="190" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">443</text>
+<text x="356" y="204" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1133)</text>
+<rect x="404" y="172" width="89" height="37" fill="rgb(64,159,106)"/>
+<text x="448" y="190" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">444</text>
+<text x="448" y="204" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1305)</text>
+<rect x="496" y="172" width="89" height="37" fill="rgb(54,131,90)"/>
+<text x="540" y="190" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">419</text>
+<text x="540" y="204" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1446)</text>
+<text x="116" y="236" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">2842</text>
+<rect x="128" y="212" width="89" height="37" fill="rgb(19,35,33)"/>
+<text x="172" y="230" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">331</text>
+<text x="172" y="244" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(840)</text>
+<rect x="220" y="212" width="89" height="37" fill="rgb(40,94,68)"/>
+<text x="264" y="230" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">385</text>
+<text x="264" y="244" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1004)</text>
+<rect x="312" y="212" width="89" height="37" fill="rgb(49,117,82)"/>
+<text x="356" y="230" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">406</text>
+<text x="356" y="244" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1191)</text>
+<rect x="404" y="212" width="89" height="37" fill="rgb(51,124,86)"/>
+<text x="448" y="230" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">412</text>
+<text x="448" y="244" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1365)</text>
+<rect x="496" y="212" width="89" height="37" fill="#161b22"/>
+<text x="116" y="276" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">3072</text>
+<rect x="128" y="252" width="89" height="37" fill="rgb(13,17,23)"/>
+<text x="172" y="270" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">314</text>
+<text x="172" y="284" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(870)</text>
+<rect x="220" y="252" width="89" height="37" fill="rgb(32,72,55)"/>
+<text x="264" y="270" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">365</text>
+<text x="264" y="284" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1035)</text>
+<rect x="312" y="252" width="89" height="37" fill="rgb(39,91,66)"/>
+<text x="356" y="270" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">383</text>
+<text x="356" y="284" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1222)</text>
+<rect x="404" y="252" width="89" height="37" fill="rgb(44,105,74)"/>
+<text x="448" y="270" fill="#e6edf3" font-size="12" text-anchor="middle" font-family="monospace">395</text>
+<text x="448" y="284" fill="#c9d1d9" font-size="9" text-anchor="middle" font-family="monospace">(1388)</text>
+<rect x="496" y="252" width="89" height="37" fill="#161b22"/>
+<rect x="310" y="90" width="93" height="41" fill="none" stroke="#ffd33d" stroke-width="3"/>
+<rect x="494" y="170" width="93" height="41" fill="none" stroke="#4c9aff" stroke-width="3"/>
+<text x="128" y="322" fill="#ffd33d" font-size="13" font-family="sans-serif">能效最优：小核 1997 + 大核 1402 MHz = 475 Mop/s/W （982 Mop/s, 2.07 W, 2.11 nJ/op）</text>
+<text x="128" y="344" fill="#4c9aff" font-size="13" font-family="sans-serif">吞吐最优：小核 2746 + 大核 2438 MHz = 1446 Mop/s （能效 419 Mop/s/W, 3.45 W）</text>
+<text x="128" y="368" fill="#ff8b00" font-size="11" font-family="sans-serif">注：能效最优与吞吐最优不重合 —— 追求省电应锁在能效点，追求性能则能效会下降约 12%。</text>
+</svg>

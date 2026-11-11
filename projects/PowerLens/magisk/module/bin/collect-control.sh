@@ -61,17 +61,26 @@ write_state() {
 #
 # 所以：proc 非 zombie，且 cmdline 的 arg2 正好等于脚本路径。
 pids_of() {
-  TARGET="$1"
-  for P in $(ps -A -o PID 2>/dev/null); do
-    [ "$P" = "$$" ] && continue
-    [ -d "/proc/$P" ] || continue
-    ST=$(awk '{ print $3 }' "/proc/$P/stat" 2>/dev/null)
-    case "$ST" in Z|X|x|"") continue ;; esac
-    ARG2=$(tr '\000' '\n' < "/proc/$P/cmdline" 2>/dev/null | sed -n 2p)
-    [ "$ARG2" = "$TARGET" ] && echo "$P"
-  done
+  # ===== 为什么不用 /proc/<pid>/cmdline 逐字节比对 =====
+  #   上一版把 cmdline 的 NUL 换成换行后取第 2 行，再与目标路径比较。
+  #   真机实测：ps 里明明有 `sh /data/local/tmp/plc/plc-daemon.sh 60 1200`，
+  #   但这个循环返回 NO MATCH，于是 `off` 杀不掉守护 ——
+  #   用户点了「关闭采集」数据还在涨，比"没有开关"更糟。
+  #   原因是 tr/sed 在 Android toybox 下对 NUL 的处理不稳定，
+  #   不同 ROM 行为不一致，不能作为判定依据。
+  #
+  # ===== 现在的做法 =====
+  #   用 ps 的 PID,STAT,ARGS 三列，要求
+  #     第 3 列 == "sh" 且 第 4 列 == 目标脚本路径
+  #   锚定在开头，所以 `su -c "sh ..."` 这类包装层（ARGS 以 su / sh -c
+  #   开头）不会误命中；STAT 以 Z 开头的是 zombie，跳过。
+  ps -A -o PID,STAT,ARGS 2>/dev/null \
+    | awk -v me=$$ -v t="$1" '
+        $1 == me        { next }
+        $2 ~ /^Z/       { next }
+        $3 == "sh" && $4 == t { print $1 }
+      '
 }
-
 daemon_pids() {
   pids_of "$PL_TMP/plc-daemon.sh"
 }
@@ -163,6 +172,20 @@ case "$1" in
 
   status)
     MODE=$(cat "$CONF" 2>/dev/null || echo unset)
+    # ===== 一致性守卫：用户意图优先 =====
+    #   实测出现过 conf=off 但守护仍在跑：守护是模块安装前
+    #   由 on/auto 拉起的，而 conf 后来被写成 off（或安装时保留了
+    #   旧的 off 选择）。此时界面上"已关闭"和"daemon_count=1"互相
+    #   矛盾，用户不知道信哪个。
+    #   规则很简单：显式 off 就意味着不该有守护，发现残留就收掉。
+    if [ "$MODE" = "off" ]; then
+      _STRAY=$(daemon_pids)
+      if [ -n "$_STRAY" ]; then
+        say "conf=off 但守护在跑($_STRAY)，收掉"
+        stop_daemon
+      fi
+      : > "$LOCK" 2>/dev/null
+    fi
     N=$(daemon_pids | wc -l | tr -d ' ')
     echo "mode=$MODE"
     echo "daemon_count=$N"
