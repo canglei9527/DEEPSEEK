@@ -40,6 +40,24 @@ class VerifyMatrixRecoveryTests(unittest.TestCase):
         self.assertFalse(module._journal_restored(good, "policy6"))
         self.assertFalse(module._journal_restored(good.replace("RESTORED", "LOCKED"), "policy0"))
 
+    def test_external_restriction_requires_both_marker_and_taint(self):
+        restricted = (
+            "POLICY_RESTORE|policy0|1152000|1996800|CONSERVATIVE\n"
+            "POLICY_RESTORE_RESTRICTED|policy0|1152000|1996800\n"
+            "RECOVERY_FILE|policy-policy0.state.tainted\nOBSERVED_POLICY_DRIFT\n"
+        )
+        self.assertEqual(module._external_restriction_policies(restricted, ["policy0"]), {"policy0"})
+        # A restriction without the taint marker is not attributable to the system.
+        self.assertEqual(
+            module._external_restriction_policies(
+                "POLICY_RESTORE_RESTRICTED|policy0|1152000|1996800\n", ["policy0"]), set())
+        # A taint belonging to another policy must not excuse this one.
+        self.assertEqual(module._external_restriction_policies(restricted, ["policy6"]), set())
+        # Plain successful restoration is not an external restriction.
+        ok = ("POLICY_RESTORE|policy0|1152000|1996800|JOURNALED\n"
+              "WATCHDOG_RECOVERY_OK|0\n")
+        self.assertEqual(module._external_restriction_policies(ok, ["policy0"]), set())
+
     def test_cases_are_fault_injections_not_a_measurement_sweep(self):
         modes = {case[1] for case in module.CASES}
         self.assertNotIn("0", modes)

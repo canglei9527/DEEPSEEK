@@ -36,6 +36,7 @@
 
 #define DEF_STORE "/data/local/tmp/powerlens/snapshots.tsv"
 #define MAXU      1024          /* 最多跟踪 1024 个 UID */
+#define MAXPOL    16            /* 最多跟踪 16 个 cpufreq policy */
 #define LINEBUF   512
 #define NAMEBUF   256
 
@@ -50,6 +51,32 @@ typedef struct {
 
 static uidrec g_u[MAXU];
 static int    g_n = 0;
+
+/* ---------- CPU 频率快照 ----------
+ *
+ * 只读 /sys/devices/system/cpu，不写任何节点，不改 governor。
+ *
+ * 为什么需要它：原采集只有「每 UID 的 CPU 毫秒」，没有频率。
+ * 同样 1 秒 CPU 时间，跑在 1.0 GHz 和 2.4 GHz 上耗电差一倍以上；
+ * 缺频率就无法解释「某个 UID 的 CPU 时间为什么便宜/贵」,
+ * 也无法看出设备当时是否被系统限频。
+ *
+ * 输出为额外一行 `ts * cpu ...`。读取端（Storage）只认 `battery` 行，
+ * 因此旧版 App 读到这些行会安全跳过，不需要数据迁移。
+ */
+typedef struct {
+    char name[32];        /* policy0 / policy6 ... */
+    char cpus[64];        /* "0_1_2_3_4_5"（空格已换成下划线，不破坏列分隔） */
+    int  cur_khz;
+    int  min_khz;
+    int  max_khz;
+} policyrec;
+
+static policyrec g_p[MAXPOL];
+static int       g_pn = 0;
+static int       g_online = -1;
+static char      g_online_buf[64];
+static int       g_cpu_count = -1;
 
 /* ---------- 工具 ---------- */
 
@@ -97,6 +124,40 @@ static void read_pkg(int pid, char *out, size_t n) {
     }
     out[k] = 0;
     if (k == 0) strcpy(out, "?");
+}
+
+/*
+ * 判断 g_u[].pkg 里是不是一个【可信的包名】。
+ *
+ * ===== 为什么不能只看"含 '.'"（踩过，本机 2943 行数据被污染）=====
+ *   /proc/<pid>/status 的 Name: 被内核截断到 15 字符，
+ *   于是 vendor.qti.hardware.cacert.server 变成 .cacertservice，
+ *   com.qualcomm.qti.cne 被截成 .qms，vendor.qti.data.txpwradmin 变成 .qtidataservices。
+ *   这些截断值仍然含 '.'，旧判断把它们当成合法包名保留下来，
+ *   反而挡住了 /data/system/packages.list 的权威映射。
+ *
+ *   实测受影响的 UID：
+ *     2918  -> .cacertservice   （真名 vendor.qti.hardware.cacert.server）
+ *     10118 -> .qms             （真名 vendor.qti.data.txpwradmin）
+ *     10115 -> .qtidataservices （真名 com.qualcomm.qti.cne）
+ *
+ * ===== 判定规则 =====
+ *   合法包名必须：
+ *     1. 非空，且不以 '?' 开头（占位符）
+ *     2. 不以 '.' 开头（截断残留）
+ *     3. 不以 '/' 开头（二进制路径，如 /vendor/bin/hw/audiohalservice.qti）
+ *     4. 不以 "proc:" / "sys:" 开头（内部的回退标记）
+ *     5. 含至少一个 '.'（Java 包名惯例）
+ *     6. 首字符是字母或下划线（Android 包名不能以数字/符号开头）
+ */
+static int pkg_is_valid(const char *p) {
+    if (p == NULL || p[0] == 0) return 0;
+    if (p[0] == '?' || p[0] == '.' || p[0] == '/') return 0;
+    if (strncmp(p, "proc:", 5) == 0) return 0;
+    if (strncmp(p, "sys:",  4) == 0) return 0;
+    if (strchr(p, '.') == NULL) return 0;
+    if (!(isalpha((unsigned char)p[0]) || p[0] == '_')) return 0;
+    return 1;
 }
 
 static int find_uid(int uid) {
@@ -219,8 +280,10 @@ static void load_pkg_from_list(void) {
            而且 packages.list 里往往是共享 UID 的第三方应用，覆盖会造成误标。 */
         if (uid < 10000) continue;
 
-        /* 已经是「看起来像包名」的值，保留第一个（主包），不覆盖 */
-        if (strchr(g_u[i].pkg, '.') && g_u[i].pkg[0] != '?' ) continue;
+        /* 已经是【可信包名】就保留第一个（主包），不覆盖。
+           注意用 pkg_is_valid 而不是只看含 '.' —— 见 pkg_is_valid 注释里
+           的截断名污染案例（.cacertservice / .qms / .qtidataservices）。 */
+        if (pkg_is_valid(g_u[i].pkg)) continue;
 
         strncpy(g_u[i].pkg, pkg, NAMEBUF - 1);
         g_u[i].pkg[NAMEBUF - 1] = 0;
@@ -336,6 +399,9 @@ static const char *proc_name_of_uid(int uid) {
         if (strlen(nm) >= 8)  score += 1;
         /* 惩罚明显是截断的（Linux Name 字段最多 15 字符，超长会被截） */
         if (strlen(nm) >= 15) score -= 3;
+        /* 以 '.' 开头只可能是截断残留的后缀（.cacertservice / .qms）。
+           短名（<=14 字符）不会触发上面的长度惩罚，必须单独拦。 */
+        if (nm[0] == '.') score -= 50;
         if (strstr(nm, "hardwar") && strlen(nm) <= 12) score -= 5;
 
         if (score > bestScore) {
@@ -348,6 +414,87 @@ static const char *proc_name_of_uid(int uid) {
     return fallback[0] ? fallback : NULL;
 }
 
+/* 读一个 sysfs 节点里的十进制整数；失败返回 -1。 */
+static int read_int(const char *path) {
+    long long v = read_ll(path);
+    if (v < 0 || v > 2147483647LL) return -1;
+    return (int)v;
+}
+
+/*
+ * 发现并读取 cpufreq policy。
+ *
+ * 不硬编码 policy0/policy6：不同 SoC 的 policy 划分不同。
+ * 本机 SM8750 实测是 policy0(CPU0-5) + policy6(CPU6-7)，
+ * 别的平台可能是 4 个 policy，也可能是 cluster 混合。只枚举实际目录。
+ */
+static void load_cpu_state(void) {
+    g_pn = 0;
+    g_online = -1;
+    g_cpu_count = -1;
+    g_online_buf[0] = 0;
+
+    const char *root = "/sys/devices/system/cpu/cpufreq";
+    DIR *d = opendir(root);
+    if (d != NULL) {
+        struct dirent *e;
+        while ((e = readdir(d)) != NULL && g_pn < MAXPOL) {
+            if (strncmp(e->d_name, "policy", 6) != 0) continue;
+            const char *rest = e->d_name + 6;
+            int numeric = 1;
+            for (const char *q = rest; *q; q++) {
+                if (!isdigit((unsigned char)*q)) { numeric = 0; break; }
+            }
+            if (!numeric || rest[0] == 0) continue;   /* 排除 policy_devfreq 等 */
+
+            policyrec *p = &g_p[g_pn];
+            memset(p, 0, sizeof *p);
+            snprintf(p->name, sizeof p->name, "%s", e->d_name);
+
+            char path[256];
+            snprintf(path, sizeof path, "%s/%s/scaling_cur_freq", root, e->d_name);
+            p->cur_khz = read_int(path);
+            snprintf(path, sizeof path, "%s/%s/scaling_min_freq", root, e->d_name);
+            p->min_khz = read_int(path);
+            snprintf(path, sizeof path, "%s/%s/scaling_max_freq", root, e->d_name);
+            p->max_khz = read_int(path);
+
+            snprintf(path, sizeof path, "%s/%s/related_cpus", root, e->d_name);
+            char cpus[64];
+            if (read_first_line(path, cpus, sizeof cpus) == 0) {
+                size_t k = 0;
+                for (size_t j = 0; cpus[j] && k + 1 < sizeof p->cpus; j++) {
+                    p->cpus[k++] = cpus[j] == ' ' ? '_' : cpus[j];
+                }
+                p->cpus[k] = 0;
+            }
+
+            /* 三个都读不到就没有记录价值 */
+            if (p->cur_khz < 0 && p->min_khz < 0 && p->max_khz < 0) continue;
+            g_pn++;
+        }
+        closedir(d);
+    }
+
+    if (read_first_line("/sys/devices/system/cpu/online", g_online_buf, sizeof g_online_buf) == 0) {
+        for (char *q = g_online_buf; *q; q++) {
+            if (*q == ' ') *q = '_';
+        }
+        g_online = 0;
+    }
+
+    /* possible 形如 "0-7"，只用来算核心总数 */
+    char possible[64];
+    if (read_first_line("/sys/devices/system/cpu/possible", possible, sizeof possible) == 0) {
+        int lo = -1, hi = -1;
+        if (sscanf(possible, "%d-%d", &lo, &hi) == 2 && hi >= lo && hi < 4096) {
+            g_cpu_count = hi - lo + 1;
+        } else if (sscanf(possible, "%d", &lo) == 1 && lo >= 0) {
+            g_cpu_count = 1;
+        }
+    }
+}
+
 static int write_snapshot(const char *store, int verbose) {
     long long ts = now_ms();
     g_n = 0;
@@ -358,6 +505,7 @@ static int write_snapshot(const char *store, int verbose) {
 
     bat_t b;
     read_battery(&b);
+    load_cpu_state();
 
     int existed = (access(store, F_OK) == 0);
     FILE *f = fopen(store, "a");
@@ -392,22 +540,28 @@ static int write_snapshot(const char *store, int verbose) {
             /* 1) 绝对确定的 */
             strncpy(u->pkg, sn, NAMEBUF - 1);
             u->pkg[NAMEBUF - 1] = 0;
-        } else if (u->pkg[0] != '/' &&
-                   u->pkg[0] != '?' &&
-                   u->pkg[0] != 0 &&
-                   strchr(u->pkg, '.')) {
+        } else if (pkg_is_valid(u->pkg)) {
             /*
              * 2) 有真实【包名】，保留。
              *
-             * 注意必须排除以 '/' 开头的：
-             *   /vendor/bin/hw/audiohalservice.qti  含 '.' 但这是二进制路径，不是包名。
-             *   之前少了 u->pkg[0] != '/' 的判断，导致路径被当成包名保留，
-             *   uid 1041 在 UI 上就显示成 /vendor/bin/hw/audiohalservice.qti。
+             * 排除项统一收敛到 pkg_is_valid()：
+             *   - 以 '/' 开头：/vendor/bin/hw/audiohalservice.qti 是二进制路径
+             *   - 以 '.' 开头：内核 Name: 截断残留（.cacertservice 等）
+             *   - "proc:" / "sys:" 内部标记
              */
         } else {
             /* 3) 反查真实进程名 */
             const char *pn = proc_name_of_uid(u->uid);
-            if (pn != NULL && pn[0]) {
+            /*
+             * "/proc/<pid>/status: Name:" 被内核截断到 15 字符，
+             * 截断后可能只剩一个后缀，例如：
+             *   vendor.qti.hardware.cacert.server -> .cacertservice
+             *   vendor.qti.data.txpwradmin        -> .qms
+             *   vendor.qti.iwlan                  -> .qtidataservices
+             * 这类值以 '.' 开头，不带 "proc:" 前缀直接当名字显示，
+             * 会比 uid 数字更容易误导人。宁可退回 sys:uidN。
+             */
+            if (pn != NULL && pn[0] && pn[0] != '.' && strchr(pn, ':') == NULL) {
                 snprintf(u->pkg, NAMEBUF, "proc:%s", pn);
             } else {
                 /* 4) 诚实兜底 */
@@ -424,11 +578,27 @@ static int write_snapshot(const char *store, int verbose) {
     }
     fprintf(f, "%lld\t*\tbattery\t%lld\t%d\t%s\t0\t0\t0\t0\t0\t0\n",
             ts, b.charge_uah < 0 ? 0 : b.charge_uah, b.capacity, b.status);
+
+    /*
+     * CPU 快照行（每 policy 一行）：
+     *   ts  *  cpu  <policy>  <cur_khz>  <min_khz>  <max_khz>  <cpus>  <online>  <core数>
+     *
+     * 这是只读快照：min/max 是系统当时的限频，不是本工具设置的。
+     * 读取端只取最后一批，用于回答"此刻频率/限频大概是多少"。
+     */
+    for (int i = 0; i < g_pn; i++) {
+        policyrec *p = &g_p[i];
+        fprintf(f, "%lld\t*\tcpu\t%s\t%d\t%d\t%d\t%s\t%s\t%d\n",
+                ts, p->name, p->cur_khz, p->min_khz, p->max_khz,
+                p->cpus[0] ? p->cpus : "-",
+                g_online >= 0 ? g_online_buf : "-",
+                g_cpu_count);
+    }
     fclose(f);
 
     if (verbose) {
-        printf("plcollect: %d UID, charge=%lld uAh (%d%%), status=%s\n",
-               g_n, b.charge_uah, b.capacity, b.status);
+        printf("plcollect: %d UID, %d policy, charge=%lld uAh (%d%%), status=%s\n",
+               g_n, g_pn, b.charge_uah, b.capacity, b.status);
     }
     return 0;
 }

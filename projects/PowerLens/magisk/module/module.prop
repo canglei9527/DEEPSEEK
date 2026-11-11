@@ -1,0 +1,6 @@
+id=powerlens
+name=PowerLens 功耗归因采集器
+version=v1.2
+versionCode=3
+author=PowerLens
+description=root 侧 procfs/dumpsys 采集器 + 守护，含采集开关/空闲自动暂停/可选禁用 logd。App 侧只读文件、零 root。卸载模块即完整回滚（含恢复 logd）。

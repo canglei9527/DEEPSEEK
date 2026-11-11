@@ -53,6 +53,21 @@ def _journal_restored(output: str, policy: str) -> bool:
     return bool(re.search(pattern, output)) and ("RECOVERY_FILE|policy-%s.state.tainted" % policy not in output)
 
 
+def _external_restriction_policies(output: str, policies) -> set:
+    """Policies the recovery path deliberately left tighter than the pre-test range.
+
+    A concurrent system cap change is not a tool defect: the conservative
+    restore must not widen a limit it no longer owns, and it marks the policy
+    tainted. Such a case is inconclusive rather than failed.
+    """
+    restricted = set()
+    for policy in policies:
+        if "POLICY_RESTORE_RESTRICTED|%s|" % policy in output and \
+                "RECOVERY_FILE|policy-%s.state.tainted" % policy in output:
+            restricted.add(policy)
+    return restricted
+
+
 def main(argv: Optional[list] = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--serial", required=True)
@@ -95,15 +110,25 @@ def main(argv: Optional[list] = None) -> int:
             bench = deploy_benchmark(client, ROOT / "build" / "cpu_mix_bench")
             log("REMOTE_BENCH|" + bench)
             for index, (label, mode, mixed, marker) in enumerate(CASES, 1):
+                print("VERIFY|%d/%d|%s" % (index, len(CASES), label), flush=True)
                 report, topology, cpu_paths, battery_path, _ = _validate_device_ready(client, args.minimum_battery_percent)
                 if not read_screen_state(client).display_on:
                     raise AdbError("screen is no longer on")
-                e_freq = _interior_frequency(report, "policy0")
-                targets = (("policy0", e_freq),)
-                cpus = (0,)
-                if mixed:
-                    targets += (("policy6", _interior_frequency(report, "policy6")),)
-                    cpus = (0, 6)
+                # A policy restricted to a single frequency cannot host a
+                # temporary lock; record that instead of discarding the run.
+                try:
+                    e_freq = _interior_frequency(report, "policy0")
+                    targets = (("policy0", e_freq),)
+                    cpus = (0,)
+                    if mixed:
+                        targets += (("policy6", _interior_frequency(report, "policy6")),)
+                        cpus = (0, 6)
+                except AdbError as exc:
+                    skipped = {"case": label, "mode": mode, "verdict": "SKIPPED", "reason": str(exc)}
+                    results.append(skipped)
+                    log("CASE_RESULT|" + json.dumps(skipped, ensure_ascii=False))
+                    print("VERIFY_RESULT|%s|SKIPPED|%s" % (label, exc), flush=True)
+                    continue
                 config = MatrixConfig("FIJ-" + label, "D" if mixed else "A", cpus, targets, 1, 8, 1)
                 recovery_id = secrets.token_hex(16)
                 recovery_dir = "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_" + recovery_id
@@ -111,7 +136,6 @@ def main(argv: Optional[list] = None) -> int:
                                                     bench, recovery_id=recovery_id, fault_injection=mode,
                                                     minimum_battery_percent=args.minimum_battery_percent)
                 log("CASE_BEGIN|%s|%s|%s" % (label, recovery_id, list(targets)))
-                print("VERIFY|%d/%d|%s" % (index, len(CASES), label), flush=True)
                 transport = ""
                 try:
                     transport = client.run_root_script_stdin(script, timeout_s=45)
@@ -126,13 +150,23 @@ def main(argv: Optional[list] = None) -> int:
                         break
                     time.sleep(1)
                 log("REMOTE_BEGIN|" + label); log(output); log("REMOTE_END|" + label)
-                verify_device_snapshot(client, topology, report)
+                snapshot_error = None
+                try:
+                    verify_device_snapshot(client, topology, report)
+                except (AdbError, OSError) as exc:
+                    snapshot_error = str(exc)
                 process_list = client.run_root_script("ps -A -o PID,NAME | grep '[c]pu_mix_bench' || true").strip()
                 marker_present = ("FAULT_INJECTION|" + marker + "|") in output
+                expected_policies = [name for name, _ in targets]
+                restricted_policies = _external_restriction_policies(output, expected_policies)
                 restored = "WATCHDOG_RECOVERY_OK" in output and "WATCHDOG_RECOVERY_RESTRICTED" not in output
                 journal_ok = (label == "first_offline" or _journal_restored(output, "policy0"))
                 if mixed:
                     journal_ok = journal_ok and _journal_restored(output, "policy6")
+                # The watchdog recovering a tighter-than-original range is the
+                # documented safe outcome for concurrent system caps, not a
+                # restoration failure of this tool.
+                restricted_ok = bool(restricted_policies) and "WATCHDOG_RECOVERY_RESTRICTED" in output
                 no_early_work = mode not in ("before_registration", "after_registration") or "B|META|" not in output
                 running_work_seen = mode != "during_benchmark" or "B|META|" in output
                 child_state = None
@@ -147,15 +181,23 @@ def main(argv: Optional[list] = None) -> int:
                         child_stopped = child_state in ("missing", "Z")
                     else:
                         child_stopped = False
-                passed = bool(marker_present and restored and journal_ok and not process_list and
-                              no_early_work and running_work_seen and child_stopped)
-                result = {"case": label, "mode": mode, "target_khz": dict(targets), "passed": passed,
-                          "marker_present": marker_present, "journal_restored": journal_ok,
-                          "snapshot_restored": True, "benchmark_processes": process_list or None,
+                safety_ok = bool(marker_present and (restored or restricted_ok) and
+                                 (journal_ok or restricted_ok) and not process_list and
+                                 no_early_work and running_work_seen and child_stopped)
+                if safety_ok and restricted_ok:
+                    verdict = "RESTRICTED"
+                else:
+                    verdict = "PASS" if safety_ok and snapshot_error is None else "FAIL"
+                result = {"case": label, "mode": mode, "target_khz": dict(targets), "verdict": verdict,
+                          "passed": verdict == "PASS", "marker_present": marker_present,
+                          "journal_restored": journal_ok, "snapshot_restored": snapshot_error is None,
+                          "snapshot_error": snapshot_error,
+                          "externally_restricted_policies": sorted(restricted_policies),
+                          "benchmark_processes": process_list or None,
                           "child_state": child_state, "recovery_dir": recovery_dir}
                 results.append(result); log("CASE_RESULT|" + json.dumps(result, ensure_ascii=False))
-                print("VERIFY_RESULT|%s|%s" % (label, "PASS" if passed else "FAIL"), flush=True)
-                if not passed:
+                print("VERIFY_RESULT|%s|%s" % (label, verdict), flush=True)
+                if verdict == "FAIL":
                     raise AdbError("fault-injection check failed: " + label)
         except (AdbError, OSError, ValueError) as exc:
             error = repr(exc); log("VERIFICATION_ERROR|" + error)
@@ -167,17 +209,25 @@ def main(argv: Optional[list] = None) -> int:
                 except (AdbError, OSError) as exc:
                     screen_error = repr(exc); log("SCREEN_RESTORE_ERROR|" + screen_error)
             log("VERIFICATION_END|%d/%d|error=%s" % (len(results), len(CASES), error))
+    verdicts = [item.get("verdict") for item in results]
     summary = {"serial": args.serial, "cases_planned": len(CASES), "cases_completed": len(results),
-               "cases_passed": sum(r["passed"] for r in results), "results": results, "error": error,
+               "cases_passed": verdicts.count("PASS"), "cases_restricted": verdicts.count("RESTRICTED"),
+               "cases_skipped": verdicts.count("SKIPPED"),
+               "cases_failed": verdicts.count("FAIL"), "results": results, "error": error,
                "screen_before": asdict(screen_before), "screen_after": asdict(screen_after) if screen_after else None,
                "screen_restore_error": screen_error, "raw_log": str(raw_path),
                "verification_scope": "controlled fault injection only; does not enable the matrix gate",
                "remaining_limitations": ["sysfs comparisons and writes are not atomic with system changes",
+                                         "concurrent system cap changes make a case inconclusive (RESTRICTED), not restored",
                                          "ADB transport disconnect must be independently revalidated",
                                          "thermal/policy behavior may vary across devices"]}
     with summary_path.open("x", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
-    return 0 if not error and not screen_error and len(results) == len(CASES) else 2
+    complete = not error and not screen_error and len(results) == len(CASES)
+    if not complete:
+        return 2
+    # External restriction or a single-frequency policy is inconclusive, not a pass.
+    return 0 if verdicts.count("PASS") == len(CASES) else 2
 
 
 if __name__ == "__main__":

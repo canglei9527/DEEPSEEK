@@ -52,6 +52,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <errno.h>
+#include <sys/stat.h>   /* chmod() */
 
 #define MAXU     2048
 /*
@@ -689,6 +690,106 @@ static int save_prev(const char *path, long long ts) {
     return 1;
 }
 
+/*
+ * ===== dims.total.tsv：跨轮次逐 UID 累计 =====
+ *
+ * ===== 为什么需要它 =====
+ *   dims.tsv 每 5 分钟被【整体覆盖】，只保留最后一次增量。
+ *   而 App 的查询窗口是 1/6/24 小时 ——
+ *   拿 5 分钟的一帧代表 6 小时的前台/后台比例，必然错。
+ *
+ *   实测案例（这一版就是为它改的）：
+ *     红果短剧在 6 小时窗口里 fg 累计 2073s、bg 累计 8319s，
+ *     但最后那一帧恰好 fg=0 / bg=301s，
+ *     于是 App 显示"纯后台"，用户明明看了半小时。
+ *
+ *   根因是 App 读不到 dims-history（那个目录 shell:shell 0700），
+ *   所以只能让 pldims 自己维护一份可读的累计表。
+ *
+ * ===== 格式（制表符分隔，与 dims.tsv 前 9 列一致）=====
+ *   0 uid
+ *   1 fgMs      2 bgMs      3 fgsMs
+ *   4 cpuOffMs  5 wlMs      6 wlOffMs
+ *   7 mahUah
+ *   8 spanMs    这些累计覆盖的真实时长（各轮 interval 之和）
+ *
+ *   故意保持和 dims.tsv 前 8 列【同序】——
+ *   App 侧可以复用同一套解析，少写一份代码。
+ *
+ * ===== 清零 =====
+ *   rm /data/local/tmp/powerlens/dims.total.tsv 即可，
+ *   下次运行会从 0 重新累加。
+ */
+
+#define ACC_MAX 512
+static int      g_accUid[ACC_MAX];
+static long long g_accFg[ACC_MAX],  g_accBg[ACC_MAX],  g_accFgs[ACC_MAX];
+static long long g_accOff[ACC_MAX], g_accWl[ACC_MAX],  g_accWlo[ACC_MAX];
+static long long g_accMah[ACC_MAX], g_accSpan[ACC_MAX];
+static int      g_accN = 0;
+
+/** 找到该 uid 的累计槽位，没有就新建 */
+static int acc_slot(int uid) {
+    for (int i = 0; i < g_accN; i++) {
+        if (g_accUid[i] == uid) return i;
+    }
+    if (g_accN >= ACC_MAX) return -1;
+    int i = g_accN++;
+    g_accUid[i] = uid;
+    g_accFg[i] = g_accBg[i] = g_accFgs[i] = 0;
+    g_accOff[i] = g_accWl[i] = g_accWlo[i] = 0;
+    g_accMah[i] = g_accSpan[i] = 0;
+    return i;
+}
+
+static void acc_add(int uid, long long fg, long long bg, long long fgs,
+                    long long off, long long wl, long long wlo, long long mah) {
+    int i = acc_slot(uid);
+    if (i < 0) return;
+    g_accFg[i]  += fg;   g_accBg[i]  += bg;   g_accFgs[i] += fgs;
+    g_accOff[i] += off;  g_accWl[i]  += wl;   g_accWlo[i] += wlo;
+    g_accMah[i] += mah;
+}
+
+/** 读回上一轮的累计表 */
+static void acc_load(const char *dir) {
+    char path[256];
+    snprintf(path, sizeof path, "%s/dims.total.tsv", dir);
+    FILE *f = fopen(path, "r");
+    if (!f) return;
+    static char line[512];
+    while (fgets(line, sizeof line, f)) {
+        long long uid, fg, bg, fgs, off, wl, wlo, mah, span;
+        int r = sscanf(line, "%lld\t%lld\t%lld\t%lld\t%lld\t%lld\t%lld\t%lld\t%lld",
+                       &uid, &fg, &bg, &fgs, &off, &wl, &wlo, &mah, &span);
+        if (r < 9) continue;
+        int i = acc_slot((int) uid);
+        if (i < 0) continue;
+        g_accFg[i] = fg;   g_accBg[i] = bg;   g_accFgs[i] = fgs;
+        g_accOff[i] = off; g_accWl[i] = wl;   g_accWlo[i] = wlo;
+        g_accMah[i] = mah; g_accSpan[i] = span;
+    }
+    fclose(f);
+}
+
+static void write_total(const char *dir, long long ts, long long spanMs) {
+    (void) ts;
+    char path[256];
+    snprintf(path, sizeof path, "%s/dims.total.tsv", dir);
+    FILE *f = fopen(path, "w");
+    if (!f) return;
+    for (int i = 0; i < g_accN; i++) {
+        long long sp = g_accSpan[i] + spanMs;
+        fprintf(f, "%d\t%lld\t%lld\t%lld\t%lld\t%lld\t%lld\t%lld\t%lld\n",
+                g_accUid[i],
+                g_accFg[i], g_accBg[i], g_accFgs[i],
+                g_accOff[i], g_accWl[i], g_accWlo[i],
+                g_accMah[i], sp);
+    }
+    fclose(f);
+    /* 让 App 能读（0600 的话非 root 直接 EACCES） */
+    chmod(path, 0644);
+}
 static void save_global(const char *dir, long long ts, long long interval) {
     char path[256];
     snprintf(path, sizeof path, "%s/dims.global", dir);
@@ -795,7 +896,29 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    /* 先把历史累计读回来，后面在它基础上继续加 */
+    acc_load(dirbuf);
+
     int nz = 0;
+    /*
+     * ===== 累计总量（本轮所有 UID 的增量之和）=====
+     *
+     * 为什么要额外存这个：
+     *   dims.tsv 每 5 分钟被整体覆盖，只保留【最后一次】增量。
+     *   而 App 的查询窗口是 1/6/24 小时 —— 拿 5 分钟的一帧
+     *   去代表 6 小时的前台/后台比例，必然错。
+     *
+     *   实测踩到的具体案例：
+     *     红果短剧在 6 小时窗口里前台 2073s、后台 8319s，
+     *     但最后那一帧恰好 fg=0/bg=301s，于是整段被算成"纯后台"。
+     *
+     *   解决办法：把历来所有轮次的增量累加进 dims.total，
+     *   App 读它就知道"这个 UID 在整段时间里到底前台多久"。
+     *
+     *   放在 pldims 侧而不是 App 侧，是因为 App 读不到 dims-history
+     *   （那个目录是 shell:shell 0700，App 无权限）。
+     */
+    long long totInterval = interval;
     for (int i = 0; i < g_cn; i++) {
         dimrec *c = &g_cur[i];
         long dfg = 0, dbg = 0, dfgs = 0, doff = 0, dwl = 0, dwlo = 0;
@@ -837,6 +960,13 @@ int main(int argc, char **argv) {
         long long sum = 0;
         for (int k = 0; k < MAH_N; k++) sum += dm[k];
 
+        /*
+         * 逐 UID 累计 —— 必须在 continue 之前做，
+         * 否则"本轮只有后台时间、没有 mAh"的 UID 会被漏掉，
+         * 而那恰恰是最需要被记录的情形（红果整段后台就是这样）。
+         */
+        acc_add(c->uid, dfg, dbg, dfgs, doff, dwl, dwlo, sum);
+
         if ((dfg | dbg | dfgs | doff | dwl | dwlo) == 0 && sum == 0) continue;
 
         fprintf(f, "%lld\t%d\t%ld\t%ld\t%ld\t%ld\t%ld\t%ld\t%lld",
@@ -846,6 +976,9 @@ int main(int argc, char **argv) {
         nz++;
     }
     fclose(f);
+
+    /* 把逐 UID 累计写出去，与 dims.tsv 同时刻更新 */
+    write_total(dirbuf, ts, totInterval);
 
     save_prev(prev, ts);
     save_global(dirbuf, ts, interval);

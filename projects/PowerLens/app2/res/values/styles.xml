@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@android:style/Theme.DeviceDefault">
-        <item name="android:windowBackground">#FF0F1116</item>
+    <!--
+      AppTheme —— 深色主题
+
+      ===== 为什么用 NoActionBar =====
+        Theme.DeviceDefault 在这台 HyperOS 机器上会画一条橄榄绿的 ActionBar，
+        和界面的 0xFF0B0D12 深色底完全不搭；而且 ActionBar 里已经有
+        application label "PowerLens"，我们自己再画一个标题就变成两行重复。
+
+        关掉 ActionBar 后用自己在 buildUi() 里画的顶部栏，配色可控。
+
+        AlertDialog 不受影响：DeviceDefault 的 alertDialogTheme 是独立定义的。
+    -->
+    <style name="AppTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+        <item name="android:windowBackground">#FF0B0D12</item>
         <item name="android:colorAccent">#FF4FA3FF</item>
+        <!-- 状态栏/导航栏跟着深色走，避免顶部出现浅色割裂 -->
+        <item name="android:statusBarColor">#FF0B0D12</item>
+        <item name="android:navigationBarColor">#FF0B0D12</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

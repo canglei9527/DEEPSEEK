@@ -1,5 +1,17 @@
 # Bug 历史
 
+## 2026-11-11（真机）：首次捕获系统并发限频竞态，验证器曾把它误判为恢复失败
+- 环境：设备 `192.168.137.99:45387`（2410DPN6CC / haotian / SM8750 / Android 16，root 可用、SELinux Enforcing、放电中、电量 84–85%）。
+- 只读采集复核：`data/phase-h-idle-check.*`，请求 20 秒、实际跨度 20.84 秒，中位间隔 1.041 秒；`current_now`/`voltage_now` 分别观测到 20/16 次数值变化（周期约 1.04 秒）。`current_now×voltage_now` 积分 14.57 J，`charge_counter` 反向估算 15.26 J，相差 4.78% —— 这是同一电量计的窗口内一致性检查，不是独立校准。
+- 基准编译：NDK `25.2.9519653` 编译 `native/cpu_mix_bench.c` 成功，12832 字节；本机需把 `TEMP`/`TMP` 指向可写目录，否则 clang 报 `unable to make temporary file`。
+- **核心发现（首次真机证据）**：策略边界在本次会话中被系统持续改动，且改动发生在故障注入窗口内。只读连续观测与多次 `preflight` 记录到 `policy0` 依次出现 384000–1996800、556800–2227200、1152000–2745600、1152000–1363200，`policy6` 上限也在 1958400/2438400/3513600 之间变化；`online=0-7`、`low_power=0` 全程稳定，未由本工具写入。这与之前只能靠模拟推断的“不可原子比较写竞态”一致，现在有真机原始日志。
+- 失败用例与判定：`policy0_max` / `policy0_min` / `policy0_restore` 三个注入用例的 watchdog 日志均记录 `POLICY_RESTORE_RESTRICTED` 与 `policy-policy0.state.tainted`（如 `policy0 1152000 2745600 1996800 APPLY_MAX_INTENT`）。保守恢复正确地**没有**把系统收紧后的范围放宽回快照，而是保留交集并标记受限，最终设备处于安全状态。
+- **验证器缺陷（本次修复）**：旧逻辑把上述“系统漂移”当成工具恢复失败 —— `verify_device_snapshot` 抛 `cpufreq restoration mismatch: policy0` 后直接中止整个验证，后续 8 个用例根本没跑。修改前实测：`policy0_max/min/restore` 均为 `rc=2 / cases_completed=0`；`policy6_*` 因 `policy0` 此刻只剩单频点而报 `no interior frequency inside current limits`。
+- 修复：新增 `_external_restriction_policies()`，仅当同时存在 `POLICY_RESTORE_RESTRICTED|<policy>|` 与对应 `policy-policy0.state.tainted` 时才把该策略判为“外部限频”，该用例标记 `RESTRICTED`（结论不确定，不算 PASS）；单频点策略改为 `SKIPPED` 而不是中止整轮；`snapshot_error` 不再被硬编码为 `True`，实际收录到 summary。退出码仍仅在全部 PASS 时为 0，`RESTRICTED`/`SKIPPED` 一律非 0，门禁不会被这类结果松动。
+- 残留风险与边界：这次证据只证明“系统会并发改动限频”和“保守恢复不会放宽”，**不证明**半锁定写入在所有时序下都能安全恢复。`INDEPENDENT_RECOVERY_VERIFIED` 保持 `False`，`matrix-sweep` 继续 fail-closed。
+- 传输层旁证：无线 ADB 在本会话多次出现 `error: closed` / `offline`，`adb connect` 一度失败；`phase-h-probe-case4/5` 的 `no interior frequency` 失败与之一致，不能全归因于代码。真机门禁验证应在有线或稳定无线链路上重跑。
+- 工具链缺陷（本次修复）：`AGENTS.md` 与 README 记录的 `python -m unittest discover -s tests` 在干净检出上直接失败（`ModuleNotFoundError: cpu_efficiency_lab` / `run_pinned_dynamic`，37 项中 8 错误 1 失败）。现补充 `tests/__init__.py` 注入 `src`/`scripts` 路径，并新增 `scripts/test.ps1`；验证命令更新为 `python -m unittest discover -s tests -t .`（`-t .` 必需）。
+
 ## 2026-11-10：矩阵测试首项频率恢复核验失败
 - 现象：`data/phase-d-sm8750-matrix.raw.log` 首项 `A-CPU0` 报 `cpufreq restoration mismatch: policy0`，自动中止。失败时设备脚本输出未写入主机原始日志，因此不能确定首次不一致的具体值和根因。
 - 恢复复查：随后只读检查 CPU0–CPU7 在线，`policy0` 384000–1996800 kHz，`policy6` 1017600–1689600 kHz，未发现残留基准进程；这是复查时的状态，不代表过程中所有时刻均已恢复。

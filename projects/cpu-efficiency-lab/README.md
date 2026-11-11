@@ -5,10 +5,12 @@
 ## 当前进度
 
 - **实现**：固定频率逐点计划、双次重复、配对空闲基线、有效性分析及逐核曲线/混合频率热力图已就绪；本地模拟覆盖锁频写入/恢复中断和可观察到的系统限频变化。
-- **本地验证**：75 项单元/故障注入测试通过，`python -m compileall -q src tests scripts` 通过。
-- **真机恢复验证**：设备写入验证已获授权，但目前 ADB 设备为 `offline`；验证器在只读预检阶段退出，未开始故障注入，未改写手机状态。
-- **尚未完成**：`INDEPENDENT_RECOVERY_VERIFIED = False`，固定频率矩阵仍被安全门禁阻止；没有新增固定频率实测数据或对应实测曲线。此前动态频率结果不能用于判定最优频点。
-- **下一步**：设备重新连接后运行 `scripts/verify_matrix_recovery.py`；审查真机日志并继续处理 sysfs 检查/写入不可原子的并发限频竞态。即使故障注入通过，也不自动解除门禁。
+- **本地验证**：76 项单元/故障注入测试通过（`powershell -File scripts/test.ps1`），`python -m compileall -q src tests scripts` 通过。旧文档里的 `discover -s tests` 缺 `-t .` 会导入失败，已修正。
+- **真机只读采集**：已在 `192.168.137.99:45387`（2410DPN6CC/SM8750/Android 16）完成预检与 20 秒采样（`data/phase-h-idle-check.*`）：实际跨度 20.84 秒、中位间隔 1.041 秒，`current×voltage` 积分 14.57 J 与 `charge_counter` 估算 15.26 J 相差 4.78%。这是同一电量计的窗口一致性检查，不是独立校准。
+- **真机恢复验证（已开跑，未通过）**：故障注入用例已开始执行，但**首次在真机捕获到系统并发限频竞态** — 会话期间 `policy0` 在 384000–1996800 / 556800–2227200 / 1152000–2745600 / 1152000–1363200 之间被系统反复改动（`online=0-7`、`low_power=0` 稳定，非本工具写入）。保守恢复正确地不放宽并标记 `RESTRICTED` + `tainted`，设备事后处于安全状态（全核在线、无残留基准进程、屏幕超时已还原）。
+- **本次修掉的缺陷**：验证器曾把这种“系统漂移”当成工具恢复失败并中止整轮（`policy0_max/min/restore` 均 `cases_completed=0`，后续 8 个用例完全未执行）。现区分 `PASS` / `RESTRICTED` / `SKIPPED` / `FAIL`，只对真实恢复失败中止，但退出码仍只在全部 `PASS` 时为 0。
+- **尚未完成**：`INDEPENDENT_RECOVERY_VERIFIED = False`，固定频率矩阵仍被安全门禁阻止；全部 11 个注入用例尚未在当前设备上完整跑通一轮；没有新增固定频率实测数据或对应实测曲线。此前动态频率结果不能用于判定最优频点。
+- **下一步**：在稳定链路（无线 ADB 本会话多次 `error: closed`/`offline`）上重跑 `scripts/verify_matrix_recovery.py` 完成 11 个用例；审查 `RESTRICTED` 占比以判定当前设备是否适合做固定频率矩阵。即使全部通过也不自动解除门禁。
 
 ## 当前测量边界
 
@@ -74,6 +76,8 @@ python scripts/verify_matrix_recovery.py --serial $adbSerial --output data\matri
 
 该验证全部通过也不会自动开启矩阵门禁；还需审查真机日志及 sysfs 非原子竞态的剩余风险。
 
+验证器对每个用例给出四种结论之一：`PASS`（工具恢复且快照一致）、`RESTRICTED`（恢复期发现系统已收紧限频，保守恢复只保留更严格区间并标记 tainted；属结论不确定，不算通过）、`SKIPPED`（当前 policy 只剩单频点，无法写入临时锁频）、`FAIL`（真实恢复失败，立即中止）。只有全部 `PASS` 时退出码才为 0，`RESTRICTED`/`SKIPPED`/`FAIL` 一律非 0，不会因为出现外部限频而松动门禁。真机首次跑时 `policy0_max/min/restore` 三例均返回 `RESTRICTED`，原因是系统在注入窗口内反复改动 `policy0` 边界（详见 `ai-context/BUG_HISTORY.md`）。
+
 CPU0 保留为 Android keeper：只有 CPU0-only 项能实现严格单在线核心；CPU1–CPU7 单 worker 项会关闭其他可关核心，但 CPU0 仍在线。混合测试按每个 policy 统一锁频，因为同一 policy 内核心不能分别设频。频点只取当前 scaling 范围内可用值。
 
 历史 all-online、无锁频 pinned 校准仅用于预研，不是严格隔离/固定频率矩阵。原始设备测量数据保存在本地 `data/`，默认被 Git 忽略，不随代码仓库发布。
@@ -89,8 +93,10 @@ CPU0 保留为 Android keeper：只有 CPU0-only 项能实现严格单在线核�
 ## 验证
 
 ```powershell
-python -m unittest discover -s tests -v
-python -m compileall -q src tests
+.\scripts\test.ps1
+python -m compileall -q src tests scripts
 ```
+
+`.\scripts\test.ps1` 等价于在项目根目录执行 `python -m unittest discover -s tests -t .`。`-t .` 不能省：省略时 `tests` 被当作顶层目录，`cpu_efficiency_lab` 与 `run_pinned_dynamic` 会导入失败。
 
 单元测试不代表实机扫频已验证。开始扫频前先审阅只读预检和温度传感器识别；测试中如发生异常，优先检查原始日志及频率恢复核验。PowerLens 对照和外部校准仍未实施。

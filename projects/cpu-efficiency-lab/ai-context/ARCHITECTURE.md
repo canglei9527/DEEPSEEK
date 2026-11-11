@@ -32,6 +32,8 @@ src/cpu_efficiency_lab/
   tests/            标准库 unittest
 ai-context/          架构、函数和缺陷记录
 scripts/lab.ps1      Windows 启动封装
+scripts/test.ps1     单元测试封装（discover -s tests -t .）
+scripts/verify_matrix_recovery.py  恢复故障注入验证（不改写门禁）
 ```
 
 ## 模块职责和接口
@@ -60,7 +62,9 @@ scripts/lab.ps1      Windows 启动封装
 
 矩阵目标调用链为 `cli -> screen_control -> matrix_runner -> matrix_controller -> adb/su shell`；当前恢复门禁禁止执行。只读采集器读取 `/proc/uptime` 和电池节点。矩阵设备端同步运行 pinned worker，按秒采样整机电池功率、实际 policy 频率、容量、在线掩码和温度；电量低于保留阈值、CPU掩码/温度异常会中止。CPU0 在非 worker 运行中保留为系统 keeper。频点计划按开测时 scaling 范围包含每个 CPU 的全部离散频点、纯 E/P 全部频点、六种 worker 组合的完整 E×P 频率笛卡尔积。固定频率矩阵点 2 次重复；汇总有效性要求计划重复全部通过，整机总能效与负载增量能效分别校验。新 SVG 只展示完整有效频点，不对缺失数据插值。
 
-2026-11-10 首次 A-CPU0 项曾报 `cpufreq restoration mismatch: policy0`；本次修正为先恢复核心、再恢复 policy，并新增远端 controller 日志。设备 fault injection 记录 `data/phase-d-watchdog-fault-injection-final.raw.log` 和 `data/phase-d-watchdog-child-fault-injection.raw.log` 验证了强杀恢复与子负载终止；正常掩码/吞吐 smoke 在 `data/phase-d-matrix-controller-mask-smoke.log`。当前新增的逐频中断恢复验证尚未在真机执行，ADB 设备未连接；不得因此解除安全门禁。
+2026-11-10 首次 A-CPU0 项曾报 `cpufreq restoration mismatch: policy0`；本次修正为先恢复核心、再恢复 policy，并新增远端 controller 日志。设备 fault injection 记录 `data/phase-d-watchdog-fault-injection-final.raw.log` 和 `data/phase-d-watchdog-child-fault-injection.raw.log` 验证了强杀恢复与子负载终止；正常掩码/吞吐 smoke 在 `data/phase-d-matrix-controller-mask-smoke.log`。
+
+2026-11-11 真机（`192.168.137.99:45387`）首次在故障注入窗口内直接观测到系统并发改动 cpufreq 边界：`policy0` 依次出现 384000–1996800 / 556800–2227200 / 1152000–2745600 / 1152000–1363200，`policy6` 上限在 1958400/2438400/3513600 间变化，同期 `online=0-7`、`low_power=0` 稳定且无本工具写入。保守恢复按设计不放宽并输出 `POLICY_RESTORE_RESTRICTED` + `tainted`；设备事后全核在线、无残留基准进程、屏幕超时已还原。验证器此前把这类外部限频当成工具恢复失败而中止整轮（`policy0_max/min/restore` 均 `cases_completed=0`，后续 8 例未执行），现已区分 `PASS`/`RESTRICTED`/`SKIPPED`/`FAIL`；`RESTRICTED` 表示结论不确定，退出码非 0，门禁不因此松动。
 
 ## 数据和计量边界
 - `current_now` 单位为 µA，`voltage_now` 单位为 µV，须通过设备检查确认节点存在且可读。

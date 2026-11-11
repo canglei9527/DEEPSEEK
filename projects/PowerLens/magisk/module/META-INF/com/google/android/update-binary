@@ -1,0 +1,78 @@
+#!/system/bin/sh
+# update-binary -- Magisk / KernelSU 模块安装入口
+#
+# 两家的模块系统都会把 zip 解压到临时目录后调用 META-INF/com/google/android/update-binary
+# 参数: <api> <outfd> <zipfile>
+# 本脚本只负责把 ZIPFILE / OUTFD / API 交给 customize.sh，其余逻辑都在那里。
+
+#################
+# Initialization
+#################
+
+umask 022
+
+# echo to stderr/stdout and ui
+ui_print() {
+  if [ "$OUTFD" ]; then
+    echo -e "ui_print $1\nui_print" >&$OUTFD
+  fi
+  echo "$1"
+}
+
+abort() {
+  ui_print "$1"
+  exit 1
+}
+
+# 参数解析（Magisk 新版可能传 3 个参数）
+OUTFD=$2
+ZIPFILE=$3
+
+[ -z "$ZIPFILE" ] && abort "! 缺少 zip 路径参数"
+
+# 当前脚本所在目录
+TMPDIR=$(dirname "$(dirname "$(dirname "$0")")")
+[ -d "$TMPDIR" ] || abort "! 无法定位模块解压目录"
+
+# 把安装环境暴露给 customize.sh
+export OUTFD
+export ZIPFILE
+export TMPDIR
+
+# 载入通用函数（Magisk 提供 util_functions.sh，KernelSU 也兼容）
+[ -f "$TMPDIR/META-INF/com/google/android/util_functions.sh" ] && \
+  . "$TMPDIR/META-INF/com/google/android/util_functions.sh"
+
+#################
+# Install
+#################
+
+# MODPATH 是最终安装目录，由模块系统提供；缺失时自行推导
+if [ -z "$MODPATH" ]; then
+  MODPATH=/data/adb/modules/powerlens
+fi
+export MODPATH
+mkdir -p "$MODPATH"
+
+# SKIPUNZIP=1 由 customize.sh 设置 —— 让我们的脚本自己控制解包内容
+SKIPUNZIP=1
+export SKIPUNZIP
+
+# 执行模块自己的安装逻辑
+if [ -f "$TMPDIR/customize.sh" ]; then
+  . "$TMPDIR/customize.sh"
+else
+  abort "! 模块缺少 customize.sh"
+fi
+
+# 设置标准权限
+if [ -d "$MODPATH" ]; then
+  chmod 755 "$MODPATH" 2>/dev/null
+  for f in post-fs-data.sh service.sh uninstall.sh boot-completed.sh; do
+    [ -f "$MODPATH/$f" ] && chmod 755 "$MODPATH/$f" 2>/dev/null
+  done
+  [ -f "$MODPATH/module.prop" ] && chmod 644 "$MODPATH/module.prop" 2>/dev/null
+fi
+
+ui_print "- 安装脚本执行完毕"
+exit 0

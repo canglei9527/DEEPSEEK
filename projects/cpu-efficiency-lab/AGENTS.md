@@ -18,6 +18,6 @@
 - 配置集中在 `src/cpu_efficiency_lab/config.py`。
 
 ## 验证
-- 单元测试：`python -m unittest discover -s tests -v`
-- CLI 导入检查：`python -m compileall -q src tests`
+- 单元测试：`powershell -File scripts/test.ps1`（等价于在项目根目录执行 `python -m unittest discover -s tests -t .`）。不要省略 `-t .`，否则 `tests` 被当作顶层目录，导入路径不会生效。
+- CLI 导入检查：`python -m compileall -q src tests scripts`
 - 实机预检、采样、CPU 负载和频率控制分别报告；静态测试不能替代实机验证。

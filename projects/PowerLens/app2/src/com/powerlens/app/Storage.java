@@ -310,6 +310,130 @@ final class Storage {
     }
 
     /**
+     * 从文件【尾部】反向按块读取行，遇到 ts < floorTs 就停。
+     *
+     * ===== 为什么必须这样（实测踩坑）=====
+     *   snapshots.tsv 是只追加的日志，实测已达 11.6 MB / 16 万行。
+     *   readRange() 和 summarize() 原本各自 new RandomAccessFile 后
+     *   while(readLine()) 从第 1 行读到末尾，而 UI 每 30 秒 refresh 一次，
+     *   等于每 30 秒把 11.6 MB 完整解析两遍。
+     *   实测后果：com.powerlens.app 单进程吃掉 132.6 s CPU / 5 分钟，
+     *   占全部 CPU 的 33.8%、占单核时间的 44.2% —— 比 system_server 还高，
+     *   分析工具自己成了耗电主因。
+     *
+     *   数据是时间单调递增的，所以只需要读尾部够用的那一段。
+     *   从 EOF 往回按块扫，收集完整行，一旦发现已经越过 floorTs 就结束。
+     *
+     * @param floorTs 早于该时间戳的行不再需要（0 表示不设下限）
+     * @return 行列表，顺序与文件内一致（旧→新）
+     */
+    private static List<String> readLinesSince(File f, long floorTs) {
+        List<String> lines = new ArrayList<>();
+        if (f == null || !f.exists() || !f.canRead()) {
+            return lines;
+        }
+        if (floorTs <= 0) {
+            // 没有下限 → 只能老老实实全读（保留旧行为，便于对照）
+            RandomAccessFile raf = null;
+            try {
+                raf = new RandomAccessFile(f, "r");
+                String line;
+                while ((line = raf.readLine()) != null) {
+                    if (line.length() > 0) {
+                        lines.add(line);
+                    }
+                }
+            } catch (Throwable ignored) {
+            } finally {
+                closeQuietly(raf);
+            }
+            return lines;
+        }
+
+        RandomAccessFile raf = null;
+        try {
+            raf = new RandomAccessFile(f, "r");
+            long size = raf.length();
+            if (size <= 0) {
+                return lines;
+            }
+            final int CHUNK = 64 * 1024;
+            long pos = size;
+            StringBuilder carry = new StringBuilder();   // 当前块未成行的前半截
+            boolean done = false;
+            while (pos > 0 && !done) {
+                int len = (int) Math.min(CHUNK, pos);
+                pos -= len;
+                byte[] buf = new byte[len];
+                raf.seek(pos);
+                raf.readFully(buf);
+                String chunk = new String(buf, "UTF-8");
+                // 把上一块遗留的尾巴接在这次内容的末尾
+                String text = chunk + carry;
+                carry.setLength(0);
+                int end = text.length();
+                int i = end - 1;
+                // 逐行切出（从右往左找到的换行）
+                java.util.ArrayList<String> rev = new java.util.ArrayList<>();
+                while (i >= 0) {
+                    int nl = text.lastIndexOf('\n', i);
+                    if (nl < 0) {
+                        break;
+                    }
+                    String ln = text.substring(nl + 1, i + 1);
+                    if (ln.length() > 0) {
+                        rev.add(ln);
+                    }
+                    i = nl - 1;
+                }
+                // 本次块里剩余的前半段（尚无换行结尾）留给下一轮
+                if (i >= 0) {
+                    carry.append(text, 0, i + 1);
+                }
+                // rev 是"从新到旧"，检查最早的那条是否已越过下限
+                for (String ln : rev) {
+                    long ts = tsOf(ln);
+                    if (ts >= 0 && ts < floorTs) {
+                        done = true;
+                        break;
+                    }
+                    lines.add(ln);
+                }
+                if (pos == 0 && carry.length() > 0) {
+                    // 文件最开头那一行没有换行前缀
+                    long ts = tsOf(carry.toString());
+                    if (!(ts >= 0 && ts < floorTs)) {
+                        lines.add(carry.toString());
+                    }
+                }
+            }
+            java.util.Collections.reverse(lines);
+        } catch (Throwable ignored) {
+        } finally {
+            closeQuietly(raf);
+        }
+        return lines;
+    }
+
+    /** 取行首时间戳（第一个 \t 之前），失败返回 -1。 */
+    private static long tsOf(String line) {
+        int t1 = line.indexOf('\t');
+        if (t1 <= 0) {
+            return -1;
+        }
+        return l(line.substring(0, t1), -1);
+    }
+
+    private static void closeQuietly(RandomAccessFile raf) {
+        if (raf != null) {
+            try {
+                raf.close();
+            } catch (Throwable ignored) {
+            }
+        }
+    }
+
+    /**
      * 读区间内所有行。
      * @return [0]=按 uid 合并后的 Row 列表，[1..] 通过 Summary 另行计算
      */
@@ -318,12 +442,9 @@ final class Storage {
         if (f == null || !f.exists() || !f.canRead()) {
             return out;
         }
-        RandomAccessFile raf = null;
         java.util.HashMap<Integer, Row> map = new java.util.HashMap<>();
         try {
-            raf = new RandomAccessFile(f, "r");
-            String line;
-            while ((line = raf.readLine()) != null) {
+            for (String line : readLinesSince(f, from)) {
                 int t1 = line.indexOf('\t');
                 if (t1 <= 0) {
                     continue;
@@ -424,13 +545,6 @@ final class Storage {
                 }
             }
         } catch (Throwable ignored) {
-        } finally {
-            if (raf != null) {
-                try {
-                    raf.close();
-                } catch (Throwable ignored) {
-                }
-            }
         }
         out.addAll(map.values());
 
@@ -458,12 +572,9 @@ final class Storage {
         if (f == null || !f.exists() || !f.canRead()) {
             return s;
         }
-        RandomAccessFile raf = null;
         List<long[]> pts = new ArrayList<>(); // {ts, uah, discharging?1:0}
         try {
-            raf = new RandomAccessFile(f, "r");
-            String line;
-            while ((line = raf.readLine()) != null) {
+            for (String line : readLinesSince(f, from)) {
                 int t1 = line.indexOf('\t');
                 if (t1 <= 0) {
                     continue;
@@ -506,13 +617,6 @@ final class Storage {
                 pts.add(new long[]{ts, uah, dis, unknown ? 1 : 0});
             }
         } catch (Throwable ignored) {
-        } finally {
-            if (raf != null) {
-                try {
-                    raf.close();
-                } catch (Throwable ignored) {
-                }
-            }
         }
 
         s.points = pts.size();
