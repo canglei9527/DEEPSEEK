@@ -62,9 +62,26 @@ log "memavail=$(grep MemAvailable /proc/meminfo | tr -s ' ' | cut -d' ' -f2) loa
 # 亮度最低但不熄屏：熄屏会断无线 ADB，导致取不回数据
 settings put system screen_brightness_mode 0 2>/dev/null
 settings put system screen_brightness 0 2>/dev/null
+# 必须主动防 Dozing。实测：设备一旦进入 Dozing，
+# android.system.suspend-service 开始反复 suspend，bench 被阻塞，
+# ops 从 190M 崩到 12~56M，elapsed 从 3.000 变成 3.5~4.1s。
+# 光设 stayon 不够，还要把息屏超时设为无穷并周期性重新唤醒。
 svc power stayon true 2>/dev/null
+settings put system screen_off_timeout 2147483647 2>/dev/null
+input keyevent 224 2>/dev/null
 sleep 3
 log "brightness=$(settings get system screen_brightness) wake=$(dumpsys power 2>/dev/null | grep -o 'mWakefulness=[A-Za-z]*')"
+
+# 每个测点前保活：Dozing 只靠开头一次设置防不住，会中途再次进入
+keep_awake() {
+  _w=$(dumpsys power 2>/dev/null | grep -o 'mWakefulness=[A-Za-z]*')
+  if [ "$_w" != "mWakefulness=Awake" ]; then
+    log "  WAKE from $_w"
+    input keyevent 224 2>/dev/null
+    svc power stayon true 2>/dev/null
+    sleep 2
+  fi
+}
 
 ORIG0=$(cat $CF/policy0/scaling_governor)/$(cat $CF/policy0/scaling_min_freq)/$(cat $CF/policy0/scaling_max_freq)
 ORIG6=$(cat $CF/policy6/scaling_governor)/$(cat $CF/policy6/scaling_min_freq)/$(cat $CF/policy6/scaling_max_freq)
@@ -95,10 +112,14 @@ r=1
 while [ "$r" -le "$ROUNDS" ]; do
   raise_limits
   # 全机基线
+  # 符号约定必须与下面的 LD/ID 一致：全部用 (起点 - 终点)，放电时为正。
+  # 早先这里写成 c1 - c0，得到 sys_d=-12000，而 LD/ID 是正数，
+  # 导致 plot 里 above = dl - ds = 5000-(-12000) = 17000，
+  # 正确应为 5000-12000 = -7000，整整差 24000 单位。
   c0=$(cc)
   sleep "$WIN"
   c1=$(cc)
-  SYS_D=$((c1 - c0))
+  SYS_D=$((c0 - c1))
   V=$(volt)
   log "ROUND $r sys dcharge=$SYS_D V=$V loadavg=$(cat /proc/loadavg | cut -d' ' -f1)"
 
@@ -111,6 +132,7 @@ while [ "$r" -le "$ROUNDS" ]; do
         continue
       fi
       for core in $CORES; do
+        keep_awake
         # --- 满载窗口 ---
         # 注意取值时机：c0 必须在 bench 启动【之前】读，
         # 否则 bench 已跑了 2 秒，这段耗电被漏算，
@@ -125,12 +147,22 @@ while [ "$r" -le "$ROUNDS" ]; do
         case "$ops" in ''|*[!0-9.]*) ops=0 ;; esac
 
         # --- 空闲窗口（同一核钉住）---
-        # 同样在启动前取 c0；窗口长度与满载一致以保证可比
+        # 关键：必须在这里重新读一次起点 c0_idle。
+        # 早先写成直接复用满载的 c0，结果 ID 算的是"满载+空闲"两段的
+        # 总耗电（如 load_d=5000 idle_d=5000），两段永远不会分开。
+        c0_idle=$(cc)
         taskset -c "$core" sleep "$WIN" >/dev/null 2>&1 &
         ip=$!
         wait "$ip" 2>/dev/null
         c1=$(cc)
-        ID=$((c0 - c1))
+        ID=$((c0_idle - c1))
+
+        # 自检：两个窗口都跑了却得到 0 差，说明电量窗口没覆盖住负载
+        # （例如库仑计被 PMIC 平滑、或窗口太短落在量化台阶内），
+        # 这种行不能静默写出，必须标记出来。
+        if [ "$LD" -le 0 ] || [ "$ID" -le 0 ]; then
+          log "  BADDELTA c$core $fq load_d=$LD idle_d=$ID"
+        fi
 
         printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
           "$r" "$pol" "$fq" "$core" "$WIN" "$LD" "$ID" "$SYS_D" "$ops" "$(volt)" >> "$OUT"
