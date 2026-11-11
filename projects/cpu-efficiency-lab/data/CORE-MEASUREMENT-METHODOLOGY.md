@@ -175,3 +175,84 @@ el=3.000019 ops=109.4M
    平台有 `energy_now`（本机不存在）
 3. **热学方法**——用已知热阻从温升反推功耗，但时间常数太长
 4. **间接法**——只测等吞吐下的相对差异（本文档采用的方法）
+
+---
+
+## 环境干扰排查清单（实测踩过的坑）
+
+这些都不是测量方法问题，但每一个都能让数据完全失效。按出现频率排序：
+
+### 1. 设备反复尝试进入 suspend —— 最隐蔽
+
+现象：bench 的 elapsed 从精确 3.000s 变成 3.5~4.1s，
+ops 在 15~68 Mop/s 之间乱跳，但 CPU 实际 671% idle、温度仅 32~40 度。
+
+根因：android.system.suspend-service。实测它占 30% CPU 且累计跑了 6:54，
+设备反复尝试 suspend，把 bench 的工作线程阻塞掉。
+bench 输出里 warmup_iterations=0 就是直接证据——预热阶段一次迭代都没跑完。
+
+解决：svc power stayon true 加 input keyevent 224。
+之后立即恢复 elapsed=3.000009/3.000011/3.000017、ops=185~191M（波动 1%）。
+
+**注意**：熄屏会断无线 ADB，所以正确做法是"屏幕保持唤醒但亮度调 0"，
+而不是 input keyevent 223 熄屏。
+
+### 2. CPU 核心被系统下线
+
+实测遇到 /sys/devices/system/cpu/online 变成 0（只剩 1 核）或 0-5（大核全掉）。
+后果：对已下线的核写 scaling_* 返回 EBUSY，锁频失败；bench 绑核失败。
+
+解决：采集前对每个 cpuN/online 写 1，并在每个测点前复查 online，
+不在线就跳过而不是硬测。
+
+### 3. 系统改写 scaling_max_freq
+
+实测 policy6/scaling_max_freq 被从 3072000 压到 1958400
+（硬件 cpuinfo_max_freq=4320000），导致高频点全部锁不住。
+
+解决：每轮测量前重新抬上限，且写完必须回读 scaling_cur_freq 校验。
+
+### 4. 内存压力导致 bench 被换页
+
+MemAvailable 364MB / swap 已用 3.9GB 时，吞吐从 126 掉到 3.9 Mop/s。
+am force-stop 杀掉微信/钉钉/QQ 后会被系统重新拉起。
+
+判据：MemAvailable 大于 2GB 且连续 3 次 bench 的 ops 差异小于 5%。
+
+### 5. 后台测量进程残留
+
+被 kill 的脚本会留下锁频状态（governor=performance, min=max）和
+D 状态任务，使 loadavg 冲到 253。恢复时注意**写入顺序**：
+必须先放宽 max 再降 min，否则 min 大于 max 会被内核拒绝，
+导致"恢复了但没完全恢复"（实测出现过 p0=performance/384000/556800）。
+
+### 6. 改了本地脚本但忘了重新推送
+
+实测一次：本地把 CORES0 改成 "0"，但设备上仍是 "0 1 2 3 4 5"，
+白跑了 15 分钟才发现。**推送后必须回读设备上的文件确认。**
+
+---
+
+## 环境准入判据（每次测量前必须跑）
+
+```sh
+# 1. 唤醒并保活（关键，见上面第 1 条）
+svc power stayon true
+input keyevent 224
+
+# 2. 全部核心上线
+for c in 1 2 3 4 5 6 7; do echo 1 > /sys/devices/system/cpu/cpu$c/online; done
+cat /sys/devices/system/cpu/online      # 必须是 0-7
+
+# 3. 内存
+grep MemAvailable /proc/meminfo         # 必须大于 2GB
+
+# 4. 吞吐稳定性（最关键的一条）
+for k in 1 2 3; do bench 0 1 3; done    # 三次 ops 差异小于 5%，
+                                        # elapsed 必须是 3.000 正负 0.1
+
+# 5. 温度
+# 遍历 /sys/class/thermal/thermal_zone* 的 temp，应低于 45 度
+```
+
+任一项不达标就**等**，不要硬测。
