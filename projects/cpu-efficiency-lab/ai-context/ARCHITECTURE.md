@@ -23,6 +23,11 @@ src/cpu_efficiency_lab/
   matrix_plan.py    分阶段逐核/纯组/混合频率配置生成
   matrix_controller.py 设备端热保护、CPU掩码/临时频率控制和独立恢复 guardian
   matrix_runner.py 试验阶段编排、日志/结果落盘；依赖恢复验证门
+  two_hour_plan.py 离线两小时频点/预算/覆盖优先计划（复用MatrixConfig）
+  two_hour_runner.py 有界调度、逐点检查点、离线重分析和同门禁实测适配
+  low_noise_environment.py 带超时与独立守护的灭屏/内核wake-lock租约
+  scheduler_status.py 只读调度/项目残留观测及同启动基线比较
+  two_hour_plot.py E6+P2频率切片与纯簇对照SVG
   matrix_analysis.py 矩阵多线程/电池样本解析、有效性与能效分析
   matrix_plot.py    Pareto 和混合频率热力图 SVG
   screen_control.py 屏幕常亮与超时设置的受控恢复
@@ -64,7 +69,25 @@ scripts/verify_matrix_recovery.py  恢复故障注入验证（不改写门禁）
 
 2026-11-10 首次 A-CPU0 项曾报 `cpufreq restoration mismatch: policy0`；本次修正为先恢复核心、再恢复 policy，并新增远端 controller 日志。设备 fault injection 记录 `data/phase-d-watchdog-fault-injection-final.raw.log` 和 `data/phase-d-watchdog-child-fault-injection.raw.log` 验证了强杀恢复与子负载终止；正常掩码/吞吐 smoke 在 `data/phase-d-matrix-controller-mask-smoke.log`。
 
-2026-11-11 真机（`192.168.137.99:45387`）首次在故障注入窗口内直接观测到系统并发改动 cpufreq 边界：`policy0` 依次出现 384000–1996800 / 556800–2227200 / 1152000–2745600 / 1152000–1363200，`policy6` 上限在 1958400/2438400/3513600 间变化，同期 `online=0-7`、`low_power=0` 稳定且无本工具写入。保守恢复按设计不放宽并输出 `POLICY_RESTORE_RESTRICTED` + `tainted`；设备事后全核在线、无残留基准进程、屏幕超时已还原。验证器此前把这类外部限频当成工具恢复失败而中止整轮（`policy0_max/min/restore` 均 `cases_completed=0`，后续 8 例未执行），现已区分 `PASS`/`RESTRICTED`/`SKIPPED`/`FAIL`；`RESTRICTED` 表示结论不确定，退出码非 0，门禁不因此松动。
+2026-11-11 一台 Android 真机首次在故障注入窗口内直接观测到系统并发改动 cpufreq 边界：`policy0` 依次出现 384000–1996800 / 556800–2227200 / 1152000–2745600 / 1152000–1363200，`policy6` 上限在 1958400/2438400/3513600 间变化，同期 `online=0-7`、`low_power=0` 稳定且无本工具写入。保守恢复按设计不放宽并输出 `POLICY_RESTORE_RESTRICTED` + `tainted`；设备事后全核在线、无残留基准进程、屏幕超时已还原。验证器此前把这类外部限频当成工具恢复失败而中止整轮（`policy0_max/min/restore` 均 `cases_completed=0`，后续 8 例未执行），现已区分 `PASS`/`RESTRICTED`/`SKIPPED`/`FAIL`；`RESTRICTED` 表示结论不确定，退出码非 0，门禁不因此松动。
+
+## 当前恢复归属契约
+
+`_safe_policy_restore_shell()` 是主控制器、独立watchdog及主机恢复共用的恢复决策源。journal与taint检查先于 `ALREADY_ORIGINAL`；原值数值相等不能抵消已经记录的干扰。未知归属/tainted策略不再计算快照交集并写入，而是保持当前边界、报告 `POLICY_RESTORE_UNOWNED` / `POLICY_RESTORE_RESTRICTED` 并返回2。只有匹配journal的锁定状态进入原恢复路径；这个分支的sysfs比较与写入仍非原子。
+
+`execute_matrix_config()` 对完整原始日志和最终恢复日志中的归属、受限、taint、journal错误证据独立判定；即使最终快照一致、出现CONFIG_DONE或watchdog成功标记，也不能覆盖这些干扰。还必须有明确 `WATCHDOG_DONE` 或格式有效的 `WATCHDOG_RECOVERY_OK|数字`，不能用瞬时数值相等代替watchdog证据；恢复后核对governor、policy CPU映射及边界，但不写governor。回归 `tests/test_recovery_ownership.py` 覆盖恢复函数和执行器两层；本次修订仅本地验证，不继承旧设备故障注入结果。恢复门禁继续False。
+
+`scheduler-status -> scheduler_status -> preflight/topology/screen_control/adb` 只读观察当前governor、边界、CPU在线掩码、屏幕、电池、实验进程、项目wake-lock及perfd请求；采集过程不是原子快照，缺失探测为未知。可与同设备、相同ADB端点和boot ID的旧状态比较；结果不能证明出厂调度默认值。此入口不恢复任何sysfs设置或停用系统服务。
+
+## 两小时低噪声路径（本地实现，真机 NOT_RUN）
+
+`two-hour-plan -> two_hour_plan` 只读取已保存预检 JSON；生成拓扑仅为明确的6+2离线假设，不能替代真机capacity/hotplug发现。`two-hour-analyze -> two_hour_runner -> matrix_analysis/matrix_plot/two_hour_plot` 只读本机检查点，不连接ADB。
+
+`two-hour-sweep -> 原恢复门禁 -> two_hour_runner -> ScreenOffLease -> 原matrix_controller`。原门禁保持False，新入口不绕过；控制器只增加可选的逐样本环境guard，既有亮屏矩阵路径不变。灭屏租约仅接受已知的内核wake_lock与背光sysfs后端，独立守护在停止/心跳过期/总时限到达后释放专属锁并恢复原屏幕状态；内核自身锁超时是守护被SIGKILL时的最后释放界限，不保证该情形下屏幕也能恢复。该后端是否存在及完整恢复均未真机验证。
+
+计划集中使用config.py中的参数：当前全频点单核 + E6P2最多5×5 + 纯E6/P2对照；先覆盖所有核及低中高混合点。调度使用主机monotonic时钟，逐配置接纳检查包含控制器transport超时和恢复余量，第110分钟进入收尾。不能在断连/硬件异常时保证120分钟内恢复或全部点有效。raw与事件日志先落盘，恢复未核实的配置即使存在MEASURE_END也不能标有效；离线重分析包含全部计划点，使未测点保持缺口。
+
+复用原积分/亲和性/重复次数分析，并对本模式加严为所有观测到的计分频率必须匹配；总能效与增量独立有效。正增量未超过观测空闲极差时舍弃增量指标，不宣称统计置信度或独立CPU功耗。配置计时、灭屏后端、限时与输出测试见tests/test_two_hour.py；未运行新真机操作。
 
 ## 数据和计量边界
 - `current_now` 单位为 µA，`voltage_now` 单位为 µV，须通过设备检查确认节点存在且可读。

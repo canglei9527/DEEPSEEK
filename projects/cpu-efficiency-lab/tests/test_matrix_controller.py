@@ -53,6 +53,7 @@ def fixtures():
 
 
 class MatrixControllerTests(unittest.TestCase):
+    @patch("cpu_efficiency_lab.matrix_controller.INDEPENDENT_RECOVERY_VERIFIED", False)
     def test_hotplug_is_blocked_before_any_device_access_while_recovery_is_unverified(self):
         topology, report = fixtures()
         config = MatrixConfig("A-CPU-P", "A", (6,), (("policy6", 1017600),), 1, 2, 1)
@@ -66,11 +67,18 @@ class MatrixControllerTests(unittest.TestCase):
             )
         self.assertEqual(client.scripts, [])
 
+    @patch("cpu_efficiency_lab.matrix_controller.INDEPENDENT_RECOVERY_VERIFIED", False)
     def test_recovery_gate_refuses_even_explicit_confirmation_until_verified(self):
         with self.assertRaisesRegex(AdbError, "dynamic frequency caps"):
             require_verified_hotplug_recovery()
         with self.assertRaisesRegex(AdbError, "dynamic frequency caps"):
             require_verified_hotplug_recovery(confirmed=True)
+
+    @patch("cpu_efficiency_lab.matrix_controller.INDEPENDENT_RECOVERY_VERIFIED", True)
+    def test_verified_gate_still_requires_per_run_confirmation(self):
+        with self.assertRaisesRegex(AdbError, "confirm-independent-recovery"):
+            require_verified_hotplug_recovery()
+        require_verified_hotplug_recovery(confirmed=True)
 
     @patch("cpu_efficiency_lab.matrix_controller.INDEPENDENT_RECOVERY_VERIFIED", True)
     @patch("cpu_efficiency_lab.matrix_controller._wait_for_device_snapshot", return_value=None)
@@ -116,7 +124,7 @@ class MatrixControllerTests(unittest.TestCase):
             (400, 1200, 400, 2000, "1200", "RESTORED", 400, 1200, 2),
             (400, 800, 400, 2000, "1200", "LOCKED", 400, 800, 2),
             (600, 1600, 400, 2000, "NA", "NONE", 600, 1600, 2),
-            (200, 3000, 400, 2000, "NA", "NONE", 400, 2000, 0),
+            (200, 3000, 400, 2000, "NA", "NONE", 200, 3000, 2),
             (2100, 2500, 400, 2000, "NA", "NONE", 2100, 2500, 2),
         )
         for current_min, current_max, original_min, original_max, target, stage, want_min, want_max, want_status in cases:

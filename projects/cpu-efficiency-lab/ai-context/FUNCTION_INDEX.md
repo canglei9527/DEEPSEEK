@@ -3,13 +3,21 @@
 | 符号 | 源文件 | 职责 | 一跳项目自有依赖 | 最小测试 | 扩大范围条件 |
 |---|---|---|---|---|---|
 | `main` | `src/cpu_efficiency_lab/cli.py` | 解析只读、旧式扫频和当前 fail-closed 的 `matrix-sweep` 子命令 | `preflight.py`, `collector.py`, `sweep.py`, `matrix_runner.py`, `analysis.py`, `plot.py` | `tests/test_cli.py` | 参数到设备行为契约变化 |
+| `build_two_hour_plan` / `load_two_hour_plan` | `src/cpu_efficiency_lab/two_hour_plan.py` | 离线频点/预算与覆盖优先计划 | `config.py`, `matrix_plan.py` | `tests/test_two_hour.py` | 频点选择、预算或schema变化 |
+| `schedule_configs` / `run_two_hour` | `src/cpu_efficiency_lab/two_hour_runner.py` | 限时接纳、逐点检查点、同恢复门禁实测适配 | `matrix_controller.py`, `low_noise_environment.py` | `tests/test_two_hour.py` | 超时、恢复或设备边界变化 |
+| `analyze_two_hour_results` / `write_two_hour_artifacts` | `src/cpu_efficiency_lab/two_hour_runner.py` | 离线重分析；未测/恢复未核实点不得变有效；CSV/SVG | `matrix_analysis.py`, `matrix_plot.py`, `two_hour_plot.py` | `tests/test_two_hour.py` | 分母、有效性或图表变化 |
+| `ScreenOffLease` / `NoiseGuard` / `build_lease_guardian` | `src/cpu_efficiency_lab/low_noise_environment.py` | 限时wake-lock、背光监测、独立灭屏恢复租约；真机未验证 | `screen_control.py`, `matrix_controller.py` | `tests/test_two_hour.py` + 后续真机smoke | 内核后端、心跳或恢复变化 |
+| `ownership_evidence_valid` / `verify_perf_requests.main` | `scripts/verify_perf_requests.py` | 有期限厂商请求归属验证；独占日志、完整六项证据、测试后只读复查；不是矩阵入口 | `native/perf_request_probe.c`, `adb.py` | `tests/test_perf_request_probe.py` | ABI、句柄生命周期或设备权限变化 |
+| `perf_request_probe.main` | `native/perf_request_probe.c` | 仅允许固定资源/当前范围内频率与短时句柄的设备诊断；当前真机未生效 | vendor perfd ABI | NDK编译及本机 `data/phase-{m,n,o}-*` | 厂商opcode、请求仲裁及限制语义变化 |
 | `AdbClient.run` | `src/cpu_efficiency_lab/adb.py` | 有超时、错误信息地执行本机 ADB | `config.py` | `tests/test_adb.py` | ADB 命令拼接/Windows subprocess 失败 |
 | `AdbClient.run_root_script` | `src/cpu_efficiency_lab/adb.py` | 以 `su -c` 执行调用方负责安全边界的 shell 脚本 | `AdbClient.run` | `tests/test_adb.py` | Android shell 引号或 SELinux 边界失败 |
 | `collect_preflight` | `src/cpu_efficiency_lab/preflight.py` | 读取目标身份、root、传感器与频率 policy | `adb.py`, `models.py` | `tests/test_preflight.py` | 设备输出 schema 或权限语义改变 |
 | `discover_cpu_topology` | `src/cpu_efficiency_lab/topology.py` | 只读发现 core online、容量和 hotplug 节点状态 | `adb.py` | `tests/test_topology.py` | sysfs topology/online 语义改变 |
 | `all_frequency_levels` / `build_stage_a/b/c/d` | `src/cpu_efficiency_lab/matrix_plan.py` | 在当前 scaling 范围内生成所有逐核频点、纯组频点和完整 E×P 网格 | `topology.py`, `preflight.py` | `tests/test_matrix_plan.py` | policy/core 分组或频点策略改变 |
 | `build_matrix_config_script` | `src/cpu_efficiency_lab/matrix_controller.py` | 生成受热保护、核心掩码核验及原值恢复 trap 的临时设备脚本 | `matrix_plan.py`, `topology.py`, `sweep.py` | `tests/test_matrix_controller.py` + shell `-n` | 改写顺序、恢复字段或超时保护改变 |
-| `execute_matrix_config` | `src/cpu_efficiency_lab/matrix_controller.py` | 配置执行、设备/独立恢复和主机状态核验；当前 fail-closed | `adb.py`, `matrix_controller.py` | `tests/test_matrix_controller.py` + device fault injection | 动态限频恢复、子负载终止或数据协议变化 |
+| `_safe_policy_restore_shell` | `src/cpu_efficiency_lab/matrix_controller.py` | 共用恢复归属规则：journal/taint先于数值相等；未知归属不写入 | 标准库 | `tests/test_recovery_ownership.py`, `tests/test_matrix_controller.py` | 归属、journal、taint或sysfs写入顺序变化 |
+| `execute_matrix_config` / `verify_device_snapshot` | `src/cpu_efficiency_lab/matrix_controller.py` | 配置执行、watchdog证据和频率/governor/映射核验；干扰不能被成功终态覆盖；当前fail-closed | `adb.py`, `matrix_controller.py` | `tests/test_recovery_ownership.py`, `tests/test_matrix_controller.py` + device fault injection | 动态限频恢复、子负载终止或数据协议变化 |
+| `collect_scheduler_status` / `compare_baseline` | `src/cpu_efficiency_lab/scheduler_status.py` | 只读调度状态、实验残留和同设备同启动基线对比；不推断出厂值、不写设备 | `preflight.py`, `topology.py`, `screen_control.py` | `tests/test_scheduler_status.py` | 进程/wakelock/perfd格式或设备身份协议变化 |
 | `require_verified_hotplug_recovery` | `src/cpu_efficiency_lab/matrix_controller.py` | 强制阻止未经充分恢复验证的矩阵，显式确认也不能绕过 | 无 | `tests/test_matrix_controller.py` | 恢复代码变更必须重新执行故障注入 |
 | `verify_matrix_recovery.main` / `_external_restriction_policies` | `scripts/verify_matrix_recovery.py` | 真机恢复故障注入验证；区分 `PASS`/`RESTRICTED`/`SKIPPED`/`FAIL`，仅全部 `PASS` 时退出码为 0 | `matrix_controller.py`, `matrix_runner.py`, `screen_control.py` | `tests/test_verify_matrix_recovery.py` | 判定规则、用例清单或设备写入边界变化 |
 | `run_full_matrix` | `src/cpu_efficiency_lab/matrix_runner.py` | staged A-F 编排所有离散频点和完整混合频率网格，当前 fail-closed | `matrix_controller.py`, `matrix_analysis.py`, `matrix_plot.py` | local tests + verified-device gate | 远端恢复、核心在线稳定性或原始数据持久化变化 |

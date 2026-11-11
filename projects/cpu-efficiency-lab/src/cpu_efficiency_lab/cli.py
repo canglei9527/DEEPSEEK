@@ -58,6 +58,11 @@ def _parser() -> argparse.ArgumentParser:
     preflight.add_argument("--serial", required=True)
     preflight.add_argument("--output", type=Path, help="optional JSON path (created exclusively)")
 
+    status = subparsers.add_parser('scheduler-status', help='read-only scheduling and lab-residue observation')
+    status.add_argument('--serial', required=True)
+    status.add_argument('--baseline', type=Path, help='optional prior scheduler-status JSON from the same boot')
+    status.add_argument('--output', type=Path, help='optional new local status JSON')
+
     capture = subparsers.add_parser("capture-power", help="read-only battery sensor capture")
     capture.add_argument("--serial", required=True)
     capture.add_argument("--duration", type=float, default=10.0, help="capture duration in seconds")
@@ -84,6 +89,23 @@ def _parser() -> argparse.ArgumentParser:
     matrix.add_argument("--confirm-device-writes", action="store_true", help="confirm temporary benchmark deployment and cpufreq writes")
     matrix.add_argument("--confirm-core-hotplug", action="store_true", help="confirm the test will temporarily online/offline CPUs 1-7; CPU0 remains online")
     matrix.add_argument("--confirm-independent-recovery", action="store_true", help="confirm the detached watchdog was fault-tested and may recover device state")
+    bounded_plan = subparsers.add_parser('two-hour-plan', help='offline plan from saved preflight JSON (no ADB)')
+    bounded_plan.add_argument('--preflight', required=True, type=Path)
+    bounded_plan.add_argument('--output', required=True, type=Path, help='new local plan JSON')
+
+    bounded = subparsers.add_parser('two-hour-sweep', help='gated screen-off two-hour screening (currently fail-closed)')
+    bounded.add_argument('--serial', required=True)
+    bounded.add_argument('--binary', type=Path, default=Path('build/cpu_mix_bench'))
+    bounded.add_argument('--output', required=True, type=Path, help='new output directory, must not exist')
+    bounded.add_argument('--minimum-battery-percent', type=int, default=60)
+    bounded.add_argument('--confirm-device-writes', action='store_true')
+    bounded.add_argument('--confirm-core-hotplug', action='store_true')
+    bounded.add_argument('--confirm-independent-recovery', action='store_true')
+    bounded.add_argument('--confirm-screen-off', action='store_true')
+
+    analyze = subparsers.add_parser('two-hour-analyze', help='offline checkpoint reanalysis/plotting (no ADB)')
+    analyze.add_argument('--input', required=True, type=Path, help='existing run directory')
+    analyze.add_argument('--output', required=True, type=Path, help='new local artifact directory')
     return parser
 
 
@@ -126,6 +148,22 @@ def _run_preflight(args: argparse.Namespace) -> int:
         print("Not ready: root and readable current/voltage/status nodes are required.", file=sys.stderr)
         return 2
     return 0
+
+
+def _run_scheduler_status(args: argparse.Namespace) -> int:
+    from .scheduler_status import collect_scheduler_status
+    baseline = json.loads(args.baseline.read_text(encoding='utf-8')) if args.baseline else None
+    if args.output and args.output.exists():
+        raise FileExistsError('refusing to overwrite status output: %s' % args.output)
+    report = collect_scheduler_status(AdbClient(args.serial), baseline)
+    if args.output:
+        _save_json_exclusive(args.output, report)
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+    if report['assessment'] == 'LAB_ACTIVITY_OBSERVED':
+        return 1
+    if args.baseline and report['baseline_comparison']['status'] != 'MATCH':
+        return 2
+    return 0 if report['assessment'] == 'NO_LAB_ACTIVITY_OBSERVED' else 2
 
 
 def _run_capture(args: argparse.Namespace) -> int:
@@ -489,18 +527,81 @@ def _run_matrix_sweep(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_two_hour_plan(args: argparse.Namespace) -> int:
+    from .two_hour_plan import build_two_hour_plan, load_offline_preflight
+    try:
+        document = json.loads(args.preflight.read_text(encoding='utf-8'))
+        topology, report = load_offline_preflight(document)
+        value = build_two_hour_plan(topology, report).document()
+    except (KeyError, TypeError) as exc:
+        raise ValueError('invalid saved preflight JSON: %s' % exc) from exc
+    value['offline_topology_assumption'] = 'policy0 CPU0-5, policy6 CPU6-7; live discovery still required'
+    _save_json_exclusive(args.output, value)
+    print(json.dumps({k: value[k] for k in ('config_count', 'counts', 'nominal_measurement_s',
+                                           'estimated_with_allowances_s', 'fits_estimate')}, indent=2))
+    return 0
+
+
+def _run_two_hour_sweep(args: argparse.Namespace) -> int:
+    if not (args.confirm_device_writes and args.confirm_core_hotplug and args.confirm_screen_off):
+        raise ValueError('two-hour-sweep requires --confirm-device-writes --confirm-core-hotplug --confirm-screen-off')
+    require_verified_hotplug_recovery(args.confirm_independent_recovery)  # before client/files/screen preparation
+    from .two_hour_runner import run_two_hour
+    result = run_two_hour(AdbClient(args.serial), args.binary, args.output,
+                          confirmed_recovery=args.confirm_independent_recovery,
+                          confirmed_writes=True, confirmed_screen_off=True,
+                          minimum_battery_percent=args.minimum_battery_percent)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if (result.get('all_planned_configs_valid') and result.get('snapshot_restored')
+                 and result.get('screen_restored') and not result.get('error')
+                 and not result.get('artifact_error')) else 2
+
+
+def _run_two_hour_analyze(args: argparse.Namespace) -> int:
+    from .two_hour_plan import load_two_hour_plan
+    from .two_hour_runner import write_two_hour_artifacts
+    plan = load_two_hour_plan(json.loads((args.input / 'plan.json').read_text(encoding='utf-8')))
+    raw = (args.input / 'raw.log').read_text(encoding='utf-8')
+    states = {}
+    # Last complete event is authoritative. A torn final line is ignored only
+    # at EOF, where a process interruption may have truncated a write.
+    lines = (args.input / 'events.jsonl').read_text(encoding='utf-8').splitlines()
+    for i, line in enumerate(lines):
+        try:
+            event = json.loads(line)
+        except ValueError:
+            if i == len(lines) - 1:
+                break
+            raise
+        if event.get('event') == 'CONFIG_RESULT':
+            states[event['config_id']] = {'status': event['status'], 'reason': event['reason']}
+    args.output.mkdir(parents=True, exist_ok=False)
+    result = write_two_hour_artifacts(args.output, plan, raw, states)
+    _save_json_exclusive(args.output / 'analysis-summary.json', result)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
 def main(argv=None) -> int:
     parser = _parser()
     args = parser.parse_args(argv)
     try:
         if args.command == "preflight":
             return _run_preflight(args)
+        if args.command == 'scheduler-status':
+            return _run_scheduler_status(args)
         if args.command == "capture-power":
             return _run_capture(args)
         if args.command == "cpu-sweep":
             return _run_cpu_sweep(args)
         if args.command == "matrix-sweep":
             return _run_matrix_sweep(args)
+        if args.command == 'two-hour-plan':
+            return _run_two_hour_plan(args)
+        if args.command == 'two-hour-sweep':
+            return _run_two_hour_sweep(args)
+        if args.command == 'two-hour-analyze':
+            return _run_two_hour_analyze(args)
     except KeyboardInterrupt:
         print("interrupted; device restoration was requested", file=sys.stderr)
         return 130

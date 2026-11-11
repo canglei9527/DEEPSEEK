@@ -6,7 +6,10 @@ import re
 import shlex
 import secrets
 import time
-from typing import Dict, List, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Union
+
+if TYPE_CHECKING:
+    from .low_noise_environment import NoiseGuard
 
 from .adb import AdbClient, AdbError
 from .config import CPUFREQ_ROOT
@@ -17,8 +20,11 @@ from .sweep import BATTERY_TEMP_LIMIT_MC, CPU_TEMP_LIMIT_MC, REMOTE_BENCH, REMOT
 from .topology import CpuTopology, discover_cpu_topology
 
 
-# A conservative restoration mitigation is under test; sysfs is not atomic and
-# interruption during partial lock/restore remains insufficiently verified.
+# Two on-device fault-injection rounds each passed 11/11 controlled cases:
+# data/phase-i-recovery-verify.* and data/phase-k-recovery-revalidate.*.
+# These tests do not eliminate the sysfs check/write race with system limits;
+# an indistinguishable concurrent change may be overwritten before detection.
+# Keep the gate fail-closed until that remaining risk is independently resolved.
 INDEPENDENT_RECOVERY_VERIFIED = False
 
 
@@ -37,7 +43,7 @@ def require_verified_hotplug_recovery(confirmed: bool = False) -> None:
 
 
 def _safe_policy_restore_shell() -> str:
-    """Journal intended sysfs writes; preserve any unexpected restriction.
+    """Restore only journal-owned locks; never write policies with unknown ownership.
 
     Process interruption is recoverable from an atomically replaced journal.
     sysfs has no compare-and-swap, so an indistinguishable concurrent system
@@ -64,10 +70,6 @@ safe_restore_policy() {
     case "$safe_target" in ''|*[!0-9]*) return 1 ;; esac
     if [ "$safe_target" -lt "$safe_original_min" ] || [ "$safe_target" -gt "$safe_original_max" ]; then return 2; fi
   fi
-  if [ "$safe_min" = "$safe_original_min" ] && [ "$safe_max" = "$safe_original_max" ]; then
-    printf 'POLICY_RESTORE|%s|%s|%s|ALREADY_ORIGINAL\n' "$safe_policy" "$safe_min" "$safe_max"
-    return 0
-  fi
   safe_stage=NONE
   if [ "$safe_journal" != NA ] && [ -f "$safe_journal" ]; then
     read -r sj_policy sj_min sj_max sj_target sj_stage sj_extra < "$safe_journal" || return 2
@@ -80,7 +82,17 @@ safe_restore_policy() {
       *) printf 'POLICY_JOURNAL_INVALID|%s\n' "$safe_policy"; return 2 ;;
     esac
   fi
-  if [ "$safe_journal" != NA ] && [ -f "$safe_journal.tainted" ]; then safe_stage=TAINTED; fi
+  # A previous observation of interference remains inconclusive even if an
+  # external writer has since put the numeric bounds back at the snapshot.
+  # Validate the journal and taint BEFORE the ALREADY_ORIGINAL shortcut.
+  if [ "$safe_journal" != NA ] && [ -f "$safe_journal.tainted" ]; then
+    printf 'POLICY_RESTORE_RESTRICTED|%s|%s|%s\n' "$safe_policy" "$safe_min" "$safe_max"
+    return 2
+  fi
+  if [ "$safe_min" = "$safe_original_min" ] && [ "$safe_max" = "$safe_original_max" ]; then
+    printf 'POLICY_RESTORE|%s|%s|%s|ALREADY_ORIGINAL\n' "$safe_policy" "$safe_min" "$safe_max"
+    return 0
+  fi
   safe_owned=0
   if [ "$safe_target" != NA ] && [ "$safe_max" = "$safe_target" ]; then
     case "$safe_stage" in
@@ -91,8 +103,13 @@ safe_restore_policy() {
       LOCKED) [ "$safe_min" = "$safe_target" ] && safe_owned=1 ;;
     esac
   fi
-  if [ "$safe_owned" -eq 0 ] && [ "$safe_stage" != NONE ]; then
+  if [ "$safe_owned" -eq 0 ]; then
+    # Snapshot intersection is also a write to somebody else's shared request.
+    # Do not tighten, widen, or replay any unowned state. Preserve it verbatim.
     mark_policy_tainted "$safe_journal" || { printf 'POLICY_TAINT_WRITE_FAILED|%s\n' "$safe_policy"; return 1; }
+    printf 'POLICY_RESTORE_UNOWNED|%s|%s|%s\n' "$safe_policy" "$safe_min" "$safe_max"
+    printf 'POLICY_RESTORE_RESTRICTED|%s|%s|%s\n' "$safe_policy" "$safe_min" "$safe_max"
+    return 2
   fi
   read -r safe_check_min < "$safe_path/scaling_min_freq" 2>/dev/null || { mark_policy_tainted "$safe_journal"; return 1; }
   read -r safe_check_max < "$safe_path/scaling_max_freq" 2>/dev/null || { mark_policy_tainted "$safe_journal"; return 1; }
@@ -144,35 +161,7 @@ safe_restore_policy() {
     printf 'POLICY_RESTORE|%s|%s|%s|JOURNALED\n' "$safe_policy" "$safe_final_min" "$safe_final_max"
     return 0
   fi
-  # Unknown or externally changed state: only make the range more restrictive.
-  safe_new_min=$safe_min; safe_new_max=$safe_max
-  [ "$safe_new_min" -lt "$safe_original_min" ] && safe_new_min=$safe_original_min
-  [ "$safe_new_max" -gt "$safe_original_max" ] && safe_new_max=$safe_original_max
-  if [ "$safe_new_min" -gt "$safe_new_max" ]; then
-    printf 'POLICY_RESTORE_CONFLICT|%s|%s|%s|%s|%s\n' "$safe_policy" "$safe_min" "$safe_max" "$safe_original_min" "$safe_original_max"
-    return 2
-  fi
-  if [ "$safe_max" != "$safe_new_max" ]; then
-    printf '%s\n' "$safe_new_max" > "$safe_path/scaling_max_freq" 2>/dev/null || return 1
-  fi
-  read -r safe_check_min < "$safe_path/scaling_min_freq" 2>/dev/null || return 1
-  read -r safe_check_max < "$safe_path/scaling_max_freq" 2>/dev/null || return 1
-  if [ "$safe_check_min" != "$safe_min" ] || [ "$safe_check_max" != "$safe_new_max" ]; then
-    mark_policy_tainted "$safe_journal" || printf 'POLICY_TAINT_WRITE_FAILED|%s\n' "$safe_policy"
-    printf 'POLICY_RESTORE_CHANGED|%s|%s|%s\n' "$safe_policy" "$safe_check_min" "$safe_check_max"; return 2
-  fi
-  if [ "$safe_min" != "$safe_new_min" ]; then
-    printf '%s\n' "$safe_new_min" > "$safe_path/scaling_min_freq" 2>/dev/null || return 1
-  fi
-  read -r safe_final_min < "$safe_path/scaling_min_freq" 2>/dev/null || return 1
-  read -r safe_final_max < "$safe_path/scaling_max_freq" 2>/dev/null || return 1
-  printf 'POLICY_RESTORE|%s|%s|%s|CONSERVATIVE\n' "$safe_policy" "$safe_final_min" "$safe_final_max"
-  if [ "$safe_final_min" != "$safe_new_min" ] || [ "$safe_final_max" != "$safe_new_max" ]; then return 1; fi
-  if [ "$safe_final_min" != "$safe_original_min" ] || [ "$safe_final_max" != "$safe_original_max" ]; then
-    printf 'POLICY_RESTORE_RESTRICTED|%s|%s|%s\n' "$safe_policy" "$safe_final_min" "$safe_final_max"
-    return 2
-  fi
-  return 0
+  return 2
 }
 '''
 
@@ -293,6 +282,7 @@ def build_matrix_config_script(
     recovery_id: Optional[str] = None,
     fault_injection: Union[bool, str] = False,
     minimum_battery_percent: int = 60,
+    environment_guard: Optional["NoiseGuard"] = None,
 ) -> str:
     validate_matrix_config(config, topology, report)
     fault_mode = "before_benchmark" if fault_injection is True else ("0" if fault_injection is False else fault_injection)
@@ -633,6 +623,7 @@ fi
 sample_once() {
   sample_phase=$1
   sample_rep=$2
+__ENVIRONMENT_GUARD__
   read -r ci0 _ < /proc/uptime || return 50
   read -r current < /sys/class/power_supply/battery/current_now || return 51
   read -r ci1 _ < /proc/uptime || return 52
@@ -838,6 +829,7 @@ printf 'CONFIG_DONE|%s\n' "$config_id"
 '''
     substitutions = {
         "__SAFE_POLICY_RESTORE__": _safe_policy_restore_shell(),
+        "__ENVIRONMENT_GUARD__": environment_guard.sample_shell() if environment_guard else "",
         "__CONFIG_ID__": config_quoted,
         "__TARGET_CPUS__": target_cpus,
         "__WORKER_CSV__": "'" + worker_csv + "'",
@@ -923,8 +915,12 @@ def verify_device_snapshot(
     for expected in report.policies:
         actual = next((policy for policy in actual_report.policies if policy.name == expected.name), None)
         if actual is None or (
-            actual.scaling_min_khz != expected.scaling_min_khz
+            expected.scaling_min_khz is None or expected.scaling_max_khz is None
+            or not expected.governor or not expected.related_cpus.strip()
+            or actual.scaling_min_khz != expected.scaling_min_khz
             or actual.scaling_max_khz != expected.scaling_max_khz
+            or actual.governor != expected.governor
+            or actual.related_cpus.split() != expected.related_cpus.split()
         ):
             mismatches.append(expected.name)
     if mismatches:
@@ -965,6 +961,7 @@ def execute_matrix_config(
     bench_path: str,
     confirm_independent_recovery: bool = False,
     minimum_battery_percent: int = 60,
+    environment_guard: Optional["NoiseGuard"] = None,
 ) -> str:
     require_verified_hotplug_recovery(confirm_independent_recovery)
     recovery_id = secrets.token_hex(16)
@@ -973,6 +970,7 @@ def execute_matrix_config(
         config, topology, report, cpu_temp_paths, battery_temp_path, bench_path,
         recovery_id=recovery_id,
         minimum_battery_percent=minimum_battery_percent,
+        environment_guard=environment_guard,
     )
     timeout_s = config.planned_seconds * 1.6 + 60.0
     try:
@@ -984,21 +982,33 @@ def execute_matrix_config(
         recovery_output = _read_recovery_log(client, recovery_dir)
         detail = "remote configuration interrupted: %s" % exc
         if snapshot_error is None:
-            detail += "; independent recovery restored the pre-run snapshot"
+            detail += "; snapshot currently matches, but watchdog recovery is not established by snapshot alone"
         else:
             detail += "; recovery snapshot not yet verified: %s" % snapshot_error
         raise MatrixConfigError(detail, recovery_output) from exc
 
     recovery_output = _read_recovery_log(client, recovery_dir)
     incomplete = "CONFIG_DONE|%s" % config.config_id not in output
-    restore_failed = "RESTORE_ERROR|" in output or "WATCHDOG_RECOVERY_FAILED" in recovery_output
+    recovery_evidence = output + "\n" + recovery_output
+    restore_failed = "RESTORE_ERROR|" in recovery_evidence or "WATCHDOG_RECOVERY_FAILED" in recovery_evidence
+    watchdog_complete = any(line == 'WATCHDOG_DONE' or re.fullmatch(r'WATCHDOG_RECOVERY_OK\|[0-9]+', line)
+                            for line in (item.strip() for item in recovery_evidence.splitlines()))
+    interference = any(marker in recovery_evidence for marker in (
+        "POLICY_RESTORE_RESTRICTED|", "POLICY_RESTORE_UNOWNED|", "POLICY_RESTORE_CHANGED|",
+        "POLICY_JOURNAL_INVALID|", "POLICY_TAINT_WRITE_FAILED|", "WATCHDOG_RECOVERY_RESTRICTED|",
+        ".state.tainted",
+    ))
     snapshot_error = _wait_for_device_snapshot(client, topology, report, timeout_s=8.0)
-    if incomplete or restore_failed or snapshot_error is not None:
+    if incomplete or restore_failed or interference or not watchdog_complete or snapshot_error is not None:
         reasons = []
         if incomplete:
             reasons.append("configuration aborted or incomplete")
         if restore_failed:
             reasons.append("device/watchdog reported restore failure")
+        if interference:
+            reasons.append("policy ownership/interference evidence remains inconclusive")
+        if not watchdog_complete:
+            reasons.append("watchdog completion evidence missing")
         if snapshot_error is not None:
             reasons.append("pre-run snapshot mismatch: " + snapshot_error)
         raise MatrixConfigError("; ".join(reasons), output + "\n" + recovery_output)

@@ -6,7 +6,7 @@ import html
 import math
 import re
 from pathlib import Path
-from typing import Dict, List, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 
 def _fmt(value, digits=2):
@@ -107,8 +107,25 @@ def render_matrix_pareto_svg(rows: Sequence[dict], path: Path) -> None:
     _write_svg(path, parts)
 
 
-def render_single_core_frequency_curves(rows: Sequence[dict], path: Path) -> None:
+def efficiency_plot_rows(rows: Sequence[dict], incremental: bool = False) -> List[dict]:
+    """Select denominator and validity together; never reuse total validity for net power."""
+    if not incremental:
+        return list(rows)
+    result = []
+    for row in rows:
+        copy = dict(row)
+        copy['valid'] = bool(row.get('valid') and row.get('required_repetitions', 0) > 0
+                             and row.get('valid_incremental_repetitions') == row.get('required_repetitions'))
+        copy['operations_per_total_joule_median'] = row.get('operations_per_incremental_joule_median')
+        copy['operations_per_total_joule_min'] = None
+        copy['operations_per_total_joule_max'] = None
+        result.append(copy)
+    return result
+
+
+def render_single_core_frequency_curves(rows: Sequence[dict], path: Path, incremental: bool = False) -> None:
     """Plot fixed-frequency single-worker efficiency, breaking lines at invalid points."""
+    rows = efficiency_plot_rows(rows, incremental)
     groups: Dict[str, Dict[int, Dict[int, dict]]] = {"policy0": {}, "policy6": {}}
     for row in rows:
         if row.get("stage") != "B":
@@ -125,14 +142,18 @@ def render_single_core_frequency_curves(rows: Sequence[dict], path: Path) -> Non
               for group in groups.values() for points in group.values() for row in points.values()
               if row.get("valid") and row.get("operations_per_total_joule_median") is not None
               and math.isfinite(float(row["operations_per_total_joule_median"]))]
-    ymax = max(scores, default=1.0) * 1.12
+    ranges = [float(row['operations_per_total_joule_max']) / 1e6
+              for group in groups.values() for points in group.values() for row in points.values()
+              if row.get('valid') and row.get('operations_per_total_joule_max') is not None
+              and math.isfinite(float(row['operations_per_total_joule_max']))]
+    ymax = max(scores + ranges, default=1.0) * 1.12
     if ymax <= 0:
         ymax = 1.0
     width, height = 1600, 720
     parts = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">' % (width, height, width, height),
         '<rect width="100%" height="100%" fill="#fff"/>',
-        _svg_text(width / 2, 34, "Fixed-frequency single-worker efficiency: CPU0–CPU7", 21, color="#111827"),
+        _svg_text(width / 2, 34, ('Incremental' if incremental else 'Total') + " fixed-frequency single-worker efficiency: CPU0–CPU7", 21, color="#111827"),
         _svg_text(width / 2, 58, "Only points with all required valid repetitions are shown; gaps are not connected.", 12, color="#475569"),
         _svg_text(width / 2, height - 20, "Whole-device battery-side power, not CPU rail. CPU0 remains online during CPU1–CPU7 tests.", 12, color="#475569"),
     ]
@@ -171,6 +192,11 @@ def render_single_core_frequency_curves(rows: Sequence[dict], path: Path) -> Non
                 if previous:
                     parts.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="2"/>' % (previous[0], previous[1], x, y, color))
                 title = "CPU%d; %d kHz; %.2f M iterations/J; %s valid repetitions" % (cpu, freq, float(value) / 1e6, row.get("measured_repetitions", "?"))
+                lo, hi = row.get('operations_per_total_joule_min'), row.get('operations_per_total_joule_max')
+                if lo is not None and hi is not None and math.isfinite(float(lo)) and math.isfinite(float(hi)):
+                    ylo = top + plot_h - float(lo) / 1e6 / ymax * plot_h
+                    yhi = top + plot_h - float(hi) / 1e6 / ymax * plot_h
+                    parts.append('<line class="repeat-range" x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="2"/>' % (x, ylo, x, yhi, color))
                 parts.append('<circle cx="%.1f" cy="%.1f" r="4.5" fill="%s"><title>%s</title></circle>' % (x, y, color, html.escape(title)))
                 previous = (x, y)
         parts.append(_svg_text(left + plot_w / 2, top + plot_h + 45, "Locked frequency (GHz)", 13))
@@ -179,12 +205,13 @@ def render_single_core_frequency_curves(rows: Sequence[dict], path: Path) -> Non
             y = top + plot_h + 76 + (index // 6) * 22
             parts.append('<circle cx="%.1f" cy="%.1f" r="4.5" fill="%s"/>' % (x, y - 4, colors[cpu % len(colors)]))
             parts.append(_svg_text(x + 11, y, "CPU%d" % cpu, 11, anchor="start"))
-    parts.append('<text transform="translate(24 %.1f) rotate(-90)" text-anchor="middle" font-family="Arial,sans-serif" font-size="13">Million iterations per total battery joule</text>' % (top + plot_h / 2))
+    parts.append('<text transform="translate(24 %.1f) rotate(-90)" text-anchor="middle" font-family="Arial,sans-serif" font-size="13">Million iterations per %s battery joule</text>' % (top + plot_h / 2, 'incremental' if incremental else 'total'))
     parts.append("</svg>")
     _write_svg(path, parts)
 
 
-def render_mixed_frequency_heatmap(rows: Sequence[dict], path: Path) -> None:
+def render_mixed_frequency_heatmap(rows: Sequence[dict], path: Path,
+                                   panels: Optional[Sequence[Tuple[int, int]]] = None) -> None:
     """Render the full E×P grid with one comparable color scale across all panels."""
     groups: Dict[Tuple[int, int], Dict[Tuple[int, int], dict]] = {}
     for row in rows:
@@ -201,14 +228,14 @@ def render_mixed_frequency_heatmap(rows: Sequence[dict], path: Path) -> None:
                   and math.isfinite(float(row["operations_per_total_joule_median"]))]
     global_min = min(all_values) if all_values else 0.0
     global_max = max(all_values) if all_values else 1.0
-    width, height = 1600, 1430
+    expected = tuple(panels) if panels is not None else ((1, 1), (2, 1), (4, 1), (6, 1), (4, 2), (6, 2))
+    width, height = 1600, 140 + 430 * max(1, (len(expected) + 1) // 2)
     parts = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">' % (width, height, width, height),
         '<rect width="100%" height="100%" fill="#fff"/>',
         _svg_text(width / 2, 34, "Fixed E/P frequency combinations: whole-device battery efficiency", 21, color="#111827"),
         _svg_text(width / 2, 58, "Values: million iterations/J. Both required repetitions must be valid; gray cells are missing or invalid.", 12, color="#475569"),
     ]
-    expected = ((1, 1), (2, 1), (4, 1), (6, 1), (4, 2), (6, 2))
     for panel_index, (e_count, p_count) in enumerate(expected):
         col, panel_row = panel_index % 2, panel_index // 2
         x0, y0 = 25 + col * 785, 78 + panel_row * 430
@@ -242,7 +269,7 @@ def render_mixed_frequency_heatmap(rows: Sequence[dict], path: Path) -> None:
                 title = "E%d P%d; E=%d kHz; P=%d kHz; efficiency=%s M iterations/J" % (e_count, p_count, e_freq, p_freq, label)
                 parts.append('<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" fill="%s" stroke="#fff" stroke-width="1"><title>%s</title></rect>' % (x, y, cell_w, cell_h, fill, html.escape(title)))
                 parts.append(_svg_text(x + cell_w / 2, y + cell_h / 2 + 4, label, 10, color=color))
-    parts.append(_svg_text(width / 2, height - 42, "One common color scale across all six panels: %s to %s million iterations/J." % (_fmt(global_min, 1), _fmt(global_max, 1)), 12, color="#475569"))
+    parts.append(_svg_text(width / 2, height - 42, "Common color scale across shown panels: %s to %s million iterations/J." % (_fmt(global_min, 1), _fmt(global_max, 1)), 12, color="#475569"))
     parts.append(_svg_text(width / 2, height - 20, "Whole-device battery-side power; CPU0 remains online where it is not a worker.", 12, color="#475569"))
     parts.append("</svg>")
     _write_svg(path, parts)

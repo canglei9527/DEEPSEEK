@@ -1,7 +1,23 @@
 # Bug 历史
 
+## 2026-11-11：恢复快照和watchdog证据核验不完整
+- 已确认缺陷：旧 `verify_device_snapshot()` 只比对在线核和cpufreq上下限，不检查governor或policy的CPU映射；旧 `execute_matrix_config()` 可在缺少watchdog日志时仅凭 `CONFIG_DONE` 与数值快照匹配返回成功，断连时还会误称“独立恢复已完成”。
+- 修复：核对governor与映射，不改写它们；成功还要求完整的 `WATCHDOG_DONE` 或格式有效的 `WATCHDOG_RECOVERY_OK|数字`，且任何恢复失败/taint/未知归属证据仍拒绝成功。断连只表述“数值当前一致，不能单凭此证明watchdog恢复”。
+- 新增 `scheduler-status` 只读观测项目进程、保活锁、perfd请求、policy、governor、在线核、电池/屏幕；同设备、同ADB端点、同boot ID基线可比较。缺少扫描或读权限、跨设备/重启时拒绝推断恢复；匹配也不是出厂默认值。只读实测 `data/phase-p-scheduler-status.json` 与 `data/phase-q-scheduler-status.json` 同启动比较为MATCH；记录中policy0/6为walt、全8核在线、未观察项目残留。此前曾看到performance，不能臆断自动变化的原因。
+- 本地针对性测试21项和compileall通过；一次全量测试120秒超时，后台重跑在本地测试进程长时间停滞后已停止该进程，均不能记为通过。修改后的设备故障注入未运行，sysfs竞态仍未解决，恢复门禁仍关闭。
+- 厂商频率候选后端真机诊断：正句柄被perfd服务列为活动请求，但policy0上限及厂商vote均未变化，释放成功后起始快照一致；ownership为INCONCLUSIVE、SIGKILL未运行，不可用于扫描或解除门禁。证据见 `ai-context/PERF_REQUEST_EVALUATION.md` 及本机 `data/phase-{m,n,o}-*.{raw.log,summary.json}`。
+
+## 2026-11-11：修复恢复归属误判与 taint 被数值相等掩盖
+- 复现：新增 `tests/test_recovery_ownership.py`，修复前6项中4项失败。带 `.tainted` 或错误target的journal在数值恰好等于快照时仍返回 `ALREADY_ORIGINAL`/0；未参与锁频的policy或已tainted的policy被旧“取交集”分支改写，还可能返回成功。
+- 修复：`_safe_policy_restore_shell()` 先验证journal及持久taint，再判断快照相等；一旦归属未知、受干扰或tainted，不再写任何cpufreq边界，保留系统当前值并返回2/`RESTRICTED`。只有匹配journal及观测状态的本次锁定才进入已有恢复路径。
+- 防御：`execute_matrix_config()` 即使同时看到 `CONFIG_DONE`、成功watchdog标记及一致的最终快照，遇到受限/归属不明/变更/无效journal/taint证据仍拒绝成功，避免终态偶然一致抹掉中途干扰。
+- 本地验证：新文件7项回归通过（执行器测试另含7种干扰证据子用例），完整 `python -m unittest discover -s tests -t .` 114项通过；`python -m compileall -q src tests scripts` 通过。既有fake-sysfs锁定/恢复中断和系统降限测试也通过。
+- 真机只读接口探测：`data/phase-l-frequency-interface-probe.json`。发现厂商频率投票节点和perf服务，但尚未验证其按客户端独立聚合、超时/退出释放、保留其他系统限制的语义；没有调用未知ioctl/资源opcode，也没有改写这些节点。文件模式或root的 `test -w` 结果不等于写入成功或接口安全。
+- **未解决的边界**：上述改动移除了未知归属分支的写入并修复成功误判，但已确认归属分支仍有sysfs检查/写入的非原子窗口；不能靠更多回读或flock声称消除。`INDEPENDENT_RECOVERY_VERIFIED=False` 保持不变。本轮未做设备故障注入、锁频或新性能负载；之前两轮11/11日志不验证本次修订，也不能替代独立请求型后端的论证。
+- 顾问工具：本会话搜索不到可调用的DeepSeek顾问，未取得外部预评审结论。
+
 ## 2026-11-11（真机）：首次捕获系统并发限频竞态，验证器曾把它误判为恢复失败
-- 环境：设备 `192.168.137.99:45387`（2410DPN6CC / haotian / SM8750 / Android 16，root 可用、SELinux Enforcing、放电中、电量 84–85%）。
+- 环境：Android 设备，root 可用、SELinux Enforcing、放电中；设备专属连接信息不公开。
 - 只读采集复核：`data/phase-h-idle-check.*`，请求 20 秒、实际跨度 20.84 秒，中位间隔 1.041 秒；`current_now`/`voltage_now` 分别观测到 20/16 次数值变化（周期约 1.04 秒）。`current_now×voltage_now` 积分 14.57 J，`charge_counter` 反向估算 15.26 J，相差 4.78% —— 这是同一电量计的窗口内一致性检查，不是独立校准。
 - 基准编译：NDK `25.2.9519653` 编译 `native/cpu_mix_bench.c` 成功，12832 字节；本机需把 `TEMP`/`TMP` 指向可写目录，否则 clang 报 `unable to make temporary file`。
 - **核心发现（首次真机证据）**：策略边界在本次会话中被系统持续改动，且改动发生在故障注入窗口内。只读连续观测与多次 `preflight` 记录到 `policy0` 依次出现 384000–1996800、556800–2227200、1152000–2745600、1152000–1363200，`policy6` 上限也在 1958400/2438400/3513600 之间变化；`online=0-7`、`low_power=0` 全程稳定，未由本工具写入。这与之前只能靠模拟推断的“不可原子比较写竞态”一致，现在有真机原始日志。

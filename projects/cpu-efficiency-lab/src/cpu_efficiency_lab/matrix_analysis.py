@@ -404,6 +404,9 @@ def aggregate_matrix(
                 "baseline_power_w_median": median("baseline_power_w"),
                 "incremental_power_w_median": incremental_median("incremental_power_w"),
                 "operations_per_total_joule_median": median("operations_per_total_joule"),
+                "operations_per_total_joule_sd": sd("operations_per_total_joule"),
+                "operations_per_total_joule_min": min((r.operations_per_total_joule for r in valid if r.operations_per_total_joule is not None), default=None),
+                "operations_per_total_joule_max": max((r.operations_per_total_joule for r in valid if r.operations_per_total_joule is not None), default=None),
                 "operations_per_incremental_joule_median": incremental_median("operations_per_incremental_joule"),
                 "valid": len(valid) == required and len(rows) == required and not duplicate_repetitions and repetition_sequence_valid and not inconsistent_repetition_plan,
             }

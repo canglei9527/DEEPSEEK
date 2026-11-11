@@ -1,0 +1,123 @@
+"""Local authorization, failure-path, and evidence tests; no actual ADB."""
+import contextlib
+import io
+import json
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+from cpu_efficiency_lab.adb import AdbError
+from verify_perf_requests import main, ownership_evidence_valid, same_policy_snapshot
+
+
+STATE = {'serial': 'phone', 'soc': 'example', 'selinux': 'Enforcing',
+         'capacity': '90', 'status': 'Discharging', 'cpu_online': list(range(8)),
+         'policies': {'policy0': (100, 200, 'gov', '0 1 2 3 4 5'),
+                      'policy6': (300, 400, 'gov', '6 7')}, 'temperatures_mc': {}}
+
+
+class FakeClient:
+    def __init__(self, serial):
+        self.serial = serial
+        self.commands = []
+
+    def run(self, args, **kwargs):
+        self.commands.append(('run', args))
+        return 'pushed'
+
+    def run_root_script(self, script, **kwargs):
+        self.commands.append(('root', script))
+        if '--probe' in script:
+            return 'API|perf_lock_acq|perf_lock_rel|RESOLVED\n'
+        if '--verify' in script:
+            raise AdbError('ADB exited with status 2: ACQUIRE|0|CAP|123|8000|42\nCLEAN_RELEASE|42|0\nVERIFY_END|INCONCLUSIVE')
+        return ''
+
+
+class PerfProbeTests(unittest.TestCase):
+    def test_evidence_requires_exact_six_unique_cases_not_just_pass_count(self):
+        cases = [f'CASE|{p}|{case}|PASS' for p in (0, 6)
+                 for case in ('RELEASE_LOOSER', 'RELEASE_STRICTER', 'LOCK_AND_RELEASE')]
+        complete = cases + ['RESTORED_CHECK|0|PASS', 'RESTORED_CHECK|6|PASS', 'VERIFY_END|PASS']
+        self.assertTrue(ownership_evidence_valid('\n'.join(complete)))
+        self.assertFalse(ownership_evidence_valid('\n'.join(complete + [cases[0]])))
+        self.assertFalse(ownership_evidence_valid('\n'.join(complete[1:] + ['RESTORED_CHECK|0|PASS'] * 20)))
+        self.assertFalse(ownership_evidence_valid('\n'.join(complete + ['RESTORED_CHECK|6|INCONCLUSIVE'])))
+        self.assertFalse(ownership_evidence_valid('\n'.join(complete[:-1])))
+        self.assertFalse(ownership_evidence_valid('\n'.join(complete + ['REFUSED|STALE_LIMITS'])))
+
+    def test_policy_snapshot_compares_governor_and_bounds_not_battery_drift(self):
+        self.assertTrue(same_policy_snapshot(STATE, {**STATE, 'capacity': '89'}))
+        other = {**STATE, 'policies': {**STATE['policies'], 'policy0': (100, 150, 'gov', '0 1 2 3 4 5')}}
+        self.assertFalse(same_policy_snapshot(STATE, other))
+
+    def test_requires_explicit_confirmation_before_client_or_files(self):
+        with tempfile.TemporaryDirectory() as d, patch('verify_perf_requests.AdbClient') as adb:
+            out = Path(d) / 'out'
+            with self.assertRaisesRegex(ValueError, 'confirm-device-writes'):
+                main(['--serial', 'phone', '--binary', str(Path(d) / 'missing'), '--output', str(out)])
+            adb.assert_not_called()
+            self.assertFalse(out.exists())
+
+    def test_failed_owned_request_persists_error_and_never_runs_crash(self):
+        client = FakeClient('phone')
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            binary = root / 'probe'
+            binary.write_bytes(b'fake binary')
+            out = root / 'evidence'
+            with patch('verify_perf_requests.AdbClient', return_value=client), \
+                 patch('verify_perf_requests.snapshot', return_value=STATE), \
+                 patch('verify_perf_requests.settled', return_value=(True, [STATE])), \
+                 patch('verify_perf_requests.time.sleep'), contextlib.redirect_stdout(io.StringIO()):
+                code = main(['--serial', 'phone', '--binary', str(binary), '--output', str(out), '--confirm-device-writes'])
+            self.assertEqual(code, 2)
+            raw = out.with_name(out.name + '.raw.log').read_text(encoding='utf-8')
+            self.assertIn('OWNERSHIP_ERROR', raw)
+            self.assertIn('ACQUIRE|0|CAP|123', raw)
+            self.assertIn('CLEAN_RELEASE|42|0', raw)
+            self.assertNotIn('CRASH_TRANSPORT', raw)
+            summary = json.loads(out.with_name(out.name + '.summary.json').read_text(encoding='utf-8'))
+            self.assertEqual(summary['ownership'], 'INCONCLUSIVE')
+            self.assertEqual(summary['crash_ttl'], 'NOT_RUN')
+            self.assertFalse(any('--crash-test' in str(command) for _, command in client.commands))
+
+    def test_interruption_records_inconclusive_status_and_still_checks_postflight(self):
+        class InterruptedClient(FakeClient):
+            def run_root_script(self, script, **kwargs):
+                if '--verify' in script:
+                    raise KeyboardInterrupt()
+                return super().run_root_script(script, **kwargs)
+
+        client = InterruptedClient('phone')
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            binary = root / 'probe'; binary.write_bytes(b'fake binary')
+            out = root / 'interrupted'
+            with patch('verify_perf_requests.AdbClient', return_value=client), \
+                 patch('verify_perf_requests.snapshot', return_value=STATE), \
+                 patch('verify_perf_requests.settled', return_value=(True, [STATE])) as postflight, \
+                 patch('verify_perf_requests.time.sleep'), contextlib.redirect_stdout(io.StringIO()):
+                code = main(['--serial', 'phone', '--binary', str(binary), '--output', str(out), '--confirm-device-writes'])
+            self.assertEqual(code, 2)
+            self.assertTrue(postflight.called)
+            summary = json.loads(out.with_name(out.name + '.summary.json').read_text(encoding='utf-8'))
+            self.assertEqual(summary['ownership'], 'INCONCLUSIVE')
+            self.assertEqual(summary['crash_ttl'], 'NOT_RUN')
+            self.assertEqual(summary['error'], 'KeyboardInterrupt()')
+
+    def test_existing_evidence_refused_before_client_access(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            binary = root / 'probe'; binary.write_bytes(b'x')
+            out = root / 'evidence'
+            out.with_name(out.name + '.raw.log').write_text('keep', encoding='utf-8')
+            with patch('verify_perf_requests.AdbClient') as adb:
+                with self.assertRaises(FileExistsError):
+                    main(['--serial', 'phone', '--binary', str(binary), '--output', str(out), '--confirm-device-writes'])
+                adb.assert_not_called()
+
+
+if __name__ == '__main__':
+    unittest.main()
