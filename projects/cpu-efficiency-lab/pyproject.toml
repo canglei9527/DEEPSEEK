@@ -1,0 +1,6 @@
+[project]
+name = "cpu-efficiency-lab"
+version = "0.1.0"
+description = "Read-only Android battery power measurement and CPU efficiency experiment tooling"
+requires-python = ">=3.9"
+dependencies = []

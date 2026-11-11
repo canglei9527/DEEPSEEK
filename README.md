@@ -10,6 +10,7 @@ canglei9527 的公开项目集合。
 |---|---|---|
 | [`projects/ARID`](projects/ARID) | 把 aider-gui 的核心思想在 DeepSeek Harness (DSH) 上重实现：双模型分工与升级流程、多平台模型/密钥管理（含 OpenAI 兼容网关）、本地知识库检索、飞书远程控制 | JavaScript |
 | [`projects/codex-agent-console`](projects/codex-agent-console) | Windows desktop console for Codex dual-model orchestration and token statistics | Python |
+| [`projects/cpu-efficiency-lab`](projects/cpu-efficiency-lab) | Android 整机电池侧 CPU 能效测量、固定频率矩阵规划与绘图；未验证恢复路径保持 fail-closed | Python / C |
 | [`projects/dsh-router`](projects/dsh-router) | Task-aware reasoning-mode router ported from dsh-routing-suite to ZCode: classifies each prompt (build/fix/ambiguous) and injects the matching working style and workflow stage near-field via hooks | JavaScript |
 | [`projects/f28p55x-driverlib-guide-zh-cn`](projects/f28p55x-driverlib-guide-zh-cn) | F28P55x DriverLib API Guide v5.04.00.00 中文离线指南 | HTML / 中文 |
 | [`projects/f28p55x-study-library-zh-cn`](projects/f28p55x-study-library-zh-cn) | F28P55x 00–19 中文开发学习资料，含译文、中英对照和原文 | PDF |

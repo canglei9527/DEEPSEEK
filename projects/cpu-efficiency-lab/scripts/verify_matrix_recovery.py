@@ -1,0 +1,188 @@
+"""Device fault-injection checks for matrix recovery; never runs a full sweep."""
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import secrets
+import sys
+import time
+from dataclasses import asdict
+from pathlib import Path
+from typing import Optional
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+from cpu_efficiency_lab.adb import AdbClient, AdbError
+from cpu_efficiency_lab.matrix_controller import _read_recovery_log, build_matrix_config_script, verify_device_snapshot
+from cpu_efficiency_lab.matrix_plan import MatrixConfig, all_frequency_levels
+from cpu_efficiency_lab.matrix_runner import _validate_device_ready
+from cpu_efficiency_lab.screen_control import DEFAULT_MATRIX_TIMEOUT_MS, keep_screen_awake, read_screen_state, restore_screen_timeout
+from cpu_efficiency_lab.sweep import deploy_benchmark
+
+
+# All entries deliberately kill the controller; this is not a benchmark sweep.
+CASES = (
+    ("first_offline", "after_first_offline", False, "SIGKILL_AFTER_FIRST_OFFLINE"),
+    ("policy0_max", "after_policy_max", False, "SIGKILL_AFTER_POLICY_MAX"),
+    ("policy0_min", "after_policy_min", False, "SIGKILL_AFTER_POLICY_MIN"),
+    ("policy0_restore", "during_restore_after_min", False, "SIGKILL_DURING_POLICY_RESTORE"),
+    ("policy6_max", "after_policy6_max", True, "SIGKILL_AFTER_POLICY_MAX"),
+    ("policy6_min", "after_policy6_min", True, "SIGKILL_AFTER_POLICY_MIN"),
+    ("policy6_restore", "during_restore_policy6_after_min", True, "SIGKILL_DURING_POLICY_RESTORE"),
+    ("child_before_register", "before_registration", False, "SIGKILL_BEFORE_REGISTRATION"),
+    ("child_after_register", "after_registration", False, "SIGKILL_AFTER_REGISTRATION"),
+    ("child_after_go", "after_go", False, "SIGKILL_AFTER_GO"),
+    ("child_running", "during_benchmark", False, "SIGKILL_MAIN_DURING_BENCH"),
+)
+
+
+def _interior_frequency(report, policy_name: str) -> int:
+    policy = next((p for p in report.policies if p.name == policy_name), None)
+    if policy is None or policy.scaling_min_khz is None or policy.scaling_max_khz is None:
+        raise AdbError("policy bounds unavailable: " + policy_name)
+    candidates = [f for f in all_frequency_levels(report, policy_name)
+                  if policy.scaling_min_khz < f < policy.scaling_max_khz]
+    if not candidates:
+        raise AdbError("no interior frequency inside current limits for " + policy_name)
+    return candidates[len(candidates) // 2]
+
+
+def _journal_restored(output: str, policy: str) -> bool:
+    pattern = r"RECOVERY_FILE\|policy-%s\.state\s*\n[^\n]*\bRESTORED\b" % re.escape(policy)
+    return bool(re.search(pattern, output)) and ("RECOVERY_FILE|policy-%s.state.tainted" % policy not in output)
+
+
+def main(argv: Optional[list] = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--serial", required=True)
+    parser.add_argument("--output", required=True, type=Path, help="new prefix for diagnostic evidence")
+    parser.add_argument("--confirm-device-writes", action="store_true")
+    parser.add_argument("--minimum-battery-percent", type=int, default=60)
+    args = parser.parse_args(argv)
+    if not args.confirm_device_writes:
+        raise ValueError("fault injection requires --confirm-device-writes")
+    if not 1 <= args.minimum_battery_percent <= 100:
+        raise ValueError("invalid battery reserve")
+    raw_path = args.output.with_name(args.output.name + ".raw.log")
+    summary_path = args.output.with_name(args.output.name + ".summary.json")
+    if raw_path.exists() or summary_path.exists():
+        raise FileExistsError("refusing to overwrite recovery evidence")
+
+    client = AdbClient(args.serial)
+    report, topology, _, _, _ = _validate_device_ready(client, args.minimum_battery_percent)
+    screen_before = read_screen_state(client)
+    initial_bench = client.run_root_script("ps -A -o PID,NAME | grep '[c]pu_mix_bench' || true").strip()
+    if initial_bench:
+        raise AdbError("existing benchmark process found; refusing fault injection")
+    # Test the long-script transport read-only before any device writes.
+    if client.run_root_script_stdin("id -u").strip() != "0":
+        raise AdbError("long-script stdin transport did not return root uid")
+
+    raw_path.parent.mkdir(parents=True, exist_ok=True)
+    results = []
+    screen_after = None
+    screen_error = None
+    error = None
+    prepared = False
+    with raw_path.open("x", encoding="utf-8", newline="\n") as raw:
+        def log(line):
+            raw.write(str(line) + "\n"); raw.flush()
+        log("VERIFICATION_BEGIN|%s|%s" % (report.serial, report.model))
+        try:
+            keep_screen_awake(client, expected_current_timeout_ms=screen_before.timeout_ms)
+            prepared = True
+            bench = deploy_benchmark(client, ROOT / "build" / "cpu_mix_bench")
+            log("REMOTE_BENCH|" + bench)
+            for index, (label, mode, mixed, marker) in enumerate(CASES, 1):
+                report, topology, cpu_paths, battery_path, _ = _validate_device_ready(client, args.minimum_battery_percent)
+                if not read_screen_state(client).display_on:
+                    raise AdbError("screen is no longer on")
+                e_freq = _interior_frequency(report, "policy0")
+                targets = (("policy0", e_freq),)
+                cpus = (0,)
+                if mixed:
+                    targets += (("policy6", _interior_frequency(report, "policy6")),)
+                    cpus = (0, 6)
+                config = MatrixConfig("FIJ-" + label, "D" if mixed else "A", cpus, targets, 1, 8, 1)
+                recovery_id = secrets.token_hex(16)
+                recovery_dir = "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_" + recovery_id
+                script = build_matrix_config_script(config, topology, report, cpu_paths, battery_path,
+                                                    bench, recovery_id=recovery_id, fault_injection=mode,
+                                                    minimum_battery_percent=args.minimum_battery_percent)
+                log("CASE_BEGIN|%s|%s|%s" % (label, recovery_id, list(targets)))
+                print("VERIFY|%d/%d|%s" % (index, len(CASES), label), flush=True)
+                transport = ""
+                try:
+                    transport = client.run_root_script_stdin(script, timeout_s=45)
+                    log("CONTROLLER_RETURN|" + transport)
+                except (AdbError, OSError) as exc:
+                    log("CONTROLLER_ERROR|" + repr(exc))
+                output = ""
+                deadline = time.monotonic() + 50
+                while time.monotonic() < deadline:
+                    output = _read_recovery_log(client, recovery_dir)
+                    if any(x in output for x in ("WATCHDOG_RECOVERY_OK", "WATCHDOG_RECOVERY_RESTRICTED", "WATCHDOG_RECOVERY_FAILED")):
+                        break
+                    time.sleep(1)
+                log("REMOTE_BEGIN|" + label); log(output); log("REMOTE_END|" + label)
+                verify_device_snapshot(client, topology, report)
+                process_list = client.run_root_script("ps -A -o PID,NAME | grep '[c]pu_mix_bench' || true").strip()
+                marker_present = ("FAULT_INJECTION|" + marker + "|") in output
+                restored = "WATCHDOG_RECOVERY_OK" in output and "WATCHDOG_RECOVERY_RESTRICTED" not in output
+                journal_ok = (label == "first_offline" or _journal_restored(output, "policy0"))
+                if mixed:
+                    journal_ok = journal_ok and _journal_restored(output, "policy6")
+                no_early_work = mode not in ("before_registration", "after_registration") or "B|META|" not in output
+                running_work_seen = mode != "during_benchmark" or "B|META|" in output
+                child_state = None
+                child_stopped = True
+                if mode in ("before_registration", "after_registration", "after_go", "during_benchmark"):
+                    match = re.search(r"FAULT_INJECTION\|%s\|[^|\n]+\|(\d+)" % re.escape(marker), output)
+                    if match:
+                        pid = int(match.group(1))
+                        child_state = client.run_root_script(
+                            "if [ -r /proc/%d/stat ]; then awk '{print $3}' /proc/%d/stat; else echo missing; fi" % (pid, pid)
+                        ).strip()
+                        child_stopped = child_state in ("missing", "Z")
+                    else:
+                        child_stopped = False
+                passed = bool(marker_present and restored and journal_ok and not process_list and
+                              no_early_work and running_work_seen and child_stopped)
+                result = {"case": label, "mode": mode, "target_khz": dict(targets), "passed": passed,
+                          "marker_present": marker_present, "journal_restored": journal_ok,
+                          "snapshot_restored": True, "benchmark_processes": process_list or None,
+                          "child_state": child_state, "recovery_dir": recovery_dir}
+                results.append(result); log("CASE_RESULT|" + json.dumps(result, ensure_ascii=False))
+                print("VERIFY_RESULT|%s|%s" % (label, "PASS" if passed else "FAIL"), flush=True)
+                if not passed:
+                    raise AdbError("fault-injection check failed: " + label)
+        except (AdbError, OSError, ValueError) as exc:
+            error = repr(exc); log("VERIFICATION_ERROR|" + error)
+        finally:
+            if prepared:
+                try:
+                    screen_after = restore_screen_timeout(client, screen_before.timeout_ms, DEFAULT_MATRIX_TIMEOUT_MS)
+                    log("SCREEN_RESTORED|" + repr(screen_after))
+                except (AdbError, OSError) as exc:
+                    screen_error = repr(exc); log("SCREEN_RESTORE_ERROR|" + screen_error)
+            log("VERIFICATION_END|%d/%d|error=%s" % (len(results), len(CASES), error))
+    summary = {"serial": args.serial, "cases_planned": len(CASES), "cases_completed": len(results),
+               "cases_passed": sum(r["passed"] for r in results), "results": results, "error": error,
+               "screen_before": asdict(screen_before), "screen_after": asdict(screen_after) if screen_after else None,
+               "screen_restore_error": screen_error, "raw_log": str(raw_path),
+               "verification_scope": "controlled fault injection only; does not enable the matrix gate",
+               "remaining_limitations": ["sysfs comparisons and writes are not atomic with system changes",
+                                         "ADB transport disconnect must be independently revalidated",
+                                         "thermal/policy behavior may vary across devices"]}
+    with summary_path.open("x", encoding="utf-8") as f:
+        json.dump(summary, f, ensure_ascii=False, indent=2)
+    return 0 if not error and not screen_error and len(results) == len(CASES) else 2
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except (AdbError, OSError, ValueError) as exc:
+        print("error: %s" % exc, file=sys.stderr, flush=True)
+        raise SystemExit(2)
