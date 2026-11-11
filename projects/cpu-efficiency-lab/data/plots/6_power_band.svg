@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="580" viewBox="0 0 960 580"><rect width="960" height="580" fill="#0d1117"/>
+<text x="88" y="30" fill="#e6edf3" font-size="17" font-family="sans-serif">整机功率 vs 锁频频率（阴影=实测极差，虚线=低包络）</text>
+<text x="88" y="48" fill="#8b949e" font-size="11" font-family="sans-serif">单核满载；功率噪声只会抬高读数，故低包络更接近真值</text>
+<line x1="88" y1="510.0" x2="750" y2="510.0" stroke="#21262d"/>
+<text x="80" y="514.0" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">0.90</text>
+<line x1="88" y1="419.6" x2="750" y2="419.6" stroke="#21262d"/>
+<text x="80" y="423.6" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">1.15</text>
+<line x1="88" y1="329.2" x2="750" y2="329.2" stroke="#21262d"/>
+<text x="80" y="333.2" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">1.39</text>
+<line x1="88" y1="238.8" x2="750" y2="238.8" stroke="#21262d"/>
+<text x="80" y="242.8" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">1.64</text>
+<line x1="88" y1="148.4" x2="750" y2="148.4" stroke="#21262d"/>
+<text x="80" y="152.4" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">1.89</text>
+<line x1="88" y1="58.0" x2="750" y2="58.0" stroke="#21262d"/>
+<text x="80" y="62.0" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">2.14</text>
+<text x="88.0" y="530" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">557</text>
+<text x="220.4" y="530" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">1060</text>
+<text x="352.8" y="530" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">1563</text>
+<text x="485.2" y="530" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">2066</text>
+<text x="617.6" y="530" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">2569</text>
+<text x="750.0" y="530" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">3072</text>
+<text x="419" y="564" fill="#8b949e" font-size="13" text-anchor="middle" font-family="sans-serif">锁定频率 (MHz)</text>
+<text x="24" y="284" fill="#8b949e" font-size="13" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 24 284)">整机功率 (W)</text>
+<polygon points="88.0,382.0 138.5,269.7 194.1,451.6 244.7,417.6 300.2,298.1 350.8,211.7 411.4,335.3 467.0,326.1 527.6,338.6 573.1,284.7 664.1,208.3 664.1,259.4 573.1,331.8 527.6,354.5 467.0,367.8 411.4,410.7 350.8,417.5 300.2,443.0 244.7,463.4 194.1,477.8 138.5,480.9 88.0,443.3" fill="#4c9aff" fill-opacity="0.16"/>
+<polyline points="88.0,443.3 138.5,480.9 194.1,477.8 244.7,463.4 300.2,443.0 350.8,417.5 411.4,410.7 467.0,367.8 527.6,354.5 573.1,331.8 664.1,259.4" fill="none" stroke="#4c9aff" stroke-width="1.4" stroke-dasharray="5 4" stroke-opacity="0.85"/>
+<polyline points="88.0,428.2 138.5,416.8 194.1,458.6 244.7,442.3 300.2,399.5 350.8,396.8 411.4,376.5 467.0,358.1 527.6,344.9 573.1,318.2 664.1,236.6" fill="none" stroke="#4c9aff" stroke-width="2.4"/>
+<line x1="88.0" y1="443.3" x2="88.0" y2="382.0" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="88.0" cy="428.2" r="3" fill="#4c9aff"/>
+<line x1="138.5" y1="480.9" x2="138.5" y2="269.7" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="138.5" cy="416.8" r="3" fill="#4c9aff"/>
+<line x1="194.1" y1="477.8" x2="194.1" y2="451.6" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="194.1" cy="458.6" r="3" fill="#4c9aff"/>
+<line x1="244.7" y1="463.4" x2="244.7" y2="417.6" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="244.7" cy="442.3" r="3" fill="#4c9aff"/>
+<line x1="300.2" y1="443.0" x2="300.2" y2="298.1" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="300.2" cy="399.5" r="3" fill="#4c9aff"/>
+<line x1="350.8" y1="417.5" x2="350.8" y2="211.7" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="350.8" cy="396.8" r="3" fill="#4c9aff"/>
+<line x1="411.4" y1="410.7" x2="411.4" y2="335.3" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="411.4" cy="376.5" r="3" fill="#4c9aff"/>
+<line x1="467.0" y1="367.8" x2="467.0" y2="326.1" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="467.0" cy="358.1" r="3" fill="#4c9aff"/>
+<line x1="527.6" y1="354.5" x2="527.6" y2="338.6" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="527.6" cy="344.9" r="3" fill="#4c9aff"/>
+<line x1="573.1" y1="331.8" x2="573.1" y2="284.7" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="573.1" cy="318.2" r="3" fill="#4c9aff"/>
+<line x1="664.1" y1="259.4" x2="664.1" y2="208.3" stroke="#4c9aff" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="664.1" cy="236.6" r="3" fill="#4c9aff"/>
+<polygon points="209.3,312.8 259.8,296.7 310.4,253.4 386.2,192.7 456.9,241.2 532.7,87.1 583.2,206.1 638.8,87.2 689.4,173.4 750.0,124.9 750.0,143.1 689.4,187.1 638.8,263.9 583.2,234.8 532.7,262.2 456.9,273.2 386.2,262.5 310.4,323.6 259.8,315.9 209.3,329.9" fill="#36b37e" fill-opacity="0.16"/>
+<polyline points="209.3,329.9 259.8,315.9 310.4,323.6 386.2,262.5 456.9,273.2 532.7,262.2 583.2,234.8 638.8,263.9 689.4,187.1 750.0,143.1" fill="none" stroke="#36b37e" stroke-width="1.4" stroke-dasharray="5 4" stroke-opacity="0.85"/>
+<polyline points="209.3,321.3 259.8,306.3 310.4,288.5 386.2,227.6 456.9,257.2 532.7,174.6 583.2,220.5 638.8,175.6 689.4,180.2 750.0,134.0" fill="none" stroke="#36b37e" stroke-width="2.4"/>
+<line x1="209.3" y1="329.9" x2="209.3" y2="312.8" stroke="#36b37e" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="209.3" cy="321.3" r="3" fill="#36b37e"/>
+<line x1="259.8" y1="315.9" x2="259.8" y2="296.7" stroke="#36b37e" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="259.8" cy="306.3" r="3" fill="#36b37e"/>
+<line x1="310.4" y1="323.6" x2="310.4" y2="253.4" stroke="#36b37e" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="310.4" cy="288.5" r="3" fill="#36b37e"/>
+<line x1="386.2" y1="262.5" x2="386.2" y2="192.7" stroke="#36b37e" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="386.2" cy="227.6" r="3" fill="#36b37e"/>
+<line x1="456.9" y1="273.2" x2="456.9" y2="241.2" stroke="#36b37e" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="456.9" cy="257.2" r="3" fill="#36b37e"/>
+<line x1="532.7" y1="262.2" x2="532.7" y2="87.1" stroke="#36b37e" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="532.7" cy="174.6" r="3" fill="#36b37e"/>
+<line x1="583.2" y1="234.8" x2="583.2" y2="206.1" stroke="#36b37e" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="583.2" cy="220.5" r="3" fill="#36b37e"/>
+<line x1="638.8" y1="263.9" x2="638.8" y2="87.2" stroke="#36b37e" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="638.8" cy="175.6" r="3" fill="#36b37e"/>
+<line x1="689.4" y1="187.1" x2="689.4" y2="173.4" stroke="#36b37e" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="689.4" cy="180.2" r="3" fill="#36b37e"/>
+<line x1="750.0" y1="143.1" x2="750.0" y2="124.9" stroke="#36b37e" stroke-width="1" stroke-opacity="0.5"/>
+<circle cx="750.0" cy="134.0" r="3" fill="#36b37e"/>
+<line x1="764" y1="62" x2="790" y2="62" stroke="#4c9aff" stroke-width="2.5" stroke-dasharray="0"/>
+<text x="796" y="66" fill="#c9d1d9" font-size="12" font-family="sans-serif">policy0 小核群</text>
+<line x1="764" y1="82" x2="790" y2="82" stroke="#36b37e" stroke-width="2.5" stroke-dasharray="0"/>
+<text x="796" y="86" fill="#c9d1d9" font-size="12" font-family="sans-serif">policy6 大核群</text>
+<line x1="764" y1="102" x2="790" y2="102" stroke="#c9d1d9" stroke-width="2.5" stroke-dasharray="0"/>
+<text x="796" y="106" fill="#c9d1d9" font-size="12" font-family="sans-serif">中位数</text>
+<line x1="764" y1="122" x2="790" y2="122" stroke="#c9d1d9" stroke-width="2.5" stroke-dasharray="5 4"/>
+<text x="796" y="126" fill="#c9d1d9" font-size="12" font-family="sans-serif">低包络</text>
+<line x1="764" y1="142" x2="790" y2="142" stroke="#c9d1d9" stroke-width="2.5" stroke-dasharray="0"/>
+<text x="796" y="146" fill="#c9d1d9" font-size="12" font-family="sans-serif">极差带</text>
+</svg>
