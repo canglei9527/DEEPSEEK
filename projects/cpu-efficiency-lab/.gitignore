@@ -7,8 +7,10 @@ venv/
 # Git 不会进入被忽略的目录，`data/` 写法会让下面的 ! 规则完全失效。
 data/*
 !data/EEFF-RESULTS.md
+!data/CORE-MEASUREMENT-METHODOLOGY.md
 !data/eeff.tsv
 !data/eeff_combo.tsv
+!data/eeff_energy.tsv
 !data/plots/
 reports/
 build/
