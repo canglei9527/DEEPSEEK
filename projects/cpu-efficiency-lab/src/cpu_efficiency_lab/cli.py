@@ -89,6 +89,7 @@ def _parser() -> argparse.ArgumentParser:
     matrix.add_argument("--confirm-device-writes", action="store_true", help="confirm temporary benchmark deployment and cpufreq writes")
     matrix.add_argument("--confirm-core-hotplug", action="store_true", help="confirm the test will temporarily online/offline CPUs 1-7; CPU0 remains online")
     matrix.add_argument("--confirm-independent-recovery", action="store_true", help="confirm the detached watchdog was fault-tested and may recover device state")
+    matrix.add_argument("--reduced-matrix", action="store_true", help="run the representative low/mid/high reduced matrix (~20 min) instead of the full multi-hour matrix")
     bounded_plan = subparsers.add_parser('two-hour-plan', help='offline plan from saved preflight JSON (no ADB)')
     bounded_plan.add_argument('--preflight', required=True, type=Path)
     bounded_plan.add_argument('--output', required=True, type=Path, help='new local plan JSON')
@@ -494,6 +495,7 @@ def _run_matrix_sweep(args: argparse.Namespace) -> int:
             args.output,
             minimum_battery_percent=args.minimum_battery_percent,
             confirm_independent_recovery=args.confirm_independent_recovery,
+            reduced=args.reduced_matrix,
         )
     except BaseException as exc:
         screen_record["run_error"] = repr(exc)

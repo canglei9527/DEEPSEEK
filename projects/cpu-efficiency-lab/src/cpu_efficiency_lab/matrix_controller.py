@@ -25,6 +25,9 @@ from .topology import CpuTopology, discover_cpu_topology
 # These tests do not eliminate the sysfs check/write race with system limits;
 # an indistinguishable concurrent change may be overwritten before detection.
 # Keep the gate fail-closed until that remaining risk is independently resolved.
+# 2026-11-12: a temporarily-opened gate run confirmed the risk is real — the
+# system concurrently re-clamped policy0 to 384000-1785600 and policy6 max to
+# 2649600 mid-run, so the conservative restore correctly reported RESTRICTED.
 INDEPENDENT_RECOVERY_VERIFIED = False
 
 

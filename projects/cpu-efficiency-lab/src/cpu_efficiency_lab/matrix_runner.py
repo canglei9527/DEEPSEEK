@@ -24,13 +24,18 @@ from .matrix_plot import pareto_rows, render_matrix_pareto_svg, render_mixed_fre
 from .matrix_controller import execute_matrix_config, require_verified_hotplug_recovery, verify_device_snapshot
 from .matrix_plan import (
     MatrixConfig,
+    build_reduced_stage_b,
+    build_reduced_stage_c,
+    build_reduced_stage_d,
     build_stage_a,
     build_stage_b,
     build_stage_c,
     build_stage_d,
     plan_budget_seconds,
     policy_by_cpu,
+    reduced_plan_budget_seconds,
     total_plan_seconds,
+    total_reduced_plan_seconds,
 )
 from .models import PreflightReport
 from .power import battery_power_w
@@ -202,6 +207,7 @@ def run_full_matrix(
     output_prefix: Path,
     minimum_battery_percent: int = 60,
     confirm_independent_recovery: bool = False,
+    reduced: bool = False,
 ) -> dict:
     if not 1 <= minimum_battery_percent <= 100:
         raise ValueError("minimum battery percentage must be between 1 and 100")
@@ -230,10 +236,21 @@ def run_full_matrix(
         client, minimum_battery_percent
     )
     stage_a = build_stage_a(topology, report)
-    stage_b = build_stage_b(topology, report)
-    capacity_groups = topology.capacity_groups()
-    stage_c_count = len(build_stage_c(topology, report, capacity_groups["E"], capacity_groups["P"]))
-    stage_d_count = len(build_stage_d(topology, report, capacity_groups["E"], capacity_groups["P"]))
+    if reduced:
+        stage_b = build_reduced_stage_b(topology, report)
+        stage_c = build_reduced_stage_c(topology, report)
+        stage_d = build_reduced_stage_d(topology, report)
+        stage_c_count = len(stage_c)
+        stage_d_count = len(stage_d)
+        budget = reduced_plan_budget_seconds(topology, report)
+        budget_total = total_reduced_plan_seconds(topology, report)
+    else:
+        stage_b = build_stage_b(topology, report)
+        capacity_groups = topology.capacity_groups()
+        stage_c_count = len(build_stage_c(topology, report, capacity_groups["E"], capacity_groups["P"]))
+        stage_d_count = len(build_stage_d(topology, report, capacity_groups["E"], capacity_groups["P"]))
+        budget = plan_budget_seconds(topology, report)
+        budget_total = total_plan_seconds(topology, report)
     remote_bench = deploy_benchmark(client, binary_path)
     started_utc = _utc_now()
     raw_path = artifacts[".raw.log"]
@@ -257,9 +274,13 @@ def run_full_matrix(
         "core_topology": [asdict(core) for core in topology.cores],
         "capacity_groups": topology.capacity_groups(),
         "cpufreq_policies": [asdict(policy) for policy in report.policies],
-        "planned_config_counts": {"A": len(stage_a), "B": len(stage_b), "C": stage_c_count, "D": stage_d_count, "E": 9, "F": 2},
-        "budget_seconds": plan_budget_seconds(topology, report),
-        "budget_total_seconds": total_plan_seconds(topology, report),
+        "planned_config_counts": (
+            {"A": len(stage_a), "B": len(stage_b), "C": stage_c_count, "D": stage_d_count}
+            if reduced
+            else {"A": len(stage_a), "B": len(stage_b), "C": stage_c_count, "D": stage_d_count, "E": 9, "F": 2}
+        ),
+        "budget_seconds": budget,
+        "budget_total_seconds": budget_total,
         "benchmark": "scalar_mix_v2 custom synchronized integer mixing throughput",
         "measurement_scope": "whole-device battery-side; not CPU-rail power",
         "core0_policy": "CPU0 is never offlined; non-CPU0 single-worker runs keep CPU0 online. Only CPU0-only has strict one-online-core isolation.",
@@ -267,11 +288,30 @@ def run_full_matrix(
         "sample_interval_s": 1,
         "fixed_frequency_repetitions": MATRIX_SWEEP_REPETITIONS,
     }
+    if reduced:
+        plan["matrix_mode"] = "reduced"
+        plan["reduced_matrix"] = {
+            "representative_e_cpu": 1,
+            "representative_p_cpu": 6,
+            "frequency_levels_per_policy": 3,
+            "warmup_s": 4,
+            "measure_s": 15,
+            "baseline_s": 3,
+            "repetitions": 1,
+            "note": "Representative low/mid/high points only; not the full per-core/full-grid matrix. Retest stages E/F are skipped.",
+        }
     _write_json_exclusive(artifacts[".plan.json"], plan)
-    print(
-        "Matrix plan: %d per-core frequency configs, %d pure-cluster frequency configs, %d full E/P frequency pairs; planned budget %.1f min." % (len(stage_b), stage_c_count, stage_d_count, total_plan_seconds(topology, report) / 60.0),
-        flush=True,
-    )
+    if reduced:
+        print(
+            "Reduced matrix plan: %d representative single-core configs, %d cluster-scaling configs, %d E/P mixed pairs; planned budget %.1f min."
+            % (len(stage_b), stage_c_count, stage_d_count, budget_total / 60.0),
+            flush=True,
+        )
+    else:
+        print(
+            "Matrix plan: %d per-core frequency configs, %d pure-cluster frequency configs, %d full E/P frequency pairs; planned budget %.1f min." % (len(stage_b), stage_c_count, stage_d_count, total_plan_seconds(topology, report) / 60.0),
+            flush=True,
+        )
 
     with raw_path.open("x", encoding="utf-8", newline="\n") as raw:
         raw.write("PLAN|%s|%s|%s\n" % (report.serial, report.soc, remote_bench))
@@ -328,41 +368,62 @@ def run_full_matrix(
         raw_text = raw_path.read_text(encoding="utf-8", errors="replace")
         readings, runs = parse_matrix_log(raw_text)
         current_metrics = analyze_matrix_runs(all_configs, readings, runs)
-        valid_core_points: Dict[int, int] = {cpu: 0 for cpu in range(8)}
-        for row in aggregate_matrix(current_metrics, stage_b):
-            if row["stage"] == "B" and row["valid"]:
-                cpu = int(row["target_cpus"])
-                valid_core_points[cpu] = valid_core_points.get(cpu, 0) + 1
-        missing = [cpu for cpu, count in valid_core_points.items() if count < 2]
-        if missing:
-            raise AdbError(
-                "stage B has fewer than two valid frequency points for CPUs %s; stopping before multicore matrix"
-                % missing
-            )
-        e_order, p_order = rank_single_core_order(stage_b, current_metrics, topology)
-        print("Stage B efficiency order: E=%s P=%s" % (e_order, p_order), flush=True)
+        if reduced:
+            required_workers = {config.target_cpus[0] for config in stage_b}
+            valid_core_points: Dict[int, int] = {cpu: 0 for cpu in required_workers}
+            for row in aggregate_matrix(current_metrics, stage_b):
+                if row["stage"] == "B" and row["valid"]:
+                    cpu = int(row["target_cpus"])
+                    if cpu in valid_core_points:
+                        valid_core_points[cpu] += 1
+            missing = [cpu for cpu, count in valid_core_points.items() if count < 1]
+            if missing:
+                raise AdbError(
+                    "reduced stage B has no valid frequency point for representative CPUs %s; stopping before multicore matrix"
+                    % sorted(missing)
+                )
+            stage_c = build_reduced_stage_c(topology, report)
+            stage_d = build_reduced_stage_d(topology, report)
+            run_batch(stage_c)
+            run_batch(stage_d)
+            e_order: Tuple[int, ...] = ()
+            p_order: Tuple[int, ...] = ()
+        else:
+            valid_core_points = {cpu: 0 for cpu in range(8)}
+            for row in aggregate_matrix(current_metrics, stage_b):
+                if row["stage"] == "B" and row["valid"]:
+                    cpu = int(row["target_cpus"])
+                    valid_core_points[cpu] = valid_core_points.get(cpu, 0) + 1
+            missing = [cpu for cpu, count in valid_core_points.items() if count < 2]
+            if missing:
+                raise AdbError(
+                    "stage B has fewer than two valid frequency points for CPUs %s; stopping before multicore matrix"
+                    % missing
+                )
+            e_order, p_order = rank_single_core_order(stage_b, current_metrics, topology)
+            print("Stage B efficiency order: E=%s P=%s" % (e_order, p_order), flush=True)
 
-        stage_c = build_stage_c(topology, report, e_order, p_order)
-        stage_d = build_stage_d(topology, report, e_order, p_order)
-        run_batch(stage_c)
-        run_batch(stage_d)
-        raw_text = raw_path.read_text(encoding="utf-8", errors="replace")
-        readings, runs = parse_matrix_log(raw_text)
-        current_metrics = analyze_matrix_runs(all_configs, readings, runs)
-        final_candidates = choose_retest_configs(all_configs, current_metrics, limit=3)
-        if not final_candidates:
-            raise AdbError("no valid pure/mixed candidate survived battery/frequency/affinity validity checks")
-        retest_configs, source_by_retest = _build_retest_configs(final_candidates)
-        run_batch(retest_configs)
-        raw_text = raw_path.read_text(encoding="utf-8", errors="replace")
-        readings, runs = parse_matrix_log(raw_text)
-        current_metrics = analyze_matrix_runs(all_configs, readings, runs)
-        sustained_configs = _build_sustained_configs(
-            current_metrics, source_by_retest, final_candidates
-        )
-        if not sustained_configs:
-            raise AdbError("no valid retest candidate available for sustained validation")
-        run_batch(sustained_configs)
+            stage_c = build_stage_c(topology, report, e_order, p_order)
+            stage_d = build_stage_d(topology, report, e_order, p_order)
+            run_batch(stage_c)
+            run_batch(stage_d)
+            raw_text = raw_path.read_text(encoding="utf-8", errors="replace")
+            readings, runs = parse_matrix_log(raw_text)
+            current_metrics = analyze_matrix_runs(all_configs, readings, runs)
+            final_candidates = choose_retest_configs(all_configs, current_metrics, limit=3)
+            if not final_candidates:
+                raise AdbError("no valid pure/mixed candidate survived battery/frequency/affinity validity checks")
+            retest_configs, source_by_retest = _build_retest_configs(final_candidates)
+            run_batch(retest_configs)
+            raw_text = raw_path.read_text(encoding="utf-8", errors="replace")
+            readings, runs = parse_matrix_log(raw_text)
+            current_metrics = analyze_matrix_runs(all_configs, readings, runs)
+            sustained_configs = _build_sustained_configs(
+                current_metrics, source_by_retest, final_candidates
+            )
+            if not sustained_configs:
+                raise AdbError("no valid retest candidate available for sustained validation")
+            run_batch(sustained_configs)
 
     verify_device_snapshot(client, topology, report)
     raw_text = raw_path.read_text(encoding="utf-8", errors="replace")
@@ -470,6 +531,7 @@ def run_full_matrix(
         "stage_b_efficiency_order": {"E": list(e_order), "P": list(p_order)},
         "selected_retest_source_configs": [config.config_id for config in final_candidates],
         "sustained_configs": [config.config_id for config in sustained_configs],
+        "matrix_mode": "reduced" if reduced else "full",
         "cpu_mask_and_cpufreq_restoration_verified": True,
         "artifacts": {key: str(value) for key, value in artifacts.items()},
         "best_by_total_battery_efficiency": max(

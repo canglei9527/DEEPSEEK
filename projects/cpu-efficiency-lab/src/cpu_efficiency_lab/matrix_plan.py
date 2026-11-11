@@ -134,6 +134,19 @@ def validate_matrix_config(
             raise ValueError("%s target %d is not an available frequency step" % (policy_name, frequency))
 
 
+def _clamp_frequency(report: PreflightReport, policy_name: str, frequency: int) -> int:
+    """Clamp a target into the policy's current scaling range.
+
+    Concurrent system limit changes can narrow the usable window between the
+    preflight read and the actual lock. Clamping to the live scaling min/max
+    keeps the target writable instead of hitting an out-of-range sysfs write.
+    """
+    policy = next((item for item in report.policies if item.name == policy_name), None)
+    if policy is None or policy.scaling_min_khz is None or policy.scaling_max_khz is None:
+        return frequency
+    return max(policy.scaling_min_khz, min(policy.scaling_max_khz, frequency))
+
+
 def build_stage_a(
     topology: CpuTopology, report: PreflightReport
 ) -> List[MatrixConfig]:
@@ -143,8 +156,14 @@ def build_stage_a(
     p_cpu = groups["P"][0]
     e_policy = policies[e_cpu]
     p_policy = policies[p_cpu]
-    e_low = frequency_levels(report, e_policy, 1)[0]
-    p_low = frequency_levels(report, p_policy, 1)[0]
+    # Use the mid-range available step inside the *current* scaling window, not
+    # the absolute lowest step. A concurrent system clamp can make the lowest
+    # step fall outside the live writable range and abort the smoke with an
+    # out-of-range sysfs write.
+    e_levels = frequency_levels(report, e_policy, 3)
+    p_levels = frequency_levels(report, p_policy, 3)
+    e_low = _clamp_frequency(report, e_policy, e_levels[len(e_levels) // 2])
+    p_low = _clamp_frequency(report, p_policy, p_levels[len(p_levels) // 2])
     specs = [
         ("A-CPU0", (0,), ((policies[0], e_low),)),
         ("A-CPU-E", (e_cpu,), ((e_policy, e_low),)),
@@ -286,3 +305,149 @@ def plan_budget_seconds(topology: CpuTopology, report: PreflightReport) -> Dict[
 
 def total_plan_seconds(topology: CpuTopology, report: PreflightReport) -> int:
     return sum(plan_budget_seconds(topology, report).values())
+
+
+# Reduced representative matrix (CLI "--reduced-matrix"): one canonical worker CPU
+# per cluster, low/mid/high in-range frequency levels, a single repetition with a
+# longer measurement window. Curve stages B/C/D keep their canonical config-id
+# schemes so the existing analysis, ranking, plotting and validity rules apply
+# unchanged; only the point count and timings differ from the full matrix.
+REDUCED_MATRIX_REPRESENTATIVE_E_CPU = 1
+REDUCED_MATRIX_REPRESENTATIVE_P_CPU = 6
+REDUCED_MATRIX_LEVELS = 3
+REDUCED_MATRIX_WARMUP_S = 4
+REDUCED_MATRIX_MEASURE_S = 15
+REDUCED_MATRIX_BASELINE_S = 3
+REDUCED_MATRIX_REPETITIONS = 1
+REDUCED_MATRIX_C_PANEL_COUNTS = ((2, 0), (4, 0), (6, 0), (0, 1), (0, 2))
+REDUCED_MATRIX_D_PANELS = ((1, 1), (2, 1), (4, 1), (6, 1), (4, 2), (6, 2))
+
+
+def _reduced_timing_kwargs() -> Dict[str, int]:
+    return {
+        "warmup_s": REDUCED_MATRIX_WARMUP_S,
+        "measure_s": REDUCED_MATRIX_MEASURE_S,
+        "baseline_s": REDUCED_MATRIX_BASELINE_S,
+        "repetitions": REDUCED_MATRIX_REPETITIONS,
+    }
+
+
+def _reduced_e_cpus(e_order: Sequence[int], count: int) -> Tuple[int, ...]:
+    ordered = [cpu for cpu in e_order if cpu != 0]
+    if count == len(ordered) + 1:
+        return tuple(sorted([0] + ordered))
+    selected = ordered[:count]
+    if len(selected) < count:
+        raise ValueError("not enough ranked E cores for a reduced C/D panel")
+    return tuple(sorted(selected))
+
+
+def build_reduced_stage_b(
+    topology: CpuTopology, report: PreflightReport
+) -> List[MatrixConfig]:
+    policies = policy_by_cpu(report)
+    result = []
+    for cpu in (REDUCED_MATRIX_REPRESENTATIVE_E_CPU, REDUCED_MATRIX_REPRESENTATIVE_P_CPU):
+        policy = policies.get(cpu)
+        if policy is None:
+            raise ValueError("CPU%d has no active cpufreq policy" % cpu)
+        levels = frequency_levels(report, policy, REDUCED_MATRIX_LEVELS)
+        if len(levels) < REDUCED_MATRIX_LEVELS:
+            raise ValueError(
+                "%s exposes only %d in-range frequency steps; need %d for the reduced matrix"
+                % (policy, len(levels), REDUCED_MATRIX_LEVELS)
+            )
+        for index, frequency in enumerate(levels, 1):
+            config = MatrixConfig(
+                config_id="B-CPU%d-F%d-%d" % (cpu, index, frequency),
+                stage="B",
+                target_cpus=(cpu,),
+                policy_targets_khz=((policy, frequency),),
+                **_reduced_timing_kwargs(),
+            )
+            validate_matrix_config(config, topology, report)
+            result.append(config)
+    return result
+
+
+def build_reduced_stage_c(
+    topology: CpuTopology, report: PreflightReport
+) -> List[MatrixConfig]:
+    groups = topology.capacity_groups()
+    policies = policy_by_cpu(report)
+    e_policy = policies[groups["E"][0]]
+    p_policy = policies[groups["P"][0]]
+    e_levels = frequency_levels(report, e_policy, REDUCED_MATRIX_LEVELS)
+    p_levels = frequency_levels(report, p_policy, REDUCED_MATRIX_LEVELS)
+    if len(e_levels) < REDUCED_MATRIX_LEVELS or len(p_levels) < REDUCED_MATRIX_LEVELS:
+        raise ValueError("reduced matrix needs at least %d frequency levels per policy" % REDUCED_MATRIX_LEVELS)
+    e_all = tuple(sorted(groups["E"]))
+    p_all = tuple(sorted(groups["P"]))
+    specs: List[Tuple[str, Tuple[int, ...], str, Tuple[int, ...]]] = []
+    for e_count, p_count in REDUCED_MATRIX_C_PANEL_COUNTS:
+        if e_count:
+            label = "E%d" % e_count
+            cpus = e_all[:e_count]
+            specs.extend((label, cpus, e_policy, (frequency,)) for frequency in e_levels)
+        if p_count:
+            label = "P%d" % p_count
+            cpus = p_all[:p_count]
+            specs.extend((label, cpus, p_policy, (frequency,)) for frequency in p_levels)
+    result = []
+    for label, cpus, policy, frequencies in specs:
+        frequency = frequencies[0]
+        config = MatrixConfig(
+            config_id="C-%s-F%d" % (label, frequency),
+            stage="C",
+            target_cpus=cpus,
+            policy_targets_khz=((policy, frequency),),
+            **_reduced_timing_kwargs(),
+        )
+        validate_matrix_config(config, topology, report)
+        result.append(config)
+    return result
+
+
+def build_reduced_stage_d(
+    topology: CpuTopology, report: PreflightReport
+) -> List[MatrixConfig]:
+    groups = topology.capacity_groups()
+    policies = policy_by_cpu(report)
+    e_policy = policies[groups["E"][0]]
+    p_policy = policies[groups["P"][0]]
+    e_levels = frequency_levels(report, e_policy, REDUCED_MATRIX_LEVELS)
+    p_levels = frequency_levels(report, p_policy, REDUCED_MATRIX_LEVELS)
+    if len(e_levels) < REDUCED_MATRIX_LEVELS or len(p_levels) < REDUCED_MATRIX_LEVELS:
+        raise ValueError("reduced matrix needs at least %d frequency levels per policy" % REDUCED_MATRIX_LEVELS)
+    e_all = tuple(sorted(groups["E"]))
+    p_all = tuple(sorted(groups["P"]))
+    result = []
+    for e_count, p_count in REDUCED_MATRIX_D_PANELS:
+        cpus = tuple(sorted(e_all[:e_count] + p_all[:p_count]))
+        for e_frequency in e_levels:
+            for p_frequency in p_levels:
+                config = MatrixConfig(
+                    config_id="D-E%dP%d-EF%d-PF%d" % (e_count, p_count, e_frequency, p_frequency),
+                    stage="D",
+                    target_cpus=cpus,
+                    policy_targets_khz=((e_policy, e_frequency), (p_policy, p_frequency)),
+                    **_reduced_timing_kwargs(),
+                )
+                validate_matrix_config(config, topology, report)
+                result.append(config)
+    return result
+
+
+def reduced_plan_budget_seconds(topology: CpuTopology, report: PreflightReport) -> Dict[str, int]:
+    return {
+        "A_preflight_and_recovery": 600,
+        "A_smokes": sum(c.planned_seconds for c in build_stage_a(topology, report)),
+        "B_representative_single_core": sum(c.planned_seconds for c in build_reduced_stage_b(topology, report)),
+        "C_cluster_scaling": sum(c.planned_seconds for c in build_reduced_stage_c(topology, report)),
+        "D_reduced_mixed_grid": sum(c.planned_seconds for c in build_reduced_stage_d(topology, report)),
+        "H_final_restore_and_artifacts": 240,
+    }
+
+
+def total_reduced_plan_seconds(topology: CpuTopology, report: PreflightReport) -> int:
+    return sum(reduced_plan_budget_seconds(topology, report).values())
