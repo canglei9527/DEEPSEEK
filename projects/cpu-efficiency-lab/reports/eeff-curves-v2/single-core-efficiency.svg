@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="500.0" y="30.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#1f2937" font-weight="500">Single-core efficiency: nJ/op vs frequency (lower is better)</text>
+<line x1="80.0" y1="60.0" x2="80.0" y2="480.0" stroke="#e5e7eb"/>
+<line x1="80.0" y1="480.0" x2="960.0" y2="480.0" stroke="#e5e7eb"/>
+<text x="80.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">0.00G</text>
+<text x="68.0" y="484.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">0.0</text>
+<line x1="256.0" y1="60.0" x2="256.0" y2="480.0" stroke="#e5e7eb"/>
+<line x1="80.0" y1="396.0" x2="960.0" y2="396.0" stroke="#e5e7eb"/>
+<text x="256.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">0.64G</text>
+<text x="68.0" y="400.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">6.6</text>
+<line x1="432.0" y1="60.0" x2="432.0" y2="480.0" stroke="#e5e7eb"/>
+<line x1="80.0" y1="312.0" x2="960.0" y2="312.0" stroke="#e5e7eb"/>
+<text x="432.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">1.28G</text>
+<text x="68.0" y="316.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">13.1</text>
+<line x1="608.0" y1="60.0" x2="608.0" y2="480.0" stroke="#e5e7eb"/>
+<line x1="80.0" y1="228.0" x2="960.0" y2="228.0" stroke="#e5e7eb"/>
+<text x="608.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">1.92G</text>
+<text x="68.0" y="232.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">19.7</text>
+<line x1="784.0" y1="60.0" x2="784.0" y2="480.0" stroke="#e5e7eb"/>
+<line x1="80.0" y1="144.0" x2="960.0" y2="144.0" stroke="#e5e7eb"/>
+<text x="784.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">2.56G</text>
+<text x="68.0" y="148.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">26.2</text>
+<line x1="960.0" y1="60.0" x2="960.0" y2="480.0" stroke="#e5e7eb"/>
+<line x1="80.0" y1="60.0" x2="960.0" y2="60.0" stroke="#e5e7eb"/>
+<text x="960.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">3.19G</text>
+<text x="68.0" y="64.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">32.8</text>
+<path d="M 233.4 98.2 L 286.2 198.1 L 344.4 281.5 L 397.3 307.6 L 455.5 316.5 L 508.4 338.4 L 571.8 351.5 L 630.0 360.6 L 693.5 369.8 L 741.1 372.4 L 836.2 371.2" fill="none" stroke="#2563eb" stroke-width="2.2"/>
+<circle cx="233.4" cy="98.2" r="4.5" fill="#2563eb"><title>policy0 0.557 GHz: 29.82 nJ/op, 38.8 Mop/s (n=6)</title></circle>
+<circle cx="286.2" cy="198.1" r="4.5" fill="#2563eb"><title>policy0 0.749 GHz: 22.02 nJ/op, 52.4 Mop/s (n=6)</title></circle>
+<circle cx="344.4" cy="281.5" r="4.5" fill="#2563eb"><title>policy0 0.960 GHz: 15.50 nJ/op, 67.2 Mop/s (n=6)</title></circle>
+<circle cx="397.3" cy="307.6" r="4.5" fill="#2563eb"><title>policy0 1.152 GHz: 13.47 nJ/op, 80.9 Mop/s (n=6)</title></circle>
+<circle cx="455.5" cy="316.5" r="4.5" fill="#2563eb"><title>policy0 1.363 GHz: 12.77 nJ/op, 96.0 Mop/s (n=6)</title></circle>
+<circle cx="508.4" cy="338.4" r="4.5" fill="#2563eb"><title>policy0 1.555 GHz: 11.06 nJ/op, 109.5 Mop/s (n=6)</title></circle>
+<circle cx="571.8" cy="351.5" r="4.5" fill="#2563eb"><title>policy0 1.786 GHz: 10.04 nJ/op, 125.9 Mop/s (n=6)</title></circle>
+<circle cx="630.0" cy="360.6" r="4.5" fill="#2563eb"><title>policy0 1.997 GHz: 9.33 nJ/op, 140.9 Mop/s (n=6)</title></circle>
+<circle cx="693.5" cy="369.8" r="4.5" fill="#2563eb"><title>policy0 2.227 GHz: 8.61 nJ/op, 157.2 Mop/s (n=6)</title></circle>
+<circle cx="741.1" cy="372.4" r="4.5" fill="#2563eb"><title>policy0 2.400 GHz: 8.41 nJ/op, 169.9 Mop/s (n=6)</title></circle>
+<circle cx="836.2" cy="371.2" r="4.5" fill="#2563eb"><title>policy0 2.746 GHz: 8.50 nJ/op, 194.4 Mop/s (n=6)</title></circle>
+<text x="741.1" y="360.4" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#2563eb" font-weight="500">best 8.41</text>
+<text x="100.0" y="80.0" text-anchor="start" font-family="Arial,sans-serif" font-size="12" fill="#2563eb" font-weight="500">policy0</text>
+<path d="M 360.3 226.2 L 413.2 260.5 L 466.1 284.3 L 545.4 299.9 L 619.4 332.3 L 698.7 333.5 L 751.6 354.7 L 809.8 356.3 L 862.7 365.5 L 926.2 366.6" fill="none" stroke="#dc2626" stroke-width="2.2"/>
+<circle cx="360.3" cy="226.2" r="4.5" fill="#dc2626"><title>policy6 1.018 GHz: 19.82 nJ/op, 71.4 Mop/s (n=2)</title></circle>
+<circle cx="413.2" cy="260.5" r="4.5" fill="#dc2626"><title>policy6 1.210 GHz: 17.14 nJ/op, 85.0 Mop/s (n=2)</title></circle>
+<circle cx="466.1" cy="284.3" r="4.5" fill="#dc2626"><title>policy6 1.402 GHz: 15.28 nJ/op, 98.6 Mop/s (n=2)</title></circle>
+<circle cx="545.4" cy="299.9" r="4.5" fill="#dc2626"><title>policy6 1.690 GHz: 14.07 nJ/op, 119.0 Mop/s (n=2)</title></circle>
+<circle cx="619.4" cy="332.3" r="4.5" fill="#dc2626"><title>policy6 1.958 GHz: 11.54 nJ/op, 138.1 Mop/s (n=2)</title></circle>
+<circle cx="698.7" cy="333.5" r="4.5" fill="#dc2626"><title>policy6 2.246 GHz: 11.44 nJ/op, 159.1 Mop/s (n=2)</title></circle>
+<circle cx="751.6" cy="354.7" r="4.5" fill="#dc2626"><title>policy6 2.438 GHz: 9.79 nJ/op, 173.1 Mop/s (n=2)</title></circle>
+<circle cx="809.8" cy="356.3" r="4.5" fill="#dc2626"><title>policy6 2.650 GHz: 9.66 nJ/op, 188.1 Mop/s (n=2)</title></circle>
+<circle cx="862.7" cy="365.5" r="4.5" fill="#dc2626"><title>policy6 2.842 GHz: 8.95 nJ/op, 201.7 Mop/s (n=2)</title></circle>
+<circle cx="926.2" cy="366.6" r="4.5" fill="#dc2626"><title>policy6 3.072 GHz: 8.86 nJ/op, 218.1 Mop/s (n=2)</title></circle>
+<text x="926.2" y="354.6" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#dc2626" font-weight="500">best 8.86</text>
+<text x="100.0" y="100.0" text-anchor="start" font-family="Arial,sans-serif" font-size="12" fill="#dc2626" font-weight="500">policy6</text>
+<rect x="80.0" y="60.0" width="880.0" height="420.0" fill="none" stroke="#9ca3af"/>
+<text x="520.0" y="540.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#1f2937">Locked frequency (GHz)</text>
+<text transform="translate(24 270.0) rotate(-90)" text-anchor="middle" font-family="Arial,sans-serif" font-size="13">Energy per op (nJ/op)</text>
+</svg>

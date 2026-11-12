@@ -1,0 +1,25 @@
+{
+  "measurement_scope": "whole-device battery-side energy per op; not CPU-rail power",
+  "single_core_points": 21,
+  "multi_core_points": 23,
+  "best_single_core_by_policy": {
+    "policy0": {
+      "freq_khz": 2400000,
+      "ghz": 2.4,
+      "nj_per_op": 8.408,
+      "mops": 169.9
+    },
+    "policy6": {
+      "freq_khz": 3072000,
+      "ghz": 3.072,
+      "nj_per_op": 8.857,
+      "mops": 218.1
+    }
+  },
+  "best_multi_core_nj_per_op": 2.107,
+  "artifacts": {
+    "single_core_efficiency_svg": "reports\\eeff-curves-v2\\single-core-efficiency.svg",
+    "single_core_throughput_svg": "reports\\eeff-curves-v2\\single-core-throughput.svg",
+    "multi_core_efficiency_svg": "reports\\eeff-curves-v2\\multi-core-efficiency.svg"
+  }
+}

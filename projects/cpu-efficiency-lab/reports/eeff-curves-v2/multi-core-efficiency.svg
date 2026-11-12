@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="500.0" y="30.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#1f2937" font-weight="500">Multi-core (big+little) efficiency: nJ/op vs total throughput</text>
+<text x="80.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">0</text>
+<text x="68.0" y="484.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">0.0</text>
+<line x1="80.0" y1="480.0" x2="960.0" y2="480.0" stroke="#e5e7eb"/>
+<line x1="80.0" y1="60.0" x2="80.0" y2="480.0" stroke="#e5e7eb"/>
+<text x="256.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">312</text>
+<text x="68.0" y="400.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">0.7</text>
+<line x1="80.0" y1="396.0" x2="960.0" y2="396.0" stroke="#e5e7eb"/>
+<line x1="256.0" y1="60.0" x2="256.0" y2="480.0" stroke="#e5e7eb"/>
+<text x="432.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">625</text>
+<text x="68.0" y="316.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">1.4</text>
+<line x1="80.0" y1="312.0" x2="960.0" y2="312.0" stroke="#e5e7eb"/>
+<line x1="432.0" y1="60.0" x2="432.0" y2="480.0" stroke="#e5e7eb"/>
+<text x="608.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">937</text>
+<text x="68.0" y="232.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">2.1</text>
+<line x1="80.0" y1="228.0" x2="960.0" y2="228.0" stroke="#e5e7eb"/>
+<line x1="608.0" y1="60.0" x2="608.0" y2="480.0" stroke="#e5e7eb"/>
+<text x="784.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">1249</text>
+<text x="68.0" y="148.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">2.8</text>
+<line x1="80.0" y1="144.0" x2="960.0" y2="144.0" stroke="#e5e7eb"/>
+<line x1="784.0" y1="60.0" x2="784.0" y2="480.0" stroke="#e5e7eb"/>
+<text x="960.0" y="500.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">1562</text>
+<text x="68.0" y="64.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#1f2937">3.5</text>
+<line x1="80.0" y1="60.0" x2="960.0" y2="60.0" stroke="#e5e7eb"/>
+<line x1="960.0" y1="60.0" x2="960.0" y2="480.0" stroke="#e5e7eb"/>
+<circle cx="434.7" cy="170.0" r="6" fill="#2563eb" fill-opacity="0.78" stroke="#ffffff"><title>little 1.15G big 1.40G: 629.5 Mop/s, 1.626 W, 2.584 nJ/op</title></circle>
+<circle cx="478.1" cy="173.8" r="6" fill="#624fa8" fill-opacity="0.78" stroke="#ffffff"><title>little 1.15G big 1.96G: 706.6 Mop/s, 1.803 W, 2.552 nJ/op</title></circle>
+<circle cx="517.9" cy="153.3" r="6" fill="#963d6e" fill-opacity="0.78" stroke="#ffffff"><title>little 1.15G big 2.44G: 777.1 Mop/s, 2.116 W, 2.722 nJ/op</title></circle>
+<circle cx="553.1" cy="117.4" r="6" fill="#c22f3e" fill-opacity="0.78" stroke="#ffffff"><title>little 1.15G big 2.84G: 839.6 Mop/s, 2.537 W, 3.021 nJ/op</title></circle>
+<circle cx="570.4" cy="98.2" r="6" fill="#dc2723" fill-opacity="0.78" stroke="#ffffff"><title>little 1.15G big 3.07G: 870.3 Mop/s, 2.769 W, 3.182 nJ/op</title></circle>
+<circle cx="526.6" cy="208.4" r="6" fill="#2563eb" fill-opacity="0.78" stroke="#ffffff"><title>little 1.56G big 1.40G: 792.7 Mop/s, 1.794 W, 2.263 nJ/op</title></circle>
+<circle cx="568.9" cy="202.2" r="6" fill="#624fa8" fill-opacity="0.78" stroke="#ffffff"><title>little 1.56G big 1.96G: 867.7 Mop/s, 2.008 W, 2.315 nJ/op</title></circle>
+<circle cx="609.6" cy="164.7" r="6" fill="#963d6e" fill-opacity="0.78" stroke="#ffffff"><title>little 1.56G big 2.44G: 939.9 Mop/s, 2.470 W, 2.628 nJ/op</title></circle>
+<circle cx="645.9" cy="168.1" r="6" fill="#c22f3e" fill-opacity="0.78" stroke="#ffffff"><title>little 1.56G big 2.84G: 1004.4 Mop/s, 2.611 W, 2.599 nJ/op</title></circle>
+<circle cx="663.1" cy="150.9" r="6" fill="#dc2723" fill-opacity="0.78" stroke="#ffffff"><title>little 1.56G big 3.07G: 1034.8 Mop/s, 2.838 W, 2.742 nJ/op</title></circle>
+<circle cx="633.5" cy="227.2" r="6" fill="#2563eb" fill-opacity="0.78" stroke="#ffffff"><title>little 2.00G big 1.40G: 982.3 Mop/s, 2.070 W, 2.107 nJ/op</title></circle>
+<circle cx="677.3" cy="202.8" r="6" fill="#624fa8" fill-opacity="0.78" stroke="#ffffff"><title>little 2.00G big 1.96G: 1060.0 Mop/s, 2.449 W, 2.310 nJ/op</title></circle>
+<circle cx="718.5" cy="209.4" r="6" fill="#963d6e" fill-opacity="0.78" stroke="#ffffff"><title>little 2.00G big 2.44G: 1133.3 Mop/s, 2.556 W, 2.255 nJ/op</title></circle>
+<circle cx="751.3" cy="184.6" r="6" fill="#c22f3e" fill-opacity="0.78" stroke="#ffffff"><title>little 2.00G big 2.84G: 1191.4 Mop/s, 2.933 W, 2.462 nJ/op</title></circle>
+<circle cx="768.2" cy="166.4" r="6" fill="#dc2723" fill-opacity="0.78" stroke="#ffffff"><title>little 2.00G big 3.07G: 1221.5 Mop/s, 3.193 W, 2.614 nJ/op</title></circle>
+<circle cx="729.6" cy="210.3" r="6" fill="#2563eb" fill-opacity="0.78" stroke="#ffffff"><title>little 2.40G big 1.40G: 1152.8 Mop/s, 2.591 W, 2.247 nJ/op</title></circle>
+<circle cx="776.1" cy="203.4" r="6" fill="#624fa8" fill-opacity="0.78" stroke="#ffffff"><title>little 2.40G big 1.96G: 1235.4 Mop/s, 2.848 W, 2.305 nJ/op</title></circle>
+<circle cx="815.1" cy="209.9" r="6" fill="#963d6e" fill-opacity="0.78" stroke="#ffffff"><title>little 2.40G big 2.44G: 1304.7 Mop/s, 2.937 W, 2.251 nJ/op</title></circle>
+<circle cx="849.0" cy="189.0" r="6" fill="#c22f3e" fill-opacity="0.78" stroke="#ffffff"><title>little 2.40G big 2.84G: 1364.8 Mop/s, 3.309 W, 2.425 nJ/op</title></circle>
+<circle cx="861.9" cy="175.9" r="6" fill="#dc2723" fill-opacity="0.78" stroke="#ffffff"><title>little 2.40G big 3.07G: 1387.7 Mop/s, 3.517 W, 2.534 nJ/op</title></circle>
+<circle cx="809.3" cy="204.5" r="6" fill="#2563eb" fill-opacity="0.78" stroke="#ffffff"><title>little 2.75G big 1.40G: 1294.4 Mop/s, 2.972 W, 2.296 nJ/op</title></circle>
+<circle cx="857.1" cy="207.0" r="6" fill="#624fa8" fill-opacity="0.78" stroke="#ffffff"><title>little 2.75G big 1.96G: 1379.2 Mop/s, 3.138 W, 2.275 nJ/op</title></circle>
+<circle cx="894.8" cy="193.4" r="6" fill="#963d6e" fill-opacity="0.78" stroke="#ffffff"><title>little 2.75G big 2.44G: 1446.2 Mop/s, 3.454 W, 2.388 nJ/op</title></circle>
+<rect x="80.0" y="60.0" width="880.0" height="420.0" fill="none" stroke="#9ca3af"/>
+<text x="520.0" y="540.0" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#1f2937">Total throughput (Mop/s)</text>
+<text transform="translate(24 270.0) rotate(-90)" text-anchor="middle" font-family="Arial,sans-serif" font-size="13">Energy per op (nJ/op)</text>
+<text x="954.0" y="76.0" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#6b7280">color = big-core freq (dark=low, warm=high)</text>
+</svg>

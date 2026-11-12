@@ -107,6 +107,11 @@ def _parser() -> argparse.ArgumentParser:
     analyze = subparsers.add_parser('two-hour-analyze', help='offline checkpoint reanalysis/plotting (no ADB)')
     analyze.add_argument('--input', required=True, type=Path, help='existing run directory')
     analyze.add_argument('--output', required=True, type=Path, help='new local artifact directory')
+
+    curves = subparsers.add_parser('plot-efficiency', help='offline efficiency-curve SVGs from measured TSV (no ADB)')
+    curves.add_argument('--single', required=True, type=Path, help='single-core TSV (eeff.tsv format)')
+    curves.add_argument('--combo', type=Path, help='optional multi-core combo TSV (eeff_combo.tsv format)')
+    curves.add_argument('--output', required=True, type=Path, help='new output directory (must not exist)')
     return parser
 
 
@@ -584,6 +589,16 @@ def _run_two_hour_analyze(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_plot_efficiency(args: argparse.Namespace) -> int:
+    from .efficiency_curves import write_efficiency_curves
+    if not args.single.is_file():
+        raise ValueError("single-core TSV not found: %s" % args.single)
+    result = write_efficiency_curves(args.single, args.combo, args.output)
+    _save_json_exclusive(args.output / 'summary.json', result)
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    return 0
+
+
 def main(argv=None) -> int:
     parser = _parser()
     args = parser.parse_args(argv)
@@ -604,6 +619,8 @@ def main(argv=None) -> int:
             return _run_two_hour_sweep(args)
         if args.command == 'two-hour-analyze':
             return _run_two_hour_analyze(args)
+        if args.command == 'plot-efficiency':
+            return _run_plot_efficiency(args)
     except KeyboardInterrupt:
         print("interrupted; device restoration was requested", file=sys.stderr)
         return 130
