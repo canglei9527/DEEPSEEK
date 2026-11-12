@@ -49,12 +49,23 @@ DONE=/data/local/tmp/eeff/energy.done
 
 rm -f "$DONE"
 # idle_win 与 win 分开：旧数据没有 idle_win 列，plot 按旧列回退处理
-printf 'rnd\tpolicy\tfreq\tcore\twindow_s\tidle_win\tcc_load\tcc_idle\tcc_sys\tops_total\tdV_uV\n' > "$OUT"
+# temp_mC 是测点结束时的 CPU 温度（毫摄氏度），供 plot 标记过热降频点
+printf 'rnd\tpolicy\tfreq\tcore\twindow_s\tidle_win\tcc_load\tcc_idle\tcc_sys\tops_total\tdV_uV\ttemp_mC\n' > "$OUT"
 : > "$LOG"
 
 log() { echo "$@" >> "$LOG"; }
 cc() { cat $B/charge_counter 2>/dev/null; }
 volt() { cat $B/voltage_now 2>/dev/null; }
+
+# 读 CPU 温度（取最大的 thermal_zone，过热时记录供 plot 剔除）
+cpu_temp() {
+  _t=0
+  for z in /sys/class/thermal/thermal_zone*/temp; do
+    _v=$(cat "$z" 2>/dev/null)
+    [ "${_v:-0}" -gt "$_t" ] && _t=$_v
+  done
+  echo "$_t"
+}
 
 log "START rounds=$ROUNDS win=$WIN idle_win=$IDLE_WIN online=$(cat /sys/devices/system/cpu/online)"
 
@@ -186,9 +197,14 @@ while [ "$r" -le "$ROUNDS" ]; do
           log "  IDLE_ZERO c$core $fq idle_d=$ID（空闲窗口量化不足，P_idle 按下限 0 处理，净功耗为上界）"
         fi
 
-        printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-          "$r" "$pol" "$fq" "$core" "$WIN" "$IDLE_WIN" "$LD" "$ID" "$SYS_D" "$ops" "$(volt)" >> "$OUT"
-        log "  r$r p$pol $fq c$core ops=$ops load_d=$LD idle_d=$ID sys_d=$SYS_D"
+        TEMP=$(cpu_temp)
+        if [ "${TEMP:-0}" -ge 85000 ]; then
+          log "  THERMAL_WARN c$core $fq temp=${TEMP}mC（>=85C，可能降频，plot 会标记）"
+        fi
+
+        printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+          "$r" "$pol" "$fq" "$core" "$WIN" "$IDLE_WIN" "$LD" "$ID" "$SYS_D" "$ops" "$(volt)" "$TEMP" >> "$OUT"
+        log "  r$r p$pol $fq c$core ops=$ops load_d=$LD idle_d=$ID sys_d=$SYS_D temp=$TEMP"
       done
     done
   done
