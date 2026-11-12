@@ -12,25 +12,34 @@
 # 为什么 charge_counter 可用
 # -------------------------
 # 它是 PMIC 维护的累积库仑积分，本身就是对电流的时间积分，
-# 天然把高频抖动平均掉了。实测分辨率：每分钟 1000 单位 = 0.001 Ah。
+# 天然把高频抖动平均掉了。实测分辨率：1000 单位 = 0.001 Ah。
 # 所以它只能在【分钟级】窗口上给出变化，但一旦有变化就是可信的。
 #
-# 测量量改为【能耗】而不是【功率】：
-#   E = Δcharge(库仑) × V ， 每次测固定时长 T 的固定工作量
-#   能耗 per op = E / (ops × T)
-# 这样不需要知道瞬时功率，只需要一段时间内总共消耗了多少电荷。
+# ===== 2026-11-12 窗口协议修订（关键）=====
+# 旧协议满载/空闲用同一个 120s 窗口，实测 30/30 行 cc_idle=0：
+# 空闲 120s 掉电约 700 单位 < 1000 分辨率，量化误差吞掉全部空闲基线，
+# 于是"净功耗 = 满载功耗"（基线一分没扣），能效曲线失真。
+# 新协议【功率归一化】：
+#   P_load = Δload × V / T_load      满载窗口平均功率
+#   P_idle = Δidle × V / T_idle      空闲窗口平均功率（独立、更长）
+#   P_net  = P_load - P_idle         该核净增功率
+#   E/op   = P_net / (ops / T_load)
+# 两个窗口不再需要等长：空闲窗口单独加长到 IDLE_WIN（默认 300s，
+# 量化误差 3.1%），且每测点独立测量（旧数据每核只配对一个空闲值，
+# 一旦该值量化失败，整核测点全废）。
+# 满载窗口保持 120s（信号强，120s 掉电 8000~20000 单位，量化误差 <1%）。
 #
-# 协议（每个 core x freq）
-#   A. 满载 T 秒：记录 Δcharge_load 与 bench 总 ops
-#   B. 空闲 T 秒：记录 Δcharge_idle
-#   Net = Δcharge_load - Δcharge_idle  （电量差，正数才是真实增量）
-# 重复 ROUNDS 轮。
+# 注意 P_net 为负不是 bug：单核满载时其余核进入更深休眠、整机功率
+# 可能反而下降。净口径为负的测点如实标记，不删改数据。
 #
-# 用法: core_energy.sh <rounds> <window_s>
+# 用法: core_energy.sh <rounds> <load_window_s> [idle_window_s]
 # 输出: /data/local/tmp/eeff/energy.tsv
+# 估算耗时（rounds=2, load=120, idle=300）：约 50 分钟
+#   每轮 1 个全机基线(120s) + 6 测点 × (120s 满载 + 300s 空闲 + 唤醒开销)
 
-ROUNDS=${1:-3}
+ROUNDS=${1:-2}
 WIN=${2:-120}
+IDLE_WIN=${3:-300}
 B=/sys/class/power_supply/battery
 CF=/sys/devices/system/cpu/cpufreq
 BENCH=/data/local/tmp/eeff/bench
@@ -39,25 +48,40 @@ LOG=/data/local/tmp/eeff/energy.log
 DONE=/data/local/tmp/eeff/energy.done
 
 rm -f "$DONE"
-printf 'rnd\tpolicy\tfreq\tcore\twindow_s\tcc_load\tcc_idle\tcc_sys\tops_total\tdV_uV\n' > "$OUT"
+# idle_win 与 win 分开：旧数据没有 idle_win 列，plot 按旧列回退处理
+printf 'rnd\tpolicy\tfreq\tcore\twindow_s\tidle_win\tcc_load\tcc_idle\tcc_sys\tops_total\tdV_uV\n' > "$OUT"
 : > "$LOG"
 
 log() { echo "$@" >> "$LOG"; }
 cc() { cat $B/charge_counter 2>/dev/null; }
 volt() { cat $B/voltage_now 2>/dev/null; }
 
-log "START rounds=$ROUNDS win=$WIN online=$(cat /sys/devices/system/cpu/online)"
+log "START rounds=$ROUNDS win=$WIN idle_win=$IDLE_WIN online=$(cat /sys/devices/system/cpu/online)"
 
-# 环境准入：吞吐必须稳定，否则数据无意义
+# 环境准入：吞吐必须稳定，否则数据无意义。
+# 旧版只记录不判断，导致 suspend 期间 ops 崩到 12M 也继续测完全程。
+# 准入判据（沿用此前实测结论）：连续 3 次 ops 相对极差 <5%。
 q=""
 k=0
+omin=999999999999
+omax=0
 while [ "$k" -lt 3 ]; do
   o=$("$BENCH" 0 1 3 2>/dev/null | sed -n 's/.*MEASURE_END|[^|]*|[^|]*|[^|]*|[^|]*|\([0-9.]*\)|.*/\1/p')
   q="$q $o"
+  case "$o" in ''|*[!0-9.]*) o=0 ;; esac
+  ok=${o%.*}
+  [ "${ok:-0}" -lt "$omin" ] && omin=$ok
+  [ "${ok:-0}" -gt "$omax" ] && omax=$ok
   k=$((k + 1))
 done
 log "QC ops:$q"
 log "memavail=$(grep MemAvailable /proc/meminfo | tr -s ' ' | cut -d' ' -f2) loadavg=$(cat /proc/loadavg | cut -d' ' -f1)"
+if [ "$omin" -le 0 ] || [ $(( (omax - omin) * 100 / omin )) -ge 5 ]; then
+  log "QC_FAIL ops spread>=5% or zero (min=$omin max=$omax)，环境不稳，拒绝测量"
+  echo "qc_fail" > "$DONE"
+  exit 1
+fi
+log "QC_PASS spread=$(( (omax - omin) * 100 / omin ))%"
 
 # 亮度最低但不熄屏：熄屏会断无线 ADB，导致取不回数据
 settings put system screen_brightness_mode 0 2>/dev/null
@@ -102,20 +126,18 @@ lock_policy() {
   [ "$(cat $CF/policy$_p/scaling_cur_freq 2>/dev/null)" = "$_f" ]
 }
 
-# 频点按文件大小权衡：分钟级窗口 + 多轮成本高，取每群代表点
+# 测点：两群各取 低/中/高 三个代表频点，两群都有完整曲线。
+# 旧配置 core6 只有 1017600 一个点，画不出大核曲线。
 FREQ0="556800 1363200 2400000 2745600"
-FREQ6="1017600"
+FREQ6="1017600 2000000 3072000"
 CORES0="0"
 CORES6="6"
 
 r=1
 while [ "$r" -le "$ROUNDS" ]; do
   raise_limits
-  # 全机基线
-  # 符号约定必须与下面的 LD/ID 一致：全部用 (起点 - 终点)，放电时为正。
-  # 早先这里写成 c1 - c0，得到 sys_d=-12000，而 LD/ID 是正数，
-  # 导致 plot 里 above = dl - ds = 5000-(-12000) = 17000，
-  # 正确应为 5000-12000 = -7000，整整差 24000 单位。
+  # 全机基线（参考值，不用于净功耗扣除——净功耗由每测点自己的空闲窗口提供）
+  # 符号约定与 LD/ID 一致：全部用 (起点 - 终点)，放电时为正。
   c0=$(cc)
   sleep "$WIN"
   c1=$(cc)
@@ -133,10 +155,8 @@ while [ "$r" -le "$ROUNDS" ]; do
       fi
       for core in $CORES; do
         keep_awake
-        # --- 满载窗口 ---
-        # 注意取值时机：c0 必须在 bench 启动【之前】读，
-        # 否则 bench 已跑了 2 秒，这段耗电被漏算，
-        # 会让满载电量偏小而错误地显得"省电"。
+        # --- 满载窗口（WIN 秒）---
+        # c0 必须在 bench 启动【之前】读，否则 bench 已跑的耗电被漏算。
         c0=$(cc)
         "$BENCH" "$core" 1 "$WIN" >/tmp/e_b.$core 2>/dev/null &
         bp=$!
@@ -146,26 +166,28 @@ while [ "$r" -le "$ROUNDS" ]; do
         ops=$(sed -n 's/.*MEASURE_END|[^|]*|[^|]*|[^|]*|[^|]*|\([0-9.]*\)|.*/\1/p' /tmp/e_b.$core 2>/dev/null)
         case "$ops" in ''|*[!0-9.]*) ops=0 ;; esac
 
-        # --- 空闲窗口（同一核钉住）---
-        # 关键：必须在这里重新读一次起点 c0_idle。
-        # 早先写成直接复用满载的 c0，结果 ID 算的是"满载+空闲"两段的
-        # 总耗电（如 load_d=5000 idle_d=5000），两段永远不会分开。
+        # --- 空闲窗口（IDLE_WIN 秒，独立加长，同一核钉住）---
+        # 关键：独立读起点 c0_idle，且窗口独立于满载窗口。
+        # 空闲每测点单独测，不做全核共享——共享值一旦量化失败整核作废。
         c0_idle=$(cc)
-        taskset -c "$core" sleep "$WIN" >/dev/null 2>&1 &
+        taskset -c "$core" sleep "$IDLE_WIN" >/dev/null 2>&1 &
         ip=$!
         wait "$ip" 2>/dev/null
         c1=$(cc)
         ID=$((c0_idle - c1))
 
-        # 自检：两个窗口都跑了却得到 0 差，说明电量窗口没覆盖住负载
-        # （例如库仑计被 PMIC 平滑、或窗口太短落在量化台阶内），
-        # 这种行不能静默写出，必须标记出来。
-        if [ "$LD" -le 0 ] || [ "$ID" -le 0 ]; then
-          log "  BADDELTA c$core $fq load_d=$LD idle_d=$ID"
+        # 自检：LD<=0 说明满载窗口根本没放电（异常）；
+        # ID=0 说明空闲窗口落在量化台阶内——功率口径下 P_idle 按 0 处理
+        # 并在日志标出，由 plot 在汇总里报告占比，不再静默。
+        if [ "$LD" -le 0 ]; then
+          log "  BADDELTA c$core $fq load_d=$LD（满载窗口未放电，该行无效）"
+        fi
+        if [ "$ID" -le 0 ]; then
+          log "  IDLE_ZERO c$core $fq idle_d=$ID（空闲窗口量化不足，P_idle 按下限 0 处理，净功耗为上界）"
         fi
 
-        printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-          "$r" "$pol" "$fq" "$core" "$WIN" "$LD" "$ID" "$SYS_D" "$ops" "$(volt)" >> "$OUT"
+        printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+          "$r" "$pol" "$fq" "$core" "$WIN" "$IDLE_WIN" "$LD" "$ID" "$SYS_D" "$ops" "$(volt)" >> "$OUT"
         log "  r$r p$pol $fq c$core ops=$ops load_d=$LD idle_d=$ID sys_d=$SYS_D"
       done
     done

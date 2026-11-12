@@ -12,14 +12,22 @@ core_energy.sh 改用库仑计 charge_counter：
 它是对电流的时间积分，天然把高频抖动平均掉。
 实测信号：空闲 65s 掉 2000 单位，满载 58s 掉 8000 单位（4 倍差）。
 
-指标
-----
-  nj_net  = (Δload - Δidle) × V / ops_total × 1e9   每完成一个操作、该核净耗多少 nJ
-  nj_raw  = Δload × V / ops_total × 1e9             含整机基线（旧口径对照）
-  nj_above= (Δload - Δsys) × V / ops_total × 1e9    去全机基线
+指标（功率归一化口径，2026-11-12 起）
+------------------------------------
+旧版直接用电荷差：net_cc = Δload - Δidle。这要求两个窗口等长；
+2026-11-12 起空闲窗口独立加长（空闲量化需要更长时间），必须先归一化为功率：
+
+  P_load = Δload × V / T_load      满载窗口平均功率 (W)
+  P_idle = Δidle × V / T_idle      空闲窗口平均功率 (W)，T_idle 独立
+  P_net  = P_load - P_idle         该核净增功率（可为负：其余核休眠更深）
+  nj_net = P_net / (ops / T_load) × 1e9
+  nj_raw = P_load / (ops / T_load) × 1e9        含整机基线
+  nj_above = (P_load - P_sys) / (ops / T_load) × 1e9   去全机基线
 
 三个都画：如果它们的"最优频点"一致，说明结论稳健；
 如果不一致，说明基线选择会改变结论，必须明说。
+
+向后兼容：旧数据没有 idle_win 列时按 window_s 处理，与旧结果完全一致。
 """
 
 import os
@@ -53,10 +61,14 @@ def load(path):
             if len(p) < len(hdr):
                 continue
             try:
+                # idle_win 是 2026-11-12 起新增的可选列；旧数据回退为 window_s
+                idle_win = (float(p[idx["idle_win"]]) if "idle_win" in idx
+                            else float(p[idx["window_s"]]))
                 rows.append(dict(
                     rnd=int(p[idx["rnd"]]), policy=int(p[idx["policy"]]),
                     freq=int(p[idx["freq"]]), core=int(p[idx["core"]]),
                     win=float(p[idx["window_s"]]),
+                    idle_win=idle_win,
                     cc_load=float(p[idx["cc_load"]]),
                     cc_idle=float(p[idx["cc_idle"]]),
                     cc_sys=float(p[idx["cc_sys"]]),
@@ -84,19 +96,27 @@ def agg(rows):
         di = med("cc_idle")
         ds = med("cc_sys")
         ops = med("ops")
+        win = med("win") or 120.0
+        idle_win = med("idle_win") or win
         e_load = joule(dl, volts)
-        net_cc = dl - di
-        above_cc = dl - ds
+        # 功率归一化：满载/空闲窗口可以不等长，先各自除以窗口时长。
+        # 旧数据 idle_win==win，与旧版 (dl-di)*V/ops 数学等价。
+        p_load = e_load / win                      # 满载平均功率 (W)
+        p_idle = joule(di, volts) / idle_win       # 空闲平均功率 (W)
+        p_sys = joule(ds, volts) / win             # 全机基线功率 (W)
+        p_net = p_load - p_idle
+        p_above = p_load - p_sys
+        rate = ops / win                           # 吞吐 (op/s)
         out[k] = dict(
             policy=v[0]["policy"], n=len(v), volts=volts,
             cc_load=dl, cc_idle=di, cc_sys=ds, ops=ops,
-            e_load=e_load,
-            nj_raw=(e_load / ops * 1e9) if ops > 0 else float("nan"),
-            nj_net=(joule(net_cc, volts) / ops * 1e9) if (net_cc > 0 and ops > 0)
-                   else float("nan"),
-            nj_above=(joule(above_cc, volts) / ops * 1e9) if (above_cc > 0 and ops > 0)
-                     else float("nan"),
-            net_positive=net_cc > 0)
+            win=win, idle_win=idle_win,
+            e_load=e_load, p_load=p_load, p_idle=p_idle, p_sys=p_sys,
+            nj_raw=(p_load / rate * 1e9) if rate > 0 else float("nan"),
+            nj_net=(p_net / rate * 1e9) if rate > 0 else float("nan"),
+            nj_above=(p_above / rate * 1e9) if rate > 0 else float("nan"),
+            net_positive=p_net > 0,
+            idle_zero=di <= 0)
     return out
 
 
@@ -183,8 +203,13 @@ def main():
           f"{len({f for _, f in a})} 频点")
 
     neg = sum(1 for v in a.values() if not v["net_positive"])
-    print(f"净电量<=0 的测点：{neg}/{len(a)} ({neg/len(a)*100:.0f}%)"
-          f"{'  -> 噪声仍压过信号' if neg > len(a) * 0.2 else '  -> 信号可用'}")
+    print(f"净功率<=0 的测点：{neg}/{len(a)} ({neg/len(a)*100:.0f}%)"
+          f"{'  -> 噪声仍压过信号（或他核休眠抵消）' if neg > len(a) * 0.2 else '  -> 信号可用'}")
+    iz = sum(1 for v in a.values() if v["idle_zero"])
+    if iz:
+        print(f"空闲量化不足的测点：{iz}/{len(a)} ({iz/len(a)*100:.0f}%)"
+              f"  -> 这些点 P_idle 按下限 0 处理，净功耗为上界（偏保守），"
+              f"建议加大 idle_win 重测")
 
     def series(metric):
         out = []
@@ -193,17 +218,17 @@ def main():
             out.append((f"core{c}", pts, cmap[c]))
         return out
 
-    chart("单核能效 —— 每核一条线（净口径，已扣基线）",
-          "净 = (满载耗电量 - 同核同频空闲耗电量) × 电压 / 完成的操作数；"
-          "库仑计积分，已避开电流瞬时噪声",
+    chart("单核能效 —— 每核一条线（净口径，扣该核空闲基线）",
+          "净 = (满载功率 - 同核同频空闲功率) / 吞吐；功率按各自窗口归一化，"
+          "空闲窗口独立加长；负值=他核休眠抵消",
           "能耗 (nJ/op)", series("nj_net"), f"{outdir}/20_core_nj_net.svg")
 
     chart("单核能效 —— 原始口径（未扣基线）",
-          "原始 = 满载耗电量 × 电压 / 操作数；含屏幕等全部固定开销，用于对照",
+          "原始 = 满载功率 / 吞吐；含屏幕等全部固定开销，用于对照",
           "能耗 (nJ/op)", series("nj_raw"), f"{outdir}/21_core_nj_raw.svg")
 
     chart("单核能效 —— 扣全机基线",
-          "above = (满载 - 全机基线) × 电压 / 操作数；不去该核自身静态漏电",
+          "above = (满载功率 - 全机基线功率) / 吞吐；不去该核自身静态漏电",
           "能耗 (nJ/op)", series("nj_above"), f"{outdir}/22_core_nj_above.svg")
 
     print("\n=== 每核最优频点（三种口径对比）===")
@@ -226,13 +251,13 @@ def main():
     # 汇总
     out = f"{outdir}/energy_summary.tsv"
     with open(out, "w", encoding="utf-8") as f:
-        f.write("core\tpolicy\tfreq_mhz\tmops\tcc_load\tcc_idle\tcc_sys\tvolts\t"
-                "nj_raw\tnj_net\tnj_above\tn\n")
+        f.write("core\tpolicy\tfreq_mhz\tmops\tp_load_w\tp_idle_w\tp_sys_w\tvolts\t"
+                "nj_raw\tnj_net\tnj_above\tidle_zero\tn\n")
         for (c, fq), v in sorted(a.items()):
-            f.write(f"{c}\t{v['policy']}\t{fq/1000:.0f}\t{v['ops']/1e6:.1f}\t"
-                    f"{v['cc_load']:.0f}\t{v['cc_idle']:.0f}\t{v['cc_sys']:.0f}\t"
+            f.write(f"{c}\t{v['policy']}\t{fq/1000:.0f}\t{v['ops']/v['win']/1e6:.1f}\t"
+                    f"{v['p_load']:.4f}\t{v['p_idle']:.4f}\t{v['p_sys']:.4f}\t"
                     f"{v['volts']:.3f}\t{v['nj_raw']:.2f}\t{v['nj_net']:.2f}\t"
-                    f"{v['nj_above']:.2f}\t{v['n']}\n")
+                    f"{v['nj_above']:.2f}\t{int(v['idle_zero'])}\t{v['n']}\n")
     print(f"  {out}")
 
 
