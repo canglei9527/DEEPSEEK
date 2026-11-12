@@ -1,0 +1,26 @@
+{
+  "serial": "192.168.137.99:45387",
+  "cases_planned": 1,
+  "cases_completed": 0,
+  "cases_passed": 0,
+  "results": [],
+  "error": "AdbError('cpufreq restoration mismatch: policy0')",
+  "screen_before": {
+    "timeout_ms": 1800000,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "screen_after": {
+    "timeout_ms": 1800000,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "screen_restore_error": null,
+  "raw_log": "data\\phase-h-probe-case3.raw.log",
+  "verification_scope": "controlled fault injection only; does not enable the matrix gate",
+  "remaining_limitations": [
+    "sysfs comparisons and writes are not atomic with system changes",
+    "ADB transport disconnect must be independently revalidated",
+    "thermal/policy behavior may vary across devices"
+  ]
+}

@@ -1,0 +1,30 @@
+VERIFICATION_BEGIN|192.168.137.99:45387|2410DPN6CC
+REMOTE_BENCH|/data/local/tmp/cpu-efficiency-lab/cpu_mix_bench_fe492c607fe64385a64b3c2bebdff182
+CASE_BEGIN|first_offline|0e16e65e6afc56ed379942cdb2e4c7cc|[('policy0', 1996800)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|first_offline
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_0e16e65e6afc56ed379942cdb2e4c7cc
+FAULT_INJECTION|SIGKILL_AFTER_FIRST_OFFLINE|FIJ-first_offline|1
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|29723|15056410
+WATCHDOG_RECOVERY_START|2
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|1152000|2745600|CONSERVATIVE
+POLICY_RESTORE|policy6|1017600|3513600|ALREADY_ORIGINAL
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 29727
+
+REMOTE_END|first_offline
+CASE_RESULT|{"case": "first_offline", "mode": "after_first_offline", "target_khz": {"policy0": 1996800}, "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "benchmark_processes": null, "child_state": null, "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_0e16e65e6afc56ed379942cdb2e4c7cc"}
+SCREEN_RESTORED|ScreenState(timeout_ms=1800000, wakefulness='Awake', display_on=True)
+VERIFICATION_END|1/1|error=None

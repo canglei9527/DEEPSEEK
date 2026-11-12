@@ -1,0 +1,5 @@
+VERIFICATION_BEGIN|192.168.137.99:45387|2410DPN6CC
+REMOTE_BENCH|/data/local/tmp/cpu-efficiency-lab/cpu_mix_bench_19de555050c04e58abed75f61e2fa566
+VERIFICATION_ERROR|AdbError('no interior frequency inside current limits for policy0')
+SCREEN_RESTORED|ScreenState(timeout_ms=1800000, wakefulness='Awake', display_on=True)
+VERIFICATION_END|0/1|error=AdbError('no interior frequency inside current limits for policy0')

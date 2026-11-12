@@ -1,0 +1,41 @@
+{
+  "serial": "192.168.137.99:45387",
+  "cases_planned": 1,
+  "cases_completed": 1,
+  "cases_passed": 1,
+  "results": [
+    {
+      "case": "first_offline",
+      "mode": "after_first_offline",
+      "target_khz": {
+        "policy0": 1996800
+      },
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "benchmark_processes": null,
+      "child_state": null,
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_0e16e65e6afc56ed379942cdb2e4c7cc"
+    }
+  ],
+  "error": null,
+  "screen_before": {
+    "timeout_ms": 1800000,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "screen_after": {
+    "timeout_ms": 1800000,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "screen_restore_error": null,
+  "raw_log": "data\\phase-h-probe-01.raw.log",
+  "verification_scope": "controlled fault injection only; does not enable the matrix gate",
+  "remaining_limitations": [
+    "sysfs comparisons and writes are not atomic with system changes",
+    "ADB transport disconnect must be independently revalidated",
+    "thermal/policy behavior may vary across devices"
+  ]
+}
