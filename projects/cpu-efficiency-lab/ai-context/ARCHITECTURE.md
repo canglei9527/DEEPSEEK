@@ -106,5 +106,15 @@ scripts/verify_matrix_recovery.py  恢复故障注入验证（不改写门禁）
 ## 当前未完成的实机验证
 `scalar_mix_v2` 是自定义整数混合负载，不能代表 Geekbench 或 CPU 专用功耗。屏幕常亮的 all-online pinned 校准不是严格单核/纯组隔离；CPU/SoC 电源轨计量、外部校准、PowerLens 同步对照、热稳态建模和跨设备比较均未实现。新版保守恢复已在设备验证运行中 SIGKILL，以及 ADB 断连后正常结束恢复；系统并发调限和半锁定/恢复中断尚未充分验证。全频矩阵尚未开始。最近观察到 Android `low_power=1` 且 policy6 当前仅1017600 kHz 一个可用频点。
 
+## 2026-11-12 reduced matrix 实跑结论（重要）
+新增 `--reduced-matrix`（6 单核代表点 + 15 纯簇 + 54 E/P 混合，约 46 分钟，跳过 E/F 复测）。两次实跑均在 A-CPU0 中止：
+- 顶层错误曾显示 `remote configuration interrupted: ADB exited with status 39`。经定位，**39 不是 ADB 断连**，而是 controller 脚本 `exit 39`（写 `scaling_max_freq` 失败，`matrix_controller.py` 锁频段）被 ADB 透传。已加诊断：当 recovery log 含 `POLICY_RESTORE_RESTRICTED/UNOWNED`、`CAP_VIOLATION`、`STALE_POLICY_AFTER_HOTPLUG`、`LOCK_INPUT_CHANGED` 时，顶层错误明确标注"系统并发限频"，与 ADB 传输失败区分。
+- 根因是**设备 perfd/thermal 在写锁频值那一刻把 cpufreq 边界压窄**，target 落到新边界外，kernel 拒绝写入。实测：恢复时写 policy6 `3072000` 被压回 `2649600`。journal 记录 A-CPU0 时 policy0 已被压到 `384000-1785600`。
+- **这是设备的真实热/功耗仲裁，不是纯代码 bug。** 保守恢复按设计拒绝覆盖非自有状态，报 RESTRICTED。要 matrix 在这种设备上"跑通"，只有削弱恢复校验或关闭 perfd/thermal，两者都违反本项目安全红线，不实现。
+- **运维坑**：测试中途设备无线 ADB 完全失联（10060 超时 → 10061 拒绝）。原因是 MIUI 无线调试在锁屏/休眠后自动关闭，adbd 不再监听；远端 commit `45037da` 的 free-ram/adbd-watchdog/protect-adbd 脚本未能防住。**建议改用 USB 连接做矩阵**；无线调试需停留在详情页避免锁屏。设备离线时无法远程唤醒，须物理重连。
+
+## 能效曲线（已固化）
+`plot-efficiency` 子命令 + `efficiency_curves.py`：离线解析 `eeff.tsv`（单核）与 `eeff_combo.tsv`（多核组合），输出无依赖 SVG（单核 nJ/op-频率曲线、吞吐-频率曲线、多核能效散点）与 summary.json。每点为重复测点中位数；nJ/op 为整机电池侧能耗/操作，非 CPU 电源轨。SM8750 实测：policy0 最优 2.4GHz@8.408 nJ/op、policy6 最优 3.072GHz@8.857 nJ/op、多核最优 2.107 nJ/op。
+
 ## 最小维护上下文
 先看 `FUNCTION_INDEX.md` 定位 CLI/目标符号，再读目标模块、一跳依赖和对应 unittest。仅当失败证据跨越 ADB shell、sysfs 或数据 schema 时扩大范围。
