@@ -1,0 +1,65 @@
+{
+  "schema": "cpu-lab-scheduler-status-v1",
+  "observed_utc": "2026-11-11T15:47:56.053114+00:00",
+  "serial": "192.168.1.89:37519",
+  "model": "2410DPN6CC",
+  "device": "haotian",
+  "soc": "SM8750",
+  "boot_id": "6bfab5e4-dbe1-46e4-ae2d-ebbcc299992c",
+  "boot_consistent": true,
+  "selinux": "Enforcing",
+  "online_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "policies": {
+    "policy0": {
+      "governor": "walt",
+      "scaling_min_khz": 384000,
+      "scaling_max_khz": 2745600,
+      "related_cpus": "0 1 2 3 4 5"
+    },
+    "policy6": {
+      "governor": "walt",
+      "scaling_min_khz": 1017600,
+      "scaling_max_khz": 3072000,
+      "related_cpus": "6 7"
+    }
+  },
+  "low_power": "0",
+  "battery_status": "Discharging",
+  "battery_percent": "89",
+  "battery_temp_deci_c": "286",
+  "screen": {
+    "timeout_ms": 2147483647,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "screen_timeout_ms": 2147483647,
+  "screen_error": null,
+  "project_processes": [],
+  "project_wake_locks": [],
+  "project_perf_requests": [],
+  "scan_status": {
+    "PROCESS_SCAN": "OK",
+    "WAKE_SCAN": "OK",
+    "PERF_SCAN": "OK"
+  },
+  "limitations": [
+    "read-only multi-command snapshot is not atomic",
+    "no project residue observed is not proof that all system scheduling settings are factory defaults",
+    "limits, governors and online CPUs can change autonomously",
+    "sysfs and vendor services may not expose every active request"
+  ],
+  "baseline_comparison": {
+    "status": "NOT_PROVIDED",
+    "differences": []
+  },
+  "assessment": "NO_LAB_ACTIVITY_OBSERVED"
+}

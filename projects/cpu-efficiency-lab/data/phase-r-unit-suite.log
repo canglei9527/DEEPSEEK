@@ -1,0 +1,4 @@
+  File "<string>", line 1
+    import subprocess,sys; from pathlib import Path; r=subprocess.run([sys.executable,'-m','unittest','discover','-s','tests','-t','.','-v']); f=Path(sys.argv[1]).open('x',encoding='utf-8'); f.write(str(r.returncode)+'
+                                                                                                                                                                                                                          ^
+SyntaxError: EOL while scanning string literal

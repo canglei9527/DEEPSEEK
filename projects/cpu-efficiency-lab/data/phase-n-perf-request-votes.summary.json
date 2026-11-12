@@ -1,0 +1,130 @@
+{
+  "serial": "192.168.1.89:37519",
+  "started_utc": "2026-11-11T15:26:25.776149+00:00",
+  "initial": {
+    "serial": "192.168.1.89:37519",
+    "soc": "SM8750",
+    "selinux": "Enforcing",
+    "capacity": "89",
+    "status": "Discharging",
+    "cpu_online": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "policies": {
+      "policy0": [
+        384000,
+        2745600,
+        "performance",
+        "0 1 2 3 4 5"
+      ],
+      "policy6": [
+        1017600,
+        3072000,
+        "performance",
+        "6 7"
+      ]
+    },
+    "temperatures_mc": {
+      "cpu-0-0-0": 36500,
+      "cpu-0-4-1": 38800,
+      "cpu-0-5-0": 36100,
+      "cpu-0-5-1": 36500,
+      "cpuss-0-0": 37600,
+      "cpuss-0-1": 37300,
+      "cpu-1-0-0": 32600,
+      "cpu-1-0-1": 31900,
+      "cpu-1-1-0": 33000,
+      "cpu-1-1-1": 33000,
+      "cpu-0-0-1": 38000,
+      "cpuss-1-0": 33000,
+      "cpuss-1-1": 33000,
+      "cpu-0-1-0": 37300,
+      "cpu-0-1-1": 38400,
+      "cpu-0-2-0": 36900,
+      "battery": 28700,
+      "cpu-0-2-1": 36900,
+      "cpu_therm": 32379,
+      "cpu-0-3-0": 36500,
+      "cpu-0-3-1": 37600,
+      "cpu-0-4-0": 36900
+    }
+  },
+  "binary_sha256": "7939db3431c7f26ed45477c50e58d9d6e885c7da6eea5e8cc167190d50d6140d",
+  "probe": "PASS",
+  "ownership": "NOT_RUN",
+  "crash_ttl": "NOT_RUN",
+  "postflight_restored": true,
+  "observations": [
+    {
+      "serial": "192.168.1.89:37519",
+      "soc": "SM8750",
+      "selinux": "Enforcing",
+      "capacity": "89",
+      "status": "Discharging",
+      "cpu_online": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "policies": {
+        "policy0": [
+          384000,
+          2745600,
+          "performance",
+          "0 1 2 3 4 5"
+        ],
+        "policy6": [
+          1017600,
+          3072000,
+          "performance",
+          "6 7"
+        ]
+      },
+      "temperatures_mc": {
+        "cpu-0-0-0": 36500,
+        "cpu-0-4-1": 38800,
+        "cpu-0-5-0": 39200,
+        "cpu-0-5-1": 40300,
+        "cpuss-0-0": 39600,
+        "cpuss-0-1": 38400,
+        "cpu-1-0-0": 33400,
+        "cpu-1-0-1": 33400,
+        "cpu-1-1-0": 34600,
+        "cpu-1-1-1": 34200,
+        "cpu-0-0-1": 39200,
+        "cpuss-1-0": 33400,
+        "cpuss-1-1": 34200,
+        "cpu-0-1-0": 38000,
+        "cpu-0-1-1": 39900,
+        "cpu-0-2-0": 37300,
+        "battery": 28700,
+        "cpu-0-2-1": 37300,
+        "cpu_therm": 32434,
+        "cpu-0-3-0": 37600,
+        "cpu-0-3-1": 37600,
+        "cpu-0-4-0": 38800
+      }
+    }
+  ],
+  "error": "AdbError('ADB exited with status 2: API|perf_lock_acq|perf_lock_rel|RESOLVED\\nBASELINE|0|384000|2745600|556800|748800\\nBASELINE|6|1017600|3072000|1209600|1401600\\nACQUIRE|0|CAP|748800|8000|122078\\nOBSERVE|0|384000|2745600|2745600\\nVENDOR_MAX_VOTE|0|0|0:3532800 1:3532800 2:3532800 3:3532800 4:3532800 5:3532800 6:4320000 7:4320000 \\nVENDOR_MIN_VOTE|0|0|0:384000 1:384000 2:384000 3:384000 4:384000 5:384000 6:1017600 7:1017600 \\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nVENDOR_MAX_VOTE|0|9|0:3532800 1:3532800 2:3532800 3:3532800 4:3532800 5:3532800 6:4320000 7:4320000 \\nVENDOR_MIN_VOTE|0|9|0:384000 1:384000 2:384000 3:384000 4:384000 5:384000 6:1017600 7:1017600 \\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nOBSERVE|0|384000|2745600|2745600\\nVENDOR_MAX_VOTE|0|19|0:3532800 1:3532800 2:3532800 3:3532800 4:3532800 5:3532800 6:4320000 7:4320000 \\nVENDOR_MIN_VOTE|0|19|0:384000 1:384000 2:384000 3:384000 4:384000 5:384000 6:1017600 7:1017600 \\nCLEAN_RELEASE|122078|0\\nOBSERVE|0|384000|2745600|2745600\\nVENDOR_MAX_VOTE|0|0|0:3532800 1:3532800 2:3532800 3:3532800 4:3532800 5:3532800 6:4320000 7:4320000 \\nVENDOR_MIN_VOTE|0|0|0:384000 1:384000 2:384000 3:384000 4:384000 5:384000 6:1017600 7:1017600 \\nRESTORED_CHECK|0|PASS\\nOBSERVE|6|1017600|3072000|3072000\\nVENDOR_MAX_VOTE|6|0|0:3532800 1:3532800 2:3532800 3:3532800 4:3532800 5:3532800 6:4320000 7:4320000 \\nVENDOR_MIN_VOTE|6|0|0:384000 1:384000 2:384000 3:384000 4:384000 5:384000 6:1017600 7:1017600 \\nRESTORED_CHECK|6|PASS\\nVERIFY_END|INCONCLUSIVE')",
+  "scope": "perfd-owned frequency requests only, not matrix validation or performance measurement",
+  "limitations": [
+    "vendor request queue may not include direct sysfs writers",
+    "finite TTL and SIGKILL test do not prove all kernel/daemon crash paths",
+    "concurrent thermal and system policy constraints remain active",
+    "not an authorization to enable matrix recovery gate"
+  ],
+  "completed_utc": "2026-11-11T15:26:39.006017+00:00"
+}

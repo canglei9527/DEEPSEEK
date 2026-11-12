@@ -1,0 +1,14 @@
+{
+  "serial": "192.168.1.89:37519",
+  "recorded_utc": "2026-11-11T16:50:55+00:00",
+  "screen_before": {
+    "timeout_ms": 2147483647,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "restore_timeout_ms": 1800000,
+  "temporary_timeout_ms": 2147483647,
+  "restore_after_run": true,
+  "prepared": false,
+  "restored": false
+}

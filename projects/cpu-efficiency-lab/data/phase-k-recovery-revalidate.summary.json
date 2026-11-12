@@ -1,0 +1,221 @@
+{
+  "serial": "192.168.1.89:37519",
+  "cases_planned": 11,
+  "cases_completed": 11,
+  "cases_passed": 11,
+  "cases_restricted": 0,
+  "cases_skipped": 0,
+  "cases_failed": 0,
+  "results": [
+    {
+      "case": "first_offline",
+      "mode": "after_first_offline",
+      "target_khz": {
+        "policy0": 1555200
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": null,
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_59966e04b22e5641c59b2103b7886971"
+    },
+    {
+      "case": "policy0_max",
+      "mode": "after_policy_max",
+      "target_khz": {
+        "policy0": 1555200
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": null,
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_6d5ea8aa787263127d61a4c9fc21a061"
+    },
+    {
+      "case": "policy0_min",
+      "mode": "after_policy_min",
+      "target_khz": {
+        "policy0": 1555200
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": null,
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_43f71382f631f32b353981efb60e7b6e"
+    },
+    {
+      "case": "policy0_restore",
+      "mode": "during_restore_after_min",
+      "target_khz": {
+        "policy0": 1555200
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": null,
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_84c4a8847cb83f85e1a26dfdb9f953d3"
+    },
+    {
+      "case": "policy6_max",
+      "mode": "after_policy6_max",
+      "target_khz": {
+        "policy0": 1555200,
+        "policy6": 2246400
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": null,
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_d5596fa9fd991accf4efcb477574a5f1"
+    },
+    {
+      "case": "policy6_min",
+      "mode": "after_policy6_min",
+      "target_khz": {
+        "policy0": 1555200,
+        "policy6": 2246400
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": null,
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_812b8faecb6b72db9877854179df9d86"
+    },
+    {
+      "case": "policy6_restore",
+      "mode": "during_restore_policy6_after_min",
+      "target_khz": {
+        "policy0": 1555200,
+        "policy6": 2246400
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": null,
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_f032cbf944818d6556438b7d263fe360"
+    },
+    {
+      "case": "child_before_register",
+      "mode": "before_registration",
+      "target_khz": {
+        "policy0": 1555200
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": "missing",
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_c29b01b0bc5b95a98beefe046727592c"
+    },
+    {
+      "case": "child_after_register",
+      "mode": "after_registration",
+      "target_khz": {
+        "policy0": 1555200
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": "missing",
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_fe60081c609d3f43869f0c71bf893d40"
+    },
+    {
+      "case": "child_after_go",
+      "mode": "after_go",
+      "target_khz": {
+        "policy0": 1555200
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": "missing",
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_6ba08f5686b942f452ff5e1d448e1e12"
+    },
+    {
+      "case": "child_running",
+      "mode": "during_benchmark",
+      "target_khz": {
+        "policy0": 1555200
+      },
+      "verdict": "PASS",
+      "passed": true,
+      "marker_present": true,
+      "journal_restored": true,
+      "snapshot_restored": true,
+      "snapshot_error": null,
+      "externally_restricted_policies": [],
+      "benchmark_processes": null,
+      "child_state": "missing",
+      "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_95d6caa527b59f3df967f94e8c378e54"
+    }
+  ],
+  "error": null,
+  "screen_before": {
+    "timeout_ms": 2147483647,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "screen_after": {
+    "timeout_ms": 2147483647,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "screen_restore_error": null,
+  "raw_log": "data\\phase-k-recovery-revalidate.raw.log",
+  "verification_scope": "controlled fault injection only; does not enable the matrix gate",
+  "remaining_limitations": [
+    "sysfs comparisons and writes are not atomic with system changes",
+    "concurrent system cap changes make a case inconclusive (RESTRICTED), not restored",
+    "ADB transport disconnect must be independently revalidated",
+    "thermal/policy behavior may vary across devices"
+  ]
+}

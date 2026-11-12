@@ -1,0 +1,3 @@
+PLAN|192.168.1.89:43447|SM8750|/data/local/tmp/cpu-efficiency-lab/cpu_mix_bench_2cc91757118e4b35a3a43f17b3d6609c
+HOST_CONFIG_BEGIN|A-CPU0|2026-11-10T15:27:34.718+00:00
+HOST_CONFIG_ERROR|A-CPU0|AdbError('cpufreq restoration mismatch: policy0')

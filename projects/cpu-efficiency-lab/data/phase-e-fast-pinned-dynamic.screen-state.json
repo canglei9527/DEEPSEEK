@@ -1,0 +1,15 @@
+{
+  "serial": "192.168.1.89:43447",
+  "reason": "quick test finished; no benchmark running",
+  "before": {
+    "timeout_ms": 2147483647,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "after": {
+    "timeout_ms": 1800000,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "restored_original_timeout_ms": 1800000
+}

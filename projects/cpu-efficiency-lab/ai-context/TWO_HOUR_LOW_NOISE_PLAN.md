@@ -69,4 +69,4 @@
 
 本地验证：`python -m unittest discover -s tests -t .` 全部106项通过（新模式30项）；`python -m compileall -q src tests scripts` 通过；CLI help/import、生成的guardian/控制器shell语法、fake-sysfs心跳超时/释放和全127配置mock调度通过。
 
-本方案落地阶段仅执行了本地mock/fake-sysfs与shell语法测试；后续分别进行了只读状态检查和受控的厂商请求探针，候选请求未在设备上生效（见 `PERF_REQUEST_EVALUATION.md`）。**两小时扫描及灭屏恢复生命周期尚未完成真机验证，也没有新的低噪声性能样本。**恢复门禁仍为False，不能用新入口绕过。顾问工具在该会话不可用；代码通过本地测试不等于设备验证完成。
+本轮仅代码、本地mock/fake-sysfs与shell语法测试；**未连接手机、未检查该手机内核后端、未做新故障注入或运行负载**。后端与整个灭屏恢复生命周期都需后续真机验证。恢复门禁仍为False，不能用新入口绕过。当前会话未能发现可调用的DeepSeek顾问工具，尚无顾问预评审结论。代码通过本地测试不等于设备验证完成。

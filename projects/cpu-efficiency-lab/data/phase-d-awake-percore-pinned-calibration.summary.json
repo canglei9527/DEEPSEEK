@@ -1,0 +1,15 @@
+{
+  "raw_log": "data\\phase-d-awake-percore-pinned-calibration-retry.raw.log",
+  "configs": 11,
+  "valid_all_online_mask": true,
+  "valid_worker_affinity": true,
+  "max_cpu_temperature_c": 40.3,
+  "max_battery_temperature_c": 26.8,
+  "strict_isolation_claimed": false,
+  "power_scope": "whole-device battery-side",
+  "frequency_scope": "natural dynamic governor; no locked frequency",
+  "files": {
+    "configs": "data\\phase-d-awake-percore-pinned-calibration.summary.csv",
+    "workers": "data\\phase-d-awake-percore-pinned-calibration.workers.csv"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "serial": "192.168.1.89:37519",
+  "model": "2410DPN6CC",
+  "device": "haotian",
+  "soc": "SM8750",
+  "android_release": "16",
+  "kernel": "Linux localhost 6.6.118-android15-8-gc44b714366cc-abogki519650608-4k #1 SMP PREEMPT Thu Jun  4 03:48:35 UTC 2026 aarch64 Toybox",
+  "root_uid": "0",
+  "root_context": "u:r:su:s0",
+  "selinux": "Enforcing",
+  "ready_for_capture": true,
+  "nodes": {
+    "current_now": {
+      "present": true,
+      "readable": true,
+      "value": "161000"
+    },
+    "voltage_now": {
+      "present": true,
+      "readable": true,
+      "value": "4367000"
+    },
+    "status": {
+      "present": true,
+      "readable": true,
+      "value": "Discharging"
+    },
+    "temp": {
+      "present": true,
+      "readable": true,
+      "value": "298"
+    },
+    "capacity": {
+      "present": true,
+      "readable": true,
+      "value": "93"
+    },
+    "charge_counter": {
+      "present": true,
+      "readable": true,
+      "value": "5321000"
+    },
+    "power_now": {
+      "present": false,
+      "readable": false,
+      "value": null
+    }
+  },
+  "policies": [
+    {
+      "name": "policy0",
+      "related_cpus": "0 1 2 3 4 5",
+      "available_frequencies_khz": "384000 556800 748800 960000 1152000 1363200 1555200 1785600 1996800 2227200 2400000 2745600 2918400 3072000 3321600 3532800",
+      "scaling_min_khz": 384000,
+      "scaling_max_khz": 2745600,
+      "hardware_min_khz": 384000,
+      "hardware_max_khz": 3532800,
+      "governor": "performance"
+    },
+    {
+      "name": "policy6",
+      "related_cpus": "6 7",
+      "available_frequencies_khz": "1017600 1209600 1401600 1689600 1958400 2246400 2438400 2649600 2841600 3072000 3283200 3513600 3801600 4089600 4204800 4320000",
+      "scaling_min_khz": 1017600,
+      "scaling_max_khz": 3072000,
+      "hardware_min_khz": 1017600,
+      "hardware_max_khz": 4320000,
+      "governor": "performance"
+    }
+  ]
+}

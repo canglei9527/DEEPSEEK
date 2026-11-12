@@ -1,0 +1,19 @@
+{
+  "serial": "192.168.1.89:43447",
+  "before": {
+    "timeout_ms": 1800000,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "prepared": true,
+  "restored": true,
+  "rounds_completed": 1,
+  "started_utc": "2026-11-10T17:51:19.913838+00:00",
+  "run_error": "AdbError('round 2 aborted with exit code 4294967295; partial logs kept')",
+  "after": {
+    "timeout_ms": 1800000,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "completed_utc": "2026-11-10T18:01:42.607682+00:00"
+}

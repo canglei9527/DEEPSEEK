@@ -1,0 +1,13 @@
+PIN_INFO|all_eight_online|worker_affinity_verified_by_native_bench|no_hotplug|no_frequency_lock|not-strict-isolation
+PIN_BEGIN|CPU0|0|all-online,no-frequency-lock
+PIN_SAMPLE|CPU0|0|baseline_pre|108319.34|260000|4275000|Discharging|26800|31500|1996800|1017600
+PIN_SAMPLE|0-7||||||||||
+PIN_SAMPLE|CPU0|0|baseline_pre|108320.38|360000|4260000|Discharging|26800|29900|384000|1017600
+PIN_SAMPLE|0-7||||||||||
+PIN_SAMPLE|CPU0|0|baseline_pre|108321.43|126000|4279000|Discharging|26800|30300|1152000|1017600
+PIN_SAMPLE|0-7||||||||||
+PIN_SAMPLE|CPU0|0|baseline_pre|108322.47|165000|4275000|Discharging|26800|29900|1152000|1017600
+PIN_SAMPLE|0-7||||||||||
+
+HOST_EXIT|21
+HOST_STDERR|

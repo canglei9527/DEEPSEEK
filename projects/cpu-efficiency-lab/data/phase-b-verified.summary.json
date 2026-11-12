@@ -1,0 +1,30 @@
+{
+  "protocol_version": 1,
+  "serial": "192.168.1.89:43447",
+  "model": "2410DPN6CC",
+  "device": "haotian",
+  "soc": "SM8750",
+  "android_release": "16",
+  "root_context": "u:r:su:s0",
+  "selinux": "Enforcing",
+  "power_now_node_present": false,
+  "started_utc": "2026-11-10T12:23:01.286+00:00",
+  "completed_utc": "2026-11-10T12:23:12.578+00:00",
+  "samples": 11,
+  "battery_status_counts": {
+    "Discharging": 11
+  },
+  "requested_duration_s": 10.0,
+  "planned_sample_span_s": 10.0,
+  "observed_sample_span_s": 10.44999999999709,
+  "requested_interval_s": 1.0,
+  "observed_interval_median_s": 1.047500000000582,
+  "observed_interval_min_s": 1.0325000000011642,
+  "observed_interval_max_s": 1.0525000000052387,
+  "max_current_voltage_read_span_s": 0.010000000009313226,
+  "integrated_energy_j": 5.589918314996447,
+  "integrated_covered_s": 10.44999999999709,
+  "average_power_w_over_covered_s": 0.5349204129184693,
+  "csv": "data\\phase-b-verified.csv",
+  "measurement_scope": "whole-device battery-side; not CPU-rail power"
+}

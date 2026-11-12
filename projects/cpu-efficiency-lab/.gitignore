@@ -1,17 +1,24 @@
+# Python
 __pycache__/
 *.py[cod]
+*.egg-info/
+.eggs/
+dist/
+*.egg-info/
+
+# Test / tooling caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtualenvs
 .venv/
 venv/
-# data/ 整体不入库（原始 log/csv 体积大且每台设备不同），
-# 但能效实测的结论文件必须可追溯，所以用 data/* 而非 data/ 来留例外：
-# Git 不会进入被忽略的目录，`data/` 写法会让下面的 ! 规则完全失效。
-data/*
-!data/EEFF-RESULTS.md
-!data/CORE-MEASUREMENT-METHODOLOGY.md
-!data/eeff.tsv
-!data/eeff_combo.tsv
-!data/eeff_energy.tsv
-!data/plots/
-reports/
-build/
-*.egg-info/
+
+# OS / editor
+Thumbs.db
+.DS_Store
+*.swp
+
+# Local secrets / state
+*.local.json

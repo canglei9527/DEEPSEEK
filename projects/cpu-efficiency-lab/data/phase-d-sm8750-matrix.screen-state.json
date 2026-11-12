@@ -1,0 +1,21 @@
+{
+  "serial": "192.168.1.89:43447",
+  "recorded_utc": "2026-11-10T15:27:30+00:00",
+  "screen_before": {
+    "timeout_ms": 2147483647,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "restore_timeout_ms": 2147483647,
+  "temporary_timeout_ms": 2147483647,
+  "restore_after_run": true,
+  "prepared": true,
+  "restored": true,
+  "run_error": "AdbError('cpufreq restoration mismatch: policy0')",
+  "screen_after": {
+    "timeout_ms": 2147483647,
+    "wakefulness": "Awake",
+    "display_on": true
+  },
+  "completed_utc": "2026-11-10T15:27:53+00:00"
+}

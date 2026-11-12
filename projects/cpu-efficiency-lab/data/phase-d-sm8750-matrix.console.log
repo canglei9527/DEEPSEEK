@@ -1,0 +1,2 @@
+Matrix plan: 32 single-worker/core-frequency configs, then 12 cluster and 54 mixed configs; total budget 120 min.
+[A] A-CPU0 workers=0 online=0 freq={'policy0': 384000} planned=8s

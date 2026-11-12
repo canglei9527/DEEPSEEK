@@ -1,0 +1,4 @@
+usage: cpu-efficiency-lab capture-power [-h] --serial SERIAL
+                                        [--duration DURATION]
+                                        [--interval INTERVAL] --output OUTPUT
+cpu-efficiency-lab capture-power: error: the following arguments are required: --output

@@ -1,0 +1,8 @@
+{
+  "recorded_utc": "2026-11-11T15:03:23.749053+00:00",
+  "serial": "192.168.1.89:37519",
+  "read_only": true,
+  "remote_writes_performed": false,
+  "output": "DEVICE|SM8750\nMISSING|/dev/freq_qos\nMISSING|/dev/cpu_freq\nMISSING|/dev/cpufreq\nMISSING|/dev/msm_performance\nMISSING|/dev/perf_lock\n-r--r--r-- 1 root root 4096 2026-11-11 21:07 /sys/kernel/msm_performance/parameters/cpu_min_freq\nWRITABLE|/sys/kernel/msm_performance/parameters/cpu_min_freq\n-r--r--r-- 1 root root 4096 2026-11-11 21:07 /sys/kernel/msm_performance/parameters/cpu_max_freq\nWRITABLE|/sys/kernel/msm_performance/parameters/cpu_max_freq\nPOLICY|0|scmi\n384000\n2745600\nPOLICY|6|scmi\n1017600\n3072000\nONLINE|0-7\nBATTERY|90\n286\nDischarging\nBENCH|PERF_FREQ_PATHS_BEGIN\n32:        <Config MajorValue=\"0x2\" MinorValue=\"0x0\" Node=\"/sys/kernel/msm_performance/parameters/cpu_min_freq\" DispMode=\"6\" /> <!-- cpu_min_freq -->\n33:        <Config MajorValue=\"0x2\" MinorValue=\"0x1\" Node=\"/sys/kernel/msm_performance/parameters/cpu_max_freq\" /> <!-- cpu_max_freq -->\n36:        <Config MajorValue=\"0x2\" MinorValue=\"0x4\" Node=\"/sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq\" DispMode=\"6\" />\n",
+  "conclusion": "No independently owned frequency-request backend has been verified by this probe. Vendor service presence and sysfs nodes are not proof of per-client aggregation/release semantics."
+}

@@ -1,0 +1,441 @@
+VERIFICATION_BEGIN|192.168.1.89:37519|2410DPN6CC
+REMOTE_BENCH|/data/local/tmp/cpu-efficiency-lab/cpu_mix_bench_6488d7b8b3ba4ea6b44afb2a441bd283
+CASE_BEGIN|first_offline|59966e04b22e5641c59b2103b7886971|[('policy0', 1555200)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|first_offline
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_59966e04b22e5641c59b2103b7886971
+FAULT_INJECTION|SIGKILL_AFTER_FIRST_OFFLINE|FIJ-first_offline|1
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|26187|3332116
+WATCHDOG_RECOVERY_START|1
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|ALREADY_ORIGINAL
+POLICY_RESTORE|policy6|1017600|3072000|ALREADY_ORIGINAL
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 26192
+
+REMOTE_END|first_offline
+CASE_RESULT|{"case": "first_offline", "mode": "after_first_offline", "target_khz": {"policy0": 1555200}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": null, "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_59966e04b22e5641c59b2103b7886971"}
+CASE_BEGIN|policy0_max|6d5ea8aa787263127d61a4c9fc21a061|[('policy0', 1555200)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|policy0_max
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_6d5ea8aa787263127d61a4c9fc21a061
+CORE_STATE|FIJ-policy0_max|0|1
+CORE_STATE|FIJ-policy0_max|1|0
+CORE_STATE|FIJ-policy0_max|2|0
+CORE_STATE|FIJ-policy0_max|3|0
+CORE_STATE|FIJ-policy0_max|4|0
+CORE_STATE|FIJ-policy0_max|5|0
+CORE_STATE|FIJ-policy0_max|6|0
+CORE_STATE|FIJ-policy0_max|7|0
+CORE_MASK_APPLIED|FIJ-policy0_max|0|0
+FAULT_INJECTION|SIGKILL_AFTER_POLICY_MAX|FIJ-policy0_max|policy0
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|26596|3332497
+WATCHDOG_RECOVERY_START|2
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|JOURNALED
+POLICY_RESTORE|policy6|1017600|3072000|ALREADY_ORIGINAL
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 26600
+RECOVERY_FILE|policy-policy0.state
+policy0 384000 2745600 1555200 RESTORED
+
+REMOTE_END|policy0_max
+CASE_RESULT|{"case": "policy0_max", "mode": "after_policy_max", "target_khz": {"policy0": 1555200}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": null, "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_6d5ea8aa787263127d61a4c9fc21a061"}
+CASE_BEGIN|policy0_min|43f71382f631f32b353981efb60e7b6e|[('policy0', 1555200)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|policy0_min
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_43f71382f631f32b353981efb60e7b6e
+CORE_STATE|FIJ-policy0_min|0|1
+CORE_STATE|FIJ-policy0_min|1|0
+CORE_STATE|FIJ-policy0_min|2|0
+CORE_STATE|FIJ-policy0_min|3|0
+CORE_STATE|FIJ-policy0_min|4|0
+CORE_STATE|FIJ-policy0_min|5|0
+CORE_STATE|FIJ-policy0_min|6|0
+CORE_STATE|FIJ-policy0_min|7|0
+CORE_MASK_APPLIED|FIJ-policy0_min|0|0
+FAULT_INJECTION|SIGKILL_AFTER_POLICY_MIN|FIJ-policy0_min|policy0
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|26952|3332900
+WATCHDOG_RECOVERY_START|2
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|JOURNALED
+POLICY_RESTORE|policy6|1017600|3072000|ALREADY_ORIGINAL
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 26957
+RECOVERY_FILE|policy-policy0.state
+policy0 384000 2745600 1555200 RESTORED
+
+REMOTE_END|policy0_min
+CASE_RESULT|{"case": "policy0_min", "mode": "after_policy_min", "target_khz": {"policy0": 1555200}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": null, "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_43f71382f631f32b353981efb60e7b6e"}
+CASE_BEGIN|policy0_restore|84c4a8847cb83f85e1a26dfdb9f953d3|[('policy0', 1555200)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|policy0_restore
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_84c4a8847cb83f85e1a26dfdb9f953d3
+CORE_STATE|FIJ-policy0_restore|0|1
+CORE_STATE|FIJ-policy0_restore|1|0
+CORE_STATE|FIJ-policy0_restore|2|0
+CORE_STATE|FIJ-policy0_restore|3|0
+CORE_STATE|FIJ-policy0_restore|4|0
+CORE_STATE|FIJ-policy0_restore|5|0
+CORE_STATE|FIJ-policy0_restore|6|0
+CORE_STATE|FIJ-policy0_restore|7|0
+CORE_MASK_APPLIED|FIJ-policy0_restore|0|0
+CONFIG_BEGIN|FIJ-policy0_restore|0|policy0:384000:2745600:1555200
+FAULT_INJECTION|RESTORE_ARMED|FIJ-policy0_restore
+CORE_RESTORE|1|1
+CORE_RESTORE|2|1
+CORE_RESTORE|3|1
+CORE_RESTORE|4|1
+CORE_RESTORE|5|1
+CORE_RESTORE|6|1
+CORE_RESTORE|7|1
+FAULT_INJECTION|SIGKILL_DURING_POLICY_RESTORE|policy0
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|27313|3333320
+WATCHDOG_RECOVERY_START|2
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|JOURNALED
+POLICY_RESTORE|policy6|1017600|3072000|ALREADY_ORIGINAL
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 27318
+RECOVERY_FILE|policy-policy0.state
+policy0 384000 2745600 1555200 RESTORED
+
+REMOTE_END|policy0_restore
+CASE_RESULT|{"case": "policy0_restore", "mode": "during_restore_after_min", "target_khz": {"policy0": 1555200}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": null, "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_84c4a8847cb83f85e1a26dfdb9f953d3"}
+CASE_BEGIN|policy6_max|d5596fa9fd991accf4efcb477574a5f1|[('policy0', 1555200), ('policy6', 2246400)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|policy6_max
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_d5596fa9fd991accf4efcb477574a5f1
+CORE_STATE|FIJ-policy6_max|0|1
+CORE_STATE|FIJ-policy6_max|1|0
+CORE_STATE|FIJ-policy6_max|2|0
+CORE_STATE|FIJ-policy6_max|3|0
+CORE_STATE|FIJ-policy6_max|4|0
+CORE_STATE|FIJ-policy6_max|5|0
+CORE_STATE|FIJ-policy6_max|6|1
+CORE_STATE|FIJ-policy6_max|7|0
+CORE_MASK_APPLIED|FIJ-policy6_max|0 6|0 6
+FAULT_INJECTION|SIGKILL_AFTER_POLICY_MAX|FIJ-policy6_max|policy6
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|27779|3333778
+WATCHDOG_RECOVERY_START|2
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|JOURNALED
+POLICY_RESTORE|policy6|1017600|3072000|JOURNALED
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 27783
+RECOVERY_FILE|policy-policy0.state
+policy0 384000 2745600 1555200 RESTORED
+RECOVERY_FILE|policy-policy6.state
+policy6 1017600 3072000 2246400 RESTORED
+
+REMOTE_END|policy6_max
+CASE_RESULT|{"case": "policy6_max", "mode": "after_policy6_max", "target_khz": {"policy0": 1555200, "policy6": 2246400}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": null, "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_d5596fa9fd991accf4efcb477574a5f1"}
+CASE_BEGIN|policy6_min|812b8faecb6b72db9877854179df9d86|[('policy0', 1555200), ('policy6', 2246400)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|policy6_min
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_812b8faecb6b72db9877854179df9d86
+CORE_STATE|FIJ-policy6_min|0|1
+CORE_STATE|FIJ-policy6_min|1|0
+CORE_STATE|FIJ-policy6_min|2|0
+CORE_STATE|FIJ-policy6_min|3|0
+CORE_STATE|FIJ-policy6_min|4|0
+CORE_STATE|FIJ-policy6_min|5|0
+CORE_STATE|FIJ-policy6_min|6|1
+CORE_STATE|FIJ-policy6_min|7|0
+CORE_MASK_APPLIED|FIJ-policy6_min|0 6|0 6
+FAULT_INJECTION|SIGKILL_AFTER_POLICY_MIN|FIJ-policy6_min|policy6
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|28130|3334172
+WATCHDOG_RECOVERY_START|2
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|JOURNALED
+POLICY_RESTORE|policy6|1017600|3072000|JOURNALED
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 28134
+RECOVERY_FILE|policy-policy0.state
+policy0 384000 2745600 1555200 RESTORED
+RECOVERY_FILE|policy-policy6.state
+policy6 1017600 3072000 2246400 RESTORED
+
+REMOTE_END|policy6_min
+CASE_RESULT|{"case": "policy6_min", "mode": "after_policy6_min", "target_khz": {"policy0": 1555200, "policy6": 2246400}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": null, "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_812b8faecb6b72db9877854179df9d86"}
+CASE_BEGIN|policy6_restore|f032cbf944818d6556438b7d263fe360|[('policy0', 1555200), ('policy6', 2246400)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|policy6_restore
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_f032cbf944818d6556438b7d263fe360
+CORE_STATE|FIJ-policy6_restore|0|1
+CORE_STATE|FIJ-policy6_restore|1|0
+CORE_STATE|FIJ-policy6_restore|2|0
+CORE_STATE|FIJ-policy6_restore|3|0
+CORE_STATE|FIJ-policy6_restore|4|0
+CORE_STATE|FIJ-policy6_restore|5|0
+CORE_STATE|FIJ-policy6_restore|6|1
+CORE_STATE|FIJ-policy6_restore|7|0
+CORE_MASK_APPLIED|FIJ-policy6_restore|0 6|0 6
+CONFIG_BEGIN|FIJ-policy6_restore|0 6|policy0:384000:2745600:1555200 policy6:1017600:3072000:2246400
+FAULT_INJECTION|RESTORE_ARMED|FIJ-policy6_restore
+CORE_RESTORE|1|1
+CORE_RESTORE|2|1
+CORE_RESTORE|3|1
+CORE_RESTORE|4|1
+CORE_RESTORE|5|1
+CORE_RESTORE|6|1
+CORE_RESTORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|JOURNALED
+FAULT_INJECTION|SIGKILL_DURING_POLICY_RESTORE|policy6
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|28499|3334604
+WATCHDOG_RECOVERY_START|2
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|ALREADY_ORIGINAL
+POLICY_RESTORE|policy6|1017600|3072000|JOURNALED
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 28503
+RECOVERY_FILE|policy-policy0.state
+policy0 384000 2745600 1555200 RESTORED
+RECOVERY_FILE|policy-policy6.state
+policy6 1017600 3072000 2246400 RESTORED
+
+REMOTE_END|policy6_restore
+CASE_RESULT|{"case": "policy6_restore", "mode": "during_restore_policy6_after_min", "target_khz": {"policy0": 1555200, "policy6": 2246400}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": null, "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_f032cbf944818d6556438b7d263fe360"}
+CASE_BEGIN|child_before_register|c29b01b0bc5b95a98beefe046727592c|[('policy0', 1555200)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|child_before_register
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_c29b01b0bc5b95a98beefe046727592c
+CORE_STATE|FIJ-child_before_register|0|1
+CORE_STATE|FIJ-child_before_register|1|0
+CORE_STATE|FIJ-child_before_register|2|0
+CORE_STATE|FIJ-child_before_register|3|0
+CORE_STATE|FIJ-child_before_register|4|0
+CORE_STATE|FIJ-child_before_register|5|0
+CORE_STATE|FIJ-child_before_register|6|0
+CORE_STATE|FIJ-child_before_register|7|0
+CORE_MASK_APPLIED|FIJ-child_before_register|0|0
+CONFIG_BEGIN|FIJ-child_before_register|0|policy0:384000:2745600:1555200
+M|FIJ-child_before_register|0|baseline_pre|33351.84|472000|33351.84|33351.84|4328000|33351.85|Discharging|28700|92|37300|1555200|NA|5226000|0
+RUN|FIJ-child_before_register|1|0|0
+FAULT_INJECTION|SIGKILL_BEFORE_REGISTRATION|FIJ-child_before_register|29010
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|28953|3335048
+WATCHDOG_RECOVERY_START|3
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|JOURNALED
+POLICY_RESTORE|policy6|1017600|3072000|ALREADY_ORIGINAL
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 28958
+RECOVERY_FILE|policy-policy0.state
+policy0 384000 2745600 1555200 RESTORED
+
+REMOTE_END|child_before_register
+CASE_RESULT|{"case": "child_before_register", "mode": "before_registration", "target_khz": {"policy0": 1555200}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": "missing", "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_c29b01b0bc5b95a98beefe046727592c"}
+CASE_BEGIN|child_after_register|fe60081c609d3f43869f0c71bf893d40|[('policy0', 1555200)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|child_after_register
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_fe60081c609d3f43869f0c71bf893d40
+CORE_STATE|FIJ-child_after_register|0|1
+CORE_STATE|FIJ-child_after_register|1|0
+CORE_STATE|FIJ-child_after_register|2|0
+CORE_STATE|FIJ-child_after_register|3|0
+CORE_STATE|FIJ-child_after_register|4|0
+CORE_STATE|FIJ-child_after_register|5|0
+CORE_STATE|FIJ-child_after_register|6|0
+CORE_STATE|FIJ-child_after_register|7|0
+CORE_MASK_APPLIED|FIJ-child_after_register|0|0
+CONFIG_BEGIN|FIJ-child_after_register|0|policy0:384000:2745600:1555200
+M|FIJ-child_after_register|0|baseline_pre|33357.31|289000|33357.31|33357.31|4328000|33357.31|Discharging|28700|92|38000|1555200|NA|5226000|0
+RUN|FIJ-child_after_register|1|0|0
+FAULT_INJECTION|SIGKILL_AFTER_REGISTRATION|FIJ-child_after_register|29501
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|29419|3335597
+WATCHDOG_RECOVERY_START|3
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|JOURNALED
+POLICY_RESTORE|policy6|1017600|3072000|ALREADY_ORIGINAL
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 29423
+RECOVERY_FILE|policy-policy0.state
+policy0 384000 2745600 1555200 RESTORED
+
+REMOTE_END|child_after_register
+CASE_RESULT|{"case": "child_after_register", "mode": "after_registration", "target_khz": {"policy0": 1555200}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": "missing", "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_fe60081c609d3f43869f0c71bf893d40"}
+CASE_BEGIN|child_after_go|6ba08f5686b942f452ff5e1d448e1e12|[('policy0', 1555200)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|child_after_go
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_6ba08f5686b942f452ff5e1d448e1e12
+CORE_STATE|FIJ-child_after_go|0|1
+CORE_STATE|FIJ-child_after_go|1|0
+CORE_STATE|FIJ-child_after_go|2|0
+CORE_STATE|FIJ-child_after_go|3|0
+CORE_STATE|FIJ-child_after_go|4|0
+CORE_STATE|FIJ-child_after_go|5|0
+CORE_STATE|FIJ-child_after_go|6|0
+CORE_STATE|FIJ-child_after_go|7|0
+CORE_MASK_APPLIED|FIJ-child_after_go|0|0
+CONFIG_BEGIN|FIJ-child_after_go|0|policy0:384000:2745600:1555200
+M|FIJ-child_after_go|0|baseline_pre|33363.84|1174000|33363.84|33363.84|4289000|33363.84|Discharging|28700|92|41100|1555200|NA|5225000|0
+RUN|FIJ-child_after_go|1|0|0
+FAULT_INJECTION|SIGKILL_AFTER_GO|FIJ-child_after_go|29991
+B|META|scalar_mix_v2|cpus=0|workers=1|batch=4096|warmup_s=1.000|measure_s=8.000
+B|MEASURE_BEGIN|0|33365.218727|0
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|29851|3336244
+WATCHDOG_RECOVERY_START|2
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|JOURNALED
+POLICY_RESTORE|policy6|1017600|3072000|ALREADY_ORIGINAL
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 29879
+RECOVERY_FILE|policy-policy0.state
+policy0 384000 2745600 1555200 RESTORED
+
+REMOTE_END|child_after_go
+CASE_RESULT|{"case": "child_after_go", "mode": "after_go", "target_khz": {"policy0": 1555200}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": "missing", "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_6ba08f5686b942f452ff5e1d448e1e12"}
+CASE_BEGIN|child_running|95d6caa527b59f3df967f94e8c378e54|[('policy0', 1555200)]
+CONTROLLER_ERROR|AdbError('ADB exited with status 137: (no output)')
+REMOTE_BEGIN|child_running
+RECOVERY_FILE|controller.log
+RECOVERY_PATH|/data/local/tmp/cpu-efficiency-lab/matrix_recovery_95d6caa527b59f3df967f94e8c378e54
+CORE_STATE|FIJ-child_running|0|1
+CORE_STATE|FIJ-child_running|1|0
+CORE_STATE|FIJ-child_running|2|0
+CORE_STATE|FIJ-child_running|3|0
+CORE_STATE|FIJ-child_running|4|0
+CORE_STATE|FIJ-child_running|5|0
+CORE_STATE|FIJ-child_running|6|0
+CORE_STATE|FIJ-child_running|7|0
+CORE_MASK_APPLIED|FIJ-child_running|0|0
+CONFIG_BEGIN|FIJ-child_running|0|policy0:384000:2745600:1555200
+M|FIJ-child_running|0|baseline_pre|33370.84|496000|33370.84|33370.84|4324000|33370.84|Discharging|28700|92|38400|1555200|NA|5223000|0
+RUN|FIJ-child_running|1|0|0
+FAULT_INJECTION|SIGKILL_MAIN_DURING_BENCH|FIJ-child_running|30485
+B|META|scalar_mix_v2|cpus=0|workers=1|batch=4096|warmup_s=1.000|measure_s=8.000
+B|MEASURE_BEGIN|0|33372.234166|0
+RECOVERY_FILE|watchdog.log
+WATCHDOG_STARTED|30428|3336950
+WATCHDOG_RECOVERY_START|3
+WATCHDOG_CORE|1|1
+WATCHDOG_CORE|2|1
+WATCHDOG_CORE|3|1
+WATCHDOG_CORE|4|1
+WATCHDOG_CORE|5|1
+WATCHDOG_CORE|6|1
+WATCHDOG_CORE|7|1
+POLICY_RESTORE|policy0|384000|2745600|JOURNALED
+POLICY_RESTORE|policy6|1017600|3072000|ALREADY_ORIGINAL
+WATCHDOG_RECOVERY_OK|0
+RECOVERY_FILE|recovered
+OK
+RECOVERY_FILE|ready
+WATCHDOG_READY 30432
+RECOVERY_FILE|policy-policy0.state
+policy0 384000 2745600 1555200 RESTORED
+
+REMOTE_END|child_running
+CASE_RESULT|{"case": "child_running", "mode": "during_benchmark", "target_khz": {"policy0": 1555200}, "verdict": "PASS", "passed": true, "marker_present": true, "journal_restored": true, "snapshot_restored": true, "snapshot_error": null, "externally_restricted_policies": [], "benchmark_processes": null, "child_state": "missing", "recovery_dir": "/data/local/tmp/cpu-efficiency-lab/matrix_recovery_95d6caa527b59f3df967f94e8c378e54"}
+SCREEN_RESTORED|ScreenState(timeout_ms=2147483647, wakefulness='Awake', display_on=True)
+VERIFICATION_END|11/11|error=None

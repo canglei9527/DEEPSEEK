@@ -1,0 +1,17 @@
+{
+  "recorded_utc": "2026-11-10T15:14:48+00:00",
+  "serial": "192.168.1.89:43447",
+  "original_screen_off_timeout_ms": 1800000,
+  "original_power_state_lines": [
+    "mWakefulness=Awake",
+    "mUserActivityTimeoutOverrideFromWindowManager=-1"
+  ],
+  "requested_temporary_screen_off_timeout_ms": 2147483647,
+  "restore_after_experiment": true
+}
+
+APPLY_OUTPUT
+SCREEN_TIMEOUT|1800000|2147483647
+  mWakefulness=Awake
+  mUserActivityTimeoutOverrideFromWindowManager=-1
+

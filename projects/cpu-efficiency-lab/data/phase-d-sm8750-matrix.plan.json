@@ -1,0 +1,161 @@
+{
+  "protocol_version": 1,
+  "started_utc": "2026-11-10T15:27:34.714+00:00",
+  "serial": "192.168.1.89:43447",
+  "device": "haotian",
+  "model": "2410DPN6CC",
+  "soc": "SM8750",
+  "selinux": "Enforcing",
+  "minimum_battery_percent": 60,
+  "initial_battery_percent": 92,
+  "initial_temperatures_mc": {
+    "cpu-0-0-0": 31900,
+    "cpu-0-4-1": 31900,
+    "cpu-0-5-0": 31900,
+    "cpu-0-5-1": 31100,
+    "cpuss-0-0": 31900,
+    "cpuss-0-1": 31100,
+    "cpu-1-0-0": 29200,
+    "cpu-1-0-1": 29200,
+    "cpu-1-1-0": 29600,
+    "cpu-1-1-1": 29600,
+    "cpu-0-0-1": 31500,
+    "cpuss-1-0": 29600,
+    "cpuss-1-1": 29900,
+    "cpu-0-1-0": 31500,
+    "cpu-0-1-1": 31500,
+    "cpu-0-2-0": 31500,
+    "cpu-0-2-1": 31500,
+    "cpu_therm": 29419,
+    "battery": 26600,
+    "cpu-0-3-0": 31100,
+    "cpu-0-3-1": 31500,
+    "cpu-0-4-0": 31900
+  },
+  "core_topology": [
+    {
+      "cpu_id": 0,
+      "online": true,
+      "online_writable": true,
+      "capacity": 792,
+      "cluster_id": 0,
+      "core_id": 0,
+      "midr": "0x00000000514f0014"
+    },
+    {
+      "cpu_id": 1,
+      "online": true,
+      "online_writable": true,
+      "capacity": 792,
+      "cluster_id": 0,
+      "core_id": 1,
+      "midr": "0x00000000514f0014"
+    },
+    {
+      "cpu_id": 2,
+      "online": true,
+      "online_writable": true,
+      "capacity": 792,
+      "cluster_id": 0,
+      "core_id": 2,
+      "midr": "0x00000000514f0014"
+    },
+    {
+      "cpu_id": 3,
+      "online": true,
+      "online_writable": true,
+      "capacity": 792,
+      "cluster_id": 0,
+      "core_id": 3,
+      "midr": "0x00000000514f0014"
+    },
+    {
+      "cpu_id": 4,
+      "online": true,
+      "online_writable": true,
+      "capacity": 792,
+      "cluster_id": 0,
+      "core_id": 4,
+      "midr": "0x00000000514f0014"
+    },
+    {
+      "cpu_id": 5,
+      "online": true,
+      "online_writable": true,
+      "capacity": 792,
+      "cluster_id": 0,
+      "core_id": 5,
+      "midr": "0x00000000514f0014"
+    },
+    {
+      "cpu_id": 6,
+      "online": true,
+      "online_writable": true,
+      "capacity": 1024,
+      "cluster_id": 1,
+      "core_id": 0,
+      "midr": "0x00000000513f0014"
+    },
+    {
+      "cpu_id": 7,
+      "online": true,
+      "online_writable": true,
+      "capacity": 1024,
+      "cluster_id": 1,
+      "core_id": 1,
+      "midr": "0x00000000513f0014"
+    }
+  ],
+  "capacity_groups": {
+    "E": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "P": [
+      6,
+      7
+    ]
+  },
+  "cpufreq_policies": [
+    {
+      "name": "policy0",
+      "related_cpus": "0 1 2 3 4 5",
+      "available_frequencies_khz": "384000 556800 748800 960000 1152000 1363200 1555200 1785600 1996800 2227200 2400000 2745600 2918400 3072000 3321600 3532800",
+      "scaling_min_khz": 384000,
+      "scaling_max_khz": 1996800,
+      "hardware_min_khz": 384000,
+      "hardware_max_khz": 3532800,
+      "governor": "walt"
+    },
+    {
+      "name": "policy6",
+      "related_cpus": "6 7",
+      "available_frequencies_khz": "1017600 1209600 1401600 1689600 1958400 2246400 2438400 2649600 2841600 3072000 3283200 3513600 3801600 4089600 4204800 4320000",
+      "scaling_min_khz": 1017600,
+      "scaling_max_khz": 1689600,
+      "hardware_min_khz": 1017600,
+      "hardware_max_khz": 4320000,
+      "governor": "walt"
+    }
+  ],
+  "budget_seconds": {
+    "A_safety_and_recovery": 600,
+    "B_eight_cores_single_core": 1440,
+    "C_pure_cluster_scaling": 720,
+    "D_mixed_frequency_matrix": 2160,
+    "E_candidate_retests": 900,
+    "F_sustained_load": 660,
+    "G_cooling_and_margin": 480,
+    "H_final_restore_and_artifacts": 240
+  },
+  "budget_total_seconds": 7200,
+  "benchmark": "scalar_mix_v2 custom synchronized integer mixing throughput",
+  "measurement_scope": "whole-device battery-side; not CPU-rail power",
+  "core0_policy": "CPU0 is never offlined; non-CPU0 single-worker runs keep CPU0 online. Only CPU0-only has strict one-online-core isolation.",
+  "remote_benchmark": "/data/local/tmp/cpu-efficiency-lab/cpu_mix_bench_2cc91757118e4b35a3a43f17b3d6609c",
+  "sample_interval_s": 1
+}
