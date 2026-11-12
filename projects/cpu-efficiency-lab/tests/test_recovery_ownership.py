@@ -175,6 +175,52 @@ class RecoveryEvidenceTests(unittest.TestCase):
                                               confirm_independent_recovery=True)
                 self.assertIn(evidence, raised.exception.remote_output)
 
+    @patch('cpu_efficiency_lab.matrix_controller.INDEPENDENT_RECOVERY_VERIFIED', True)
+    @patch('cpu_efficiency_lab.matrix_controller._wait_for_device_snapshot', return_value=None)
+    def test_concurrent_system_capping_is_named_not_misread_as_adb_failure(self, wait):
+        # A non-zero controller exit surfaced through adb (e.g. status 39) must
+        # be diagnosed as concurrent system cpufreq limiting when the recovery
+        # log shows out-of-range/lock evidence, not as a generic ADB failure.
+        from cpu_efficiency_lab.adb import AdbError
+        topology, report = fixtures()
+        config = MatrixConfig('A-CPU0', 'A', (0,), (('policy0', 384000),), 1, 2, 1)
+        for evidence in (
+            'POLICY_RESTORE_RESTRICTED|policy0|384000|1785600',
+            'CAP_VIOLATION|policy0|384000|556800|2745600',
+            'STALE_POLICY_AFTER_HOTPLUG|policy0|384000|1785600|556800|2745600',
+            'LOCK_INPUT_CHANGED|policy0|384000|1785600',
+        ):
+            with self.subTest(evidence=evidence):
+                client = MagicMock()
+                client.run_root_script_stdin.side_effect = AdbError('ADB exited with status 39: (no output)')
+                with patch('cpu_efficiency_lab.matrix_controller._read_recovery_log', return_value=evidence):
+                    with self.assertRaises(MatrixConfigError) as raised:
+                        execute_matrix_config(client, config, topology, report,
+                                              ['/sys/class/thermal/thermal_zone1/temp'],
+                                              '/sys/class/thermal/thermal_zone2/temp',
+                                              '/data/local/tmp/cpu-efficiency-lab/cpu_mix_bench',
+                                              confirm_independent_recovery=True)
+                msg = str(raised.exception)
+                self.assertIn('concurrent system cpufreq limiting', msg)
+                self.assertIn('not an ADB transport failure', msg)
+
+    @patch('cpu_efficiency_lab.matrix_controller.INDEPENDENT_RECOVERY_VERIFIED', True)
+    @patch('cpu_efficiency_lab.matrix_controller._wait_for_device_snapshot', return_value=None)
+    def test_plain_adb_failure_without_cap_evidence_keeps_transport_wording(self, wait):
+        from cpu_efficiency_lab.adb import AdbError
+        topology, report = fixtures()
+        config = MatrixConfig('A-CPU0', 'A', (0,), (('policy0', 556800),), 1, 2, 1)
+        client = MagicMock()
+        client.run_root_script_stdin.side_effect = AdbError('ADB exited with status 1: (no output)')
+        with patch('cpu_efficiency_lab.matrix_controller._read_recovery_log', return_value='RECOVERY_LOG_UNAVAILABLE'):
+            with self.assertRaises(MatrixConfigError) as raised:
+                execute_matrix_config(client, config, topology, report,
+                                      ['/sys/class/thermal/thermal_zone1/temp'],
+                                      '/sys/class/thermal/thermal_zone2/temp',
+                                      '/data/local/tmp/cpu-efficiency-lab/cpu_mix_bench',
+                                      confirm_independent_recovery=True)
+        self.assertNotIn('concurrent system cpufreq limiting', str(raised.exception))
+
 
 if __name__ == '__main__':
     unittest.main()

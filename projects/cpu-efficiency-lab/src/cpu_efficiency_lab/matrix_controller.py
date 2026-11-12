@@ -984,6 +984,24 @@ def execute_matrix_config(
         snapshot_error = _wait_for_device_snapshot(client, topology, report)
         recovery_output = _read_recovery_log(client, recovery_dir)
         detail = "remote configuration interrupted: %s" % exc
+        # Distinguish concurrent system frequency-capping from a transport/ADB
+        # failure. A non-zero controller exit (e.g. status 39) surfaced through
+        # adb is NOT necessarily an adb disconnect: when the recovery log shows
+        # an out-of-range lock or concurrent-limit evidence, name that instead
+        # so the failure is not misread as a flaky connection.
+        cap_evidence = (
+            "POLICY_RESTORE_RESTRICTED|" in recovery_output
+            or "POLICY_RESTORE_UNOWNED|" in recovery_output
+            or "CAP_VIOLATION|" in recovery_output
+            or "STALE_POLICY_AFTER_HOTPLUG|" in recovery_output
+            or "LOCK_INPUT_CHANGED|" in recovery_output
+        )
+        if cap_evidence:
+            detail += (
+                "; concurrent system cpufreq limiting detected (lock target fell "
+                "outside the live system-clamped range); this is device thermal/"
+                "perfd arbitration, not an ADB transport failure"
+            )
         if snapshot_error is None:
             detail += "; snapshot currently matches, but watchdog recovery is not established by snapshot alone"
         else:
