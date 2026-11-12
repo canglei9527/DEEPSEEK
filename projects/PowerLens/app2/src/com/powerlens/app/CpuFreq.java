@@ -43,7 +43,8 @@ final class CpuFreq {
      *
      * cpu 行由 plcollect 在每次采样末尾追加，所以最后一批必然在文件尾部；
      * 倒读 64 KB 足以覆盖多次采样（每次采样只有 policy 数×1 行）。
-     * 若尾部确实找不到（例如刚升级、尾部全是 UID 行），再退回全量扫描。
+     * 若尾部确实找不到（例如刚升级、尾部全是 UID 行），再从尾往前分块
+     * 倒序回扫（scanBack），命中最新采样组即停。
      */
     private static final int TAIL_BYTES = 64 * 1024;
 
@@ -90,12 +91,13 @@ final class CpuFreq {
         if (f == null || !f.isFile()) {
             return new Snapshot();
         }
-        // 先试尾部（正常路径，快）；尾部没有 cpu 行才全量扫描（升级后的旧文件）
+        // 先试尾部（正常路径，快）；尾部没有 cpu 行才倒序回扫（升级后的旧文件、
+        // 或守护停采后窗口盖不住文件尾的情况）
         Snapshot tail = scanTail(f, from, to);
         if (!tail.isEmpty()) {
             return tail;
         }
-        return scanAll(f, from, to);
+        return scanBack(f, from, to);
     }
 
     /** 只读文件末尾一段，正常情况下一次命中。 */
@@ -121,19 +123,78 @@ final class CpuFreq {
         return snap;
     }
 
-    /** 全量扫描（仅在尾部未命中时使用）。 */
-    private static Snapshot scanAll(File f, long from, long to) {
+    /** 倒序回扫的字节硬上限：应对时间戳恒不可解析的异常文件，防无限读。 */
+    private static final long BACK_SCAN_CAP = 32L * 1024 * 1024;
+
+    /**
+     * 从文件尾往前分块回扫，攒到最新一批 cpu 行即停。
+     *
+     * 旧实现是从头到尾的 scanAll：snapshots.tsv 实测 25MB/35.8万行，
+     * 正扫要逐行 readLine 到底。它一旦被主线程碰到就是 ANR
+     * （2026-11-12 anr_2026-11-12_08-44，栈停在 scanAll 的 readLine）。
+     * 即便现在调用方已挪到后台线程，正扫的代价也没必要：文件按时间序
+     * 追加，"最后一条"必然在最靠尾的位置 —— 从尾往前扫，offer 一旦
+     * 报"遇到更旧的一行"（返回 2）或"已早于窗口下界"（返回 3）就停，
+     * 最坏开销从"整个文件"压回"最近几次采样"。
+     */
+    private static Snapshot scanBack(File f, long from, long to) {
         Snapshot snap = new Snapshot();
         RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(f, "r");
+            long pos = f.length();
             Accum acc = new Accum();
-            String line;
-            while ((line = raf.readLine()) != null) {
-                acc.offer(line, from, to);
+            String pendingTail = "";   // 已扫内容中最老一行的后半段，等更早的块补头部
+            long scanned = 0L;
+            boolean stop = false;
+            while (pos > 0 && !stop) {
+                long start = Math.max(0L, pos - TAIL_BYTES);
+                int n = (int) (pos - start);
+                raf.seek(start);
+                byte[] buf = new byte[n];
+                raf.readFully(buf);
+                scanned += n;
+                // 按 \n 切块：parts 是块内以换行结束的段（parts[0] 可能缺行首），
+                // lastSeg 是最后一个换行之后的段（与更靠尾的内容拼成完整行）
+                ArrayList<String> parts = new ArrayList<String>();
+                int segStart = 0;
+                for (int i = 0; i < n; i++) {
+                    if (buf[i] == '\n') {
+                        parts.add(new String(buf, segStart, i - segStart, "ISO-8859-1"));
+                        segStart = i + 1;
+                    }
+                }
+                if (parts.isEmpty()) {
+                    // 整块没有换行：全是某一行中段，并入待拼尾段继续往前找
+                    pendingTail = new String(buf, 0, n, "ISO-8859-1") + pendingTail;
+                } else {
+                    String lastSeg = new String(buf, segStart, n - segStart, "ISO-8859-1");
+                    int st = acc.offer(lastSeg + pendingTail, from, to);
+                    if (st == 2 || st == 3) {
+                        stop = true;
+                    } else {
+                        for (int i = parts.size() - 1; i >= 1 && !stop; i--) {
+                            st = acc.offer(parts.get(i), from, to);
+                            if (st == 2 || st == 3) {
+                                stop = true;
+                            }
+                        }
+                        if (!stop) {
+                            pendingTail = parts.get(0);
+                        }
+                    }
+                }
+                pos = start;
+                if (scanned >= BACK_SCAN_CAP) {
+                    break;
+                }
+            }
+            if (!stop && pendingTail.length() > 0) {
+                acc.offer(pendingTail, from, to);   // 块扫到文件头仍未终止的那一行
             }
             acc.fill(snap);
         } catch (Throwable ignored) {
+            // 并发写入/截断时读失败不应影响电量主功能
         } finally {
             close(raf);
         }
@@ -156,24 +217,42 @@ final class CpuFreq {
         private String online = "-";
         private int cores = -1;
 
-        void offer(String line, long from, long to) {
-            if (line.length() == 0 || line.indexOf('\t') <= 0) {
-                return;
+        /**
+         * 返回值供倒序扫描判断何时停止（正序调用方忽略返回值）：
+         *   0 = 与 cpu 行无关 / 在窗口上界之外，继续；
+         *   1 = 已收入当前最新采样组（同组还要继续收其余 policy）；
+         *   2 = 遇到早于当前组的 cpu 行 —— 最新组已完整，可停；
+         *   3 = 遇到能解析且早于 from 的时间 —— 时间序文件里再往前全部
+         *       在窗口外，可停。
+         */
+        int offer(String line, long from, long to) {
+            if (line.length() == 0) {
+                return 0;
+            }
+            if (line.charAt(line.length() - 1) == '\r') {
+                // 分块读入的行不像 readLine 那样自动剥行尾 \r
+                line = line.substring(0, line.length() - 1);
+            }
+            if (line.indexOf('\t') <= 0) {
+                return 0;
+            }
+            long ts = Storage.l(line.substring(0, line.indexOf('\t')), -1L);
+            if (ts >= 0 && ts < from) {
+                return 3;
             }
             String[] p = line.split("\t");
             // ts * cpu <policy> cur min max cpus online cores  => 10 列
             if (p.length < 10 || !"*".equals(p[1]) || !"cpu".equals(p[2])) {
-                return;
+                return 0;
             }
-            long ts = Storage.l(p[0], -1L);
-            if (ts < from || ts > to) {
-                return;
+            if (ts > to) {
+                return 0;
             }
             if (ts > latestTs) {
                 latestTs = ts;
-                byPolicy.clear();
+                byPolicy.clear();   // 进入更新的一组；当前行仍要继续走下方入库
             } else if (ts < latestTs) {
-                return;
+                return 2;
             }
             Policy pol = new Policy();
             pol.ts = ts;
@@ -185,10 +264,19 @@ final class CpuFreq {
             byPolicy.put(pol.name, pol);
             online = Storage.safe(p[8]).replace('_', ' ');
             cores = (int) Storage.l(p[9], -1L);
+            return 1;
         }
 
         void fill(Snapshot snap) {
-            snap.policies.addAll(byPolicy.values());
+            // 倒序扫描时组内插入顺序是反的（policy6 先入），按名排序保证展示稳定
+            java.util.List<Policy> ps = new ArrayList<Policy>(byPolicy.values());
+            java.util.Collections.sort(ps, new java.util.Comparator<Policy>() {
+                @Override
+                public int compare(Policy a, Policy b) {
+                    return a.name.compareTo(b.name);
+                }
+            });
+            snap.policies.addAll(ps);
             snap.online = online;
             snap.cores = cores;
             snap.ts = latestTs;

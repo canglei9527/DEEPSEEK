@@ -1654,6 +1654,17 @@ public class MainActivity extends Activity {
                     }
                 });
 
+                /*
+                 * CpuFreq.latest 是磁盘 IO（读 snapshots.tsv），必须留在
+                 * "pl-refresh" 线程里做，不能放进下面的主线程 Runnable。
+                 * 此前它在 ui.post 里调用：尾部 64KB 未命中时退化为全文件
+                 * 逐行扫描（实测 25MB/35.8万行），主线程 5s+ 不返回 →
+                 * Input dispatching timed out ANR（2026-11-12 /data/anr/
+                 * anr_2026-11-12_08-44-04-787，栈停在 CpuFreq.scanAll 的
+                 * RandomAccessFile.readLine）。
+                 */
+                final CpuFreq.Snapshot cpuSnap = CpuFreq.latest(store, from, to);
+
                 ui.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1663,7 +1674,7 @@ public class MainActivity extends Activity {
                             // 三张指标卡放关键数字，状态栏只留一行摘要
                             applyHeader(sum);
                             lastStatusDetail = buildStatus(store, sum, items.size(), mode, from, to, dims, dimsAge,
-                                    CpuFreq.latest(store, from, to));
+                                    cpuSnap);
                             lastShortStatus = shortStatus(sum, items.size(), dims, dimsAge);
                             status.setText(lastShortStatus);
                         } finally {
