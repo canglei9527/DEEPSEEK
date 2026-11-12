@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="610" viewBox="0 0 980 610"><rect width="980" height="610" fill="#0d1117"/>
+<text x="96" y="30" fill="#e6edf3" font-size="17" font-family="sans-serif">单核能效 —— 原始口径（未扣基线）</text>
+<text x="96" y="50" fill="#8b949e" font-size="11" font-family="sans-serif">原始 = 满载耗电量 × 电压 / 操作数；含屏幕等全部固定开销，用于对照</text>
+<line x1="96" y1="534.0" x2="754" y2="534.0" stroke="#21262d"/>
+<text x="88" y="538.0" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">2.39e+03</text>
+<text x="96.0" y="554" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">557</text>
+<line x1="96" y1="440.4" x2="754" y2="440.4" stroke="#21262d"/>
+<text x="88" y="444.4" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">2.53e+03</text>
+<text x="227.6" y="554" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">995</text>
+<line x1="96" y1="346.8" x2="754" y2="346.8" stroke="#21262d"/>
+<text x="88" y="350.8" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">2.67e+03</text>
+<text x="359.2" y="554" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">1432</text>
+<line x1="96" y1="253.2" x2="754" y2="253.2" stroke="#21262d"/>
+<text x="88" y="257.2" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">2.8e+03</text>
+<text x="490.8" y="554" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">1870</text>
+<line x1="96" y1="159.6" x2="754" y2="159.6" stroke="#21262d"/>
+<text x="88" y="163.6" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">2.94e+03</text>
+<text x="622.4" y="554" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">2308</text>
+<line x1="96" y1="66.0" x2="754" y2="66.0" stroke="#21262d"/>
+<text x="88" y="70.0" fill="#8b949e" font-size="11" text-anchor="end" font-family="monospace">3.08e+03</text>
+<text x="754.0" y="554" fill="#8b949e" font-size="11" text-anchor="middle" font-family="monospace">2746</text>
+<text x="425" y="590" fill="#8b949e" font-size="13" text-anchor="middle" font-family="sans-serif">锁定频率 (MHz)</text>
+<text x="28" y="300" fill="#8b949e" font-size="13" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 28 300)">能耗 (nJ/op)</text>
+<polyline points="96.0,205.0 338.4,176.1 650.1,105.0 754.0,495.0" fill="none" stroke="#4c9aff" stroke-width="1.9"/>
+<circle cx="96.0" cy="205.0" r="3.2" fill="#4c9aff"/>
+<circle cx="338.4" cy="176.1" r="3.2" fill="#4c9aff"/>
+<circle cx="650.1" cy="105.0" r="3.2" fill="#4c9aff"/>
+<circle cx="754.0" cy="495.0" r="3.2" fill="#4c9aff"/>
+<circle cx="754.0" cy="495.0" r="8" fill="none" stroke="#ffd33d" stroke-width="1.8"/>
+<line x1="766" y1="68" x2="786" y2="68" stroke="#4c9aff" stroke-width="2.4"/>
+<text x="792" y="72" fill="#c9d1d9" font-size="11.5" font-family="sans-serif">core0</text>
+<circle cx="234.5" cy="219.9" r="3.2" fill="#36b37e"/>
+<circle cx="234.5" cy="219.9" r="8" fill="none" stroke="#ffd33d" stroke-width="1.8"/>
+<line x1="766" y1="86" x2="786" y2="86" stroke="#36b37e" stroke-width="2.4"/>
+<text x="792" y="90" fill="#c9d1d9" font-size="11.5" font-family="sans-serif">core6</text>
+</svg>
