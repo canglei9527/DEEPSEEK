@@ -1,17 +1,22 @@
 """Local authorization, failure-path, and evidence tests; no actual ADB."""
 import contextlib
 import io
+import itertools
 import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import MagicMock, patch
 
 from cpu_efficiency_lab.adb import AdbError
-from verify_perf_requests import main, ownership_evidence_valid, same_policy_snapshot
+from verify_perf_requests import main, ownership_evidence_valid, same_policy_snapshot, snapshot
 
 
-STATE = {'serial': 'phone', 'soc': 'example', 'selinux': 'Enforcing',
+BOOT = '12345678-1234-1234-1234-123456789abc'
+OTHER_BOOT = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
+STATE = {'serial': 'phone', 'model': 'model', 'device': 'device', 'soc': 'example',
+         'boot_id': BOOT, 'selinux': 'Enforcing',
          'capacity': '90', 'status': 'Discharging', 'cpu_online': list(range(8)),
          'policies': {'policy0': (100, 200, 'gov', '0 1 2 3 4 5'),
                       'policy6': (300, 400, 'gov', '6 7')}, 'temperatures_mc': {}}
@@ -51,6 +56,65 @@ class PerfProbeTests(unittest.TestCase):
         self.assertTrue(same_policy_snapshot(STATE, {**STATE, 'capacity': '89'}))
         other = {**STATE, 'policies': {**STATE['policies'], 'policy0': (100, 150, 'gov', '0 1 2 3 4 5')}}
         self.assertFalse(same_policy_snapshot(STATE, other))
+
+    def test_matching_policy_values_require_same_valid_identity_and_boot(self):
+        for key, value in [('boot_id', OTHER_BOOT), ('boot_id', ''), ('boot_id', 'not-a-uuid'),
+                           ('serial', 'other-phone'), ('model', ''), ('device', 'other-device'),
+                           ('soc', 'other-soc')]:
+            with self.subTest(key=key, value=value):
+                self.assertFalse(same_policy_snapshot(STATE, {**STATE, key: value}))
+        without_boot = {key: value for key, value in STATE.items() if key != 'boot_id'}
+        self.assertFalse(same_policy_snapshot(without_boot, without_boot))
+
+    def test_snapshot_rejects_reboot_during_observation(self):
+        report = SimpleNamespace(serial='phone', model='model', device='device', soc='example',
+                                 selinux='Enforcing', nodes={'capacity': {'value': '90'}, 'status': {'value': 'Discharging'}},
+                                 policies=[SimpleNamespace(name='policy0', scaling_min_khz=100, scaling_max_khz=200,
+                                                           governor='gov', related_cpus='0 1 2 3 4 5'),
+                                           SimpleNamespace(name='policy6', scaling_min_khz=300, scaling_max_khz=400,
+                                                           governor='gov', related_cpus='6 7')])
+        client = MagicMock(serial='phone')
+        client.run_root_script.side_effect = [BOOT, '', OTHER_BOOT]
+        with patch('verify_perf_requests._validate_device_ready',
+                   return_value=(report, SimpleNamespace(online_cpus=tuple(range(8))), [], '', {})):
+            with self.assertRaisesRegex(AdbError, 'rebooted during snapshot'):
+                snapshot(client)
+
+    def test_reboot_after_armed_sigkill_never_passes_ttl_or_postflight(self):
+        cases = [f'CASE|{p}|{case}|PASS' for p in (0, 6)
+                 for case in ('RELEASE_LOOSER', 'RELEASE_STRICTER', 'LOCK_AND_RELEASE')]
+        complete = '\n'.join(cases + ['RESTORED_CHECK|0|PASS', 'RESTORED_CHECK|6|PASS', 'VERIFY_END|PASS'])
+
+        class CrashClient(FakeClient):
+            crashed = False
+
+            def run_root_script(self, script, **kwargs):
+                if '--verify' in script:
+                    return complete
+                if '--crash-test' in script:
+                    self.crashed = True
+                    raise AdbError('ADB exited with status 137: CRASH_ARMED|123|42|3000')
+                return super().run_root_script(script, **kwargs)
+
+        client = CrashClient('phone')
+        rebooted = {**STATE, 'boot_id': OTHER_BOOT}
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            binary = root / 'probe'
+            binary.write_bytes(b'fake binary')
+            out = root / 'reboot'
+            with patch('verify_perf_requests.AdbClient', return_value=client), \
+                 patch('verify_perf_requests.snapshot', side_effect=lambda _: rebooted if client.crashed else STATE), \
+                 patch('verify_perf_requests.time.sleep'), \
+                 patch('verify_perf_requests.time.monotonic', side_effect=itertools.count()), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                code = main(['--serial', 'phone', '--binary', str(binary), '--output', str(out), '--confirm-device-writes'])
+            self.assertEqual(code, 2)
+            summary = json.loads(out.with_name(out.name + '.summary.json').read_text(encoding='utf-8'))
+            self.assertEqual(summary['ownership'], 'PASS')
+            self.assertEqual(summary['crash_ttl'], 'INCONCLUSIVE')
+            self.assertFalse(summary['postflight_restored'])
+            self.assertIn('SIGKILL/TTL recovery was not confirmed', summary['error'])
 
     def test_requires_explicit_confirmation_before_client_or_files(self):
         with tempfile.TemporaryDirectory() as d, patch('verify_perf_requests.AdbClient') as adb:

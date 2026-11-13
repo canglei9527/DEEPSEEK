@@ -22,3 +22,7 @@ Thumbs.db
 
 # Local secrets / state
 *.local.json
+
+# Local Power Lens reverse-engineering and device captures
+# Contains APK/module artifacts and timestamped UID/package telemetry; keep local only.
+reports/powerlens-apk-analysis-20261113/

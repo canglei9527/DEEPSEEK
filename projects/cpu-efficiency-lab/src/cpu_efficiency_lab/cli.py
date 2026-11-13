@@ -112,6 +112,22 @@ def _parser() -> argparse.ArgumentParser:
     curves.add_argument('--single', required=True, type=Path, help='single-core TSV (eeff.tsv format)')
     curves.add_argument('--combo', type=Path, help='optional multi-core combo TSV (eeff_combo.tsv format)')
     curves.add_argument('--output', required=True, type=Path, help='new output directory (must not exist)')
+    scheduler_report = subparsers.add_parser(
+        "scheduler-report", help="offline scheduler configuration report (no ADB)"
+    )
+    scheduler_report.add_argument("--input", required=True, type=Path,
+                                  help="existing scheduler-sources export directory")
+    scheduler_report.add_argument("--output", required=True, type=Path,
+                                  help="new local report directory")
+    efficiency = subparsers.add_parser("efficiency-report", help="per-core curves and observed combination ranking")
+    efficiency.add_argument("--single", required=True, type=Path)
+    efficiency.add_argument("--combo", required=True, type=Path)
+    efficiency.add_argument("--output", required=True, type=Path)
+    module = subparsers.add_parser("ksu-module", help="build a local, unvalidated background scheduler candidate ZIP")
+    module.add_argument("--export", required=True, type=Path)
+    module.add_argument("--single", required=True, type=Path)
+    module.add_argument("--combo", required=True, type=Path)
+    module.add_argument("--output", required=True, type=Path)
     return parser
 
 
@@ -599,6 +615,18 @@ def _run_plot_efficiency(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_scheduler_report(args: argparse.Namespace) -> int:
+    from .scheduler_report import build_report
+    report = build_report(args.input, args.output)
+    result = {"output": str(args.output), "sources": len(report["sources"]),
+              "task_profiles": len(report["task_groups"]),
+              "vendor_resources": len(report["vendor_resources"]),
+              "vendor_target_blocks": len(report["vendor_targets"]),
+              "factory_original_verified": False}
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    return 0
+
+
 def main(argv=None) -> int:
     parser = _parser()
     args = parser.parse_args(argv)
@@ -621,6 +649,19 @@ def main(argv=None) -> int:
             return _run_two_hour_analyze(args)
         if args.command == 'plot-efficiency':
             return _run_plot_efficiency(args)
+        if args.command == 'scheduler-report':
+            return _run_scheduler_report(args)
+        if args.command == 'efficiency-report':
+            from .efficiency_report import build_report
+            report = build_report(args.single, args.combo, args.output)
+            print(json.dumps({'output': str(args.output), 'cores': len(report['cores']),
+                              'best_combo_observed': report['best_combo_observed']}, ensure_ascii=False, indent=2))
+            return 0
+        if args.command == 'ksu-module':
+            from .ksu_module import build_module
+            result = build_module(args.export, args.single, args.combo, args.output)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return 0
     except KeyboardInterrupt:
         print("interrupted; device restoration was requested", file=sys.stderr)
         return 130

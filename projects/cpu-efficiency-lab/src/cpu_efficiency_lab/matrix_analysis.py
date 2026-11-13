@@ -8,6 +8,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
+from .baseline import paired_baseline
 from .matrix_plan import MatrixConfig
 from .models import BatterySample
 from .power import battery_power_w
@@ -94,6 +95,10 @@ class MatrixMetric:
     workers_affinity_valid: bool
     valid: bool
     invalid_reason: str
+    baseline_before_w: Optional[float] = None
+    baseline_after_w: Optional[float] = None
+    baseline_drift_w: Optional[float] = None
+    observed_idle_range_w: Optional[float] = None
 
 
 def _optional_int(value: str) -> Optional[int]:
@@ -249,12 +254,11 @@ def analyze_matrix_runs(
         post = [row for row in config_readings if row.phase == "baseline_post"]
         load_energy, load_coverage = _power_segments(active, run.start_s, run.end_s)
         load_power = load_energy / load_coverage if load_coverage else None
-        _, pre_energy, pre_coverage = _power_window(pre)
-        _, post_energy, post_coverage = _power_window(post)
-        baseline_coverage = pre_coverage + post_coverage
-        # A paired baseline requires usable samples on both sides of the load.
-        baseline = (pre_energy + post_energy) / baseline_coverage if pre_coverage > 0 and post_coverage > 0 else None
-        incremental = load_power - baseline if load_power is not None and baseline is not None else None
+        idle = paired_baseline(
+            [(r.time_s, battery_power_w(r.sample.current_ua, r.sample.voltage_uv, r.sample.status)) for r in pre],
+            [(r.time_s, battery_power_w(r.sample.current_ua, r.sample.voltage_uv, r.sample.status)) for r in post],
+            load_power, run.start_s, run.end_s)
+        baseline_coverage, baseline, incremental = idle.coverage_s, idle.estimated_w, idle.incremental_w
         measured = [row for row in active if run.start_s <= row.time_s <= run.end_s]
         expected = dict(config.policy_targets_khz)
         f0_values = [row.policy0_frequency_khz for row in measured if row.policy0_frequency_khz is not None]
@@ -287,12 +291,8 @@ def analyze_matrix_runs(
         primary_valid = not reasons
         if not primary_valid:
             incremental_reason = "primary measurement invalid"
-        elif baseline is None:
-            incremental_reason = "missing paired idle baseline"
-        elif incremental is None or incremental <= 0:
-            incremental_reason = "non-positive incremental battery power"
         else:
-            incremental_reason = ""
+            incremental_reason = idle.reason
         incremental_valid = not incremental_reason
         cpu_temps = [row.cpu_temp_mc for row in measured if row.cpu_temp_mc >= 0]
         battery_temps = [row.battery_temp_mc for row in measured if row.battery_temp_mc >= 0]
@@ -336,6 +336,10 @@ def analyze_matrix_runs(
                 workers_affinity_valid=workers_valid,
                 valid=primary_valid,
                 invalid_reason="; ".join(reasons),
+                baseline_before_w=idle.before_w,
+                baseline_after_w=idle.after_w,
+                baseline_drift_w=idle.drift_w,
+                observed_idle_range_w=idle.observed_range_w,
             )
         )
     return metrics

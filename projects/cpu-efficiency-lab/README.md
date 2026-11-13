@@ -2,15 +2,46 @@
 
 无需外置硬件的 Android 电池侧功耗采集与 CPU 能效实验工具。支持只读预检/采样、显式授权 CPU 扫频；实验性 `matrix-sweep` 当前因恢复安全问题 fail-closed。不改变 governor、不关闭温控或 SELinux。
 
+## Windows 桌面入口
+
+运行 `dist` 中构建好的 `CPU-Efficiency-Lab.exe`，可在“分析”页按 CPU0–CPU7 切换查看完整曲线和频率组合缺测网格，在“调度”页审阅已保存配置并生成未验证候选，在“设备”页完成只读预检、调度状态、配置导出和电池采样。预检会自动保存 JSON 并回填到测量计划入口；电脑仍需安装 Android Platform Tools 并使 `adb` 在 PATH 中可用。矩阵和两小时扫频继续受原恢复门禁约束。
+
+从源码构建可执行文件需要本机已有 PyInstaller，执行 `powershell -ExecutionPolicy Bypass -File scripts/build-desktop.ps1`。脚本在 `dist` 中创建新的构建目录。历史质量报告使用用户选择的 TSV 和新的输出目录，展示原始测点及缺失组合，历史单核不同核心的数据不视作同核重复。
+
+导出当前调度配置前，先通过只读预检确认手机型号及设备代号。导出按固定文件列表读取设备，保留原始内容、系统版本、每个文件的存在状态、字节数与 SHA-256。输出目录须为新路径。对照同版本官方固件之前，导出结果只能作为当前设备的观察记录。
+
+## 八核能效报告与调度候选
+
+桌面首页可按 CPU0–CPU7 分别绘制历史单核能效曲线，并查看已测频率组合的最佳整机电池侧 nJ/op 记录；每核曲线只连已测点，不把跨核心记录当重复实验，未测组合不插值。历史 TSV 缺少配对空闲窗口，不能事后可靠扣除其他整机功耗作为 CPU 功耗；也没有可用的 CPU 电源轨计量。新 sweep/matrix 采样的配对前后空闲窗口会用于估计负载增量，并应用漂移、采样间隔和噪声范围筛选，但该数值仍是整机电池侧负载增量，不是 CPU 电源轨功耗。
+
+源码等价命令（输入文件及输出目录需存在/不存在于相应状态，输出不覆盖）：
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m cpu_efficiency_lab efficiency-report --single data\eeff.tsv --combo data\eeff_combo.tsv --output reports\eight-core-efficiency
+python -m cpu_efficiency_lab ksu-module --export data\scheduler-sources-export --single data\eeff.tsv --combo data\eeff_combo.tsv --output reports\ksu-background-candidate
+```
+
+KSU ZIP 是有设备指纹和原配置哈希约束的 systemless task-profile 文件覆盖候选：仅复用导出中已有的 `CpuPolicyPack`，添加到 `SCHED_SP_BACKGROUND` 与 `CPUSET_SP_BACKGROUND`。它不替换内核调度器，也未证明 profile 已实机加载或带来省电；工具只生成本地 ZIP，不会安装、重启或写设备。安装需要兼容的 system-mount metamodule，所有条件均由包内安装脚本再次检查。禁用/卸载后重启是设计回滚路径。当前恢复门禁、设备写入授权和设备侧验证规则仍适用。
+
+终端也可离线分析官方配置，生成 `report.html`、`report.md` 和 `report.json`：
+
+```powershell
+.\scripts\lab.ps1 scheduler-report --input data\scheduler-sources-export --output reports\scheduler-analysis
+```
+
+`--input` 必须包含本工具生成的 `manifest.json` 及原始文件；报告前核对哈希，错误输入或已有输出目录会被拒绝。换设备后需先获得对应设备的同类导出，再运行该离线命令；尚未声称跨设备实测兼容。
+
 ## 当前进度
 
 - **实现**：固定频率逐点计划、双次重复、配对空闲基线、有效性分析及逐核曲线/混合频率热力图已就绪；本地模拟覆盖锁频写入/恢复中断和可观察到的系统限频变化。
-- **本地验证**：此前114项全量测试通过；最新调度状态、恢复证据和厂商探针针对性测试21项通过，`python -m compileall -q src tests scripts` 通过。本轮全量测试一次120秒超时、一次本机后台重跑停滞后停止了该本地测试进程，均不能记为通过；手机端无对应基准进程。测试命令为 `python -m unittest discover -s tests -t .`，`-t .` 不可省略。
+- **本地验证（2026-11-12 调度报告最终版）**：`python -m unittest discover -s tests -t .` 共178项通过（46.456秒），日志 `reports/scheduler-report-full-tests-20261112-final.log`；`python -m compileall -q src tests scripts` 通过。最终 EXE 已使用真实导出生成报告，与源码的 HTML/Markdown/JSON 逐字节一致；已有输出和错误输入均退出2且无堆栈。窗口启动、按钮显示及恢复门禁禁用状态已观察；桌面自动化未能可靠触发 Tk 内部按钮，完整文件选择流程尚未验证。交付与边界见 `reports/scheduler-report-delivery-20261112.md`。静态测试与离线报告不替代实机恢复或新负载测量。
 - **两小时试运行尝试（未启动负载）**：只读预检与离线计划保存在 `data/phase-j-two-hour-preflight.json`、`data/phase-j-two-hour-plan.json`，当前快照计划127配置、估算119分40秒。`two-hour-sweep` 在创建设备客户端/运行目录之前被原恢复门禁拒绝；未锁频、热插拔或启动基准。
-- **真机只读采集**：已在 `192.168.137.99:45387`（2410DPN6CC/SM8750/Android 16）完成预检与 20 秒采样（`data/phase-h-idle-check.*`）：实际跨度 20.84 秒、中位间隔 1.041 秒，`current×voltage` 积分 14.57 J 与 `charge_counter` 估算 15.26 J 相差 4.78%。这是同一电量计的窗口一致性检查，不是独立校准。
+- **真机只读采集**：已完成一次 Android 设备预检与 20 秒采样（原始设备地址与型号不纳入公开说明）：实际跨度 20.84 秒、中位间隔 1.041 秒，`current×voltage` 积分 14.57 J 与 `charge_counter` 估算 15.26 J 相差 4.78%。这是同一电量计的窗口一致性检查，不是独立校准。
 - **真机恢复验证（已开跑，未通过）**：故障注入用例已开始执行，但**首次在真机捕获到系统并发限频竞态** — 会话期间 `policy0` 在 384000–1996800 / 556800–2227200 / 1152000–2745600 / 1152000–1363200 之间被系统反复改动（`online=0-7`、`low_power=0` 稳定，非本工具写入）。保守恢复正确地不放宽并标记 `RESTRICTED` + `tainted`，设备事后处于安全状态（全核在线、无残留基准进程、屏幕超时已还原）。
 - **本次修掉的缺陷**：验证器曾把这种“系统漂移”当成工具恢复失败并中止整轮（`policy0_max/min/restore` 均 `cases_completed=0`，后续 8 个用例完全未执行）。现区分 `PASS` / `RESTRICTED` / `SKIPPED` / `FAIL`，只对真实恢复失败中止，但退出码仍只在全部 `PASS` 时为 0。
-- **固定频率实测（已完成，手工路径）**：已在真机逐点锁频测完 8 核能效，86 个单核测点 + 23 个 8 核满载组合测点，实测曲线与结论见 `data/EEFF-RESULTS.md`。单核能效最优为 policy0 2400 MHz（8.42 nJ/op）、policy6 3072 MHz（8.86 nJ/op）；8 核满载能效最优组合为小核 1997 + 大核 1402 MHz（475 Mop/s/W），吞吐最优组合为 2746 + 2438 MHz，两者不重合。
+- **历史固定频率测点（手工路径）**：保存了 86 条单核测点和 23 条八核组合测点，报告见 `data/EEFF-RESULTS.md`，原始表格为 `data/eeff.tsv` 与 `data/eeff_combo.tsv`。这些数据存在频率干扰、功率噪声和重复不足，历史报告中的最优频率、低包络及大小核比较不能作为已验证的调度方案；功率是整机电池侧读数。
+- **Power Lens 自然调频观察审计（2026-11-13）**：已完成本地 APK/模块静态核验和设备历史日志的只读聚合审计。日志能提供约 60 秒间隔的 policy 级当前频率、电池 `charge_counter` 和 UID CPU 累计时间，可用于自然 DVFS 状态/整机电池侧变化图；没有同步工作量、CPU 电源轨能量或受控重复，不能生成可信 CPU 能效曲线或最优频率组合。聚合结果和无锁频测量边界见 [`reports/powerlens-observational-audit-20261113.md`](reports/powerlens-observational-audit-20261113.md)。原始 UID/包名日志、APK、DEX 和模块材料仅保留本机，不随仓库发布。
 - **这些结果不解除门禁**：上述测量走的是「手工锁频 + 显式恢复 + 写后回读校验」，没有经过 `matrix-sweep` 的自动恢复路径，因此不构成 `INDEPENDENT_RECOVERY_VERIFIED` 的证据。测量期间再次复现了系统并发限频（CPU6/7 一度被下线、policy6 `scaling_max_freq` 被压到 1689600），反而强化了 fail-closed 的必要性。
 - **真机恢复验证（2026-11-11）**：两轮各11个控制器/看门狗故障注入用例均 `PASS`，0 `RESTRICTED` / `SKIPPED` / `FAIL`；详情见 `data/phase-i-recovery-verify.*` 和 `data/phase-k-recovery-revalidate.*`。最近一轮后 CPU0–CPU7 全在线、无残留 benchmark，屏幕超时及 policy 上下限与该轮测试快照一致；不证明 sysfs 并发竞态已解决。
 - **门禁仍关闭**：`INDEPENDENT_RECOVERY_VERIFIED = False`。全部故障注入通过只证明覆盖到的这些时序能恢复，不消除 sysfs 检查/写入非原子竞态。且本轮之前的只读预检中，policy0 上限从 1785600 变到 2745600 kHz、policy6 从 2438400 变到 3072000 kHz（期间本工具未写设备），说明系统限制状态有变化；不能据此启动完整锁频矩阵。
@@ -155,4 +186,4 @@ python -m compileall -q src tests scripts
 
 `.\scripts\test.ps1` 等价于在项目根目录执行 `python -m unittest discover -s tests -t .`。`-t .` 不能省：省略时 `tests` 被当作顶层目录，`cpu_efficiency_lab` 与 `run_pinned_dynamic` 会导入失败。
 
-单元测试不代表实机扫频已验证。开始扫频前先审阅只读预检和温度传感器识别；测试中如发生异常，优先检查原始日志及频率恢复核验。PowerLens 对照和外部校准仍未实施。
+单元测试不代表实机扫频已验证。开始扫频前先审阅只读预检和温度传感器识别；测试中如发生异常，优先检查原始日志及频率恢复核验。Power Lens 的自然调频观察审计已完成，但同步工作负载对照、CPU 电源轨计量和外部校准仍未实施。

@@ -1,5 +1,18 @@
 # 架构说明
 
+## 桌面入口与历史数据报告
+
+`desktop.py` 与 `desktop_views.py` 提供 Windows Tk 工作台，按“分析 / 调度 / 设备”组织操作；分析页在逐核曲线与组合热力图间切换，设备只读预检把独占保存的 JSON 回填给离线计划入口。调度页只对已导出配置做离线分析并生成未验证候选，不声称在线读取；矩阵及两小时扫描按钮遵循 `INDEPENDENT_RECOVERY_VERIFIED`。`scripts/build-desktop.ps1` 使用已安装的 PyInstaller 构建到新目录，运行 EXE 仍需要外部 ADB。
+
+`historical_report.py` 仅读取历史单核和多核 TSV，在新目录输出逐点散点图、组合覆盖图和 JSON。它不将不同核心的记录当作同核重复，不对缺失组合插值，也不根据历史噪声数据推断最优频率。
+
+`efficiency_report.py` 从历史单核/组合 TSV 离线生成八个独立核心 SVG、组合测点图、HTML 与 JSON。每个核心分别汇总；组合排序只称已观测最低整机电池侧能耗/操作，不对缺测频率插值。历史 TSV 无配对空闲原始窗口，因此不提供历史增量功率或 CPU 电源轨功率结论。`baseline.py` 为新采集分析提供前后空闲窗口插值、漂移和观察噪声范围筛选，供 `analysis.py` 与 `matrix_analysis.py` 共用。
+
+Power Lens 的离线审计见 [`reports/powerlens-observational-audit-20261113.md`](../reports/powerlens-observational-audit-20261113.md)。其 root 侧日志可以按共同时间戳提供约分钟级的 policy 当前频率、整机电池 `charge_counter` 和 UID CPU 累计时间，因此可作自然 DVFS 观察；它不是八个独立核心频率计量，也没有同步工作量或 CPU/SoC 电源轨能量，不能替代受控能效测量或证明最优组合。原始 APK、DEX、模块和 UID/包名日志只保留在本机取证目录。
+
+`ksu_module.py` 只生成设备绑定的候选 ZIP：确认现有 `CpuPolicyPack` 的 `UClampLatencySensitive=0` 动作后，只向 `SCHED_SP_BACKGROUND`、`CPUSET_SP_BACKGROUND` 增加该 profile。安装器检查完整设备身份、原文件 SHA-256、metamodule 状态、未审阅 overlay 和目标节点。它是 systemless task-profile 文件覆盖候选，不替换内核调度器；文件哈希匹配不证明 Android 已加载 profile 或省电。生成与设备安装分离，当前没有实机安装或效果验证。
+
+
 ## 技术路线
 Python 3.9+ 标准库 CLI；Windows 主机通过已安装的 ADB 连接 Android。预检和传感器采样为只读；`cpu-sweep` 必须显式确认设备写入。实验性矩阵当前 fail-closed：保守恢复已完成部分本地/实机故障测试，但并发系统限频更新与半锁定/恢复中断仍未充分验证。所有路径保留 governor、温控和 SELinux。
 
@@ -30,6 +43,13 @@ src/cpu_efficiency_lab/
   two_hour_plot.py E6+P2频率切片与纯簇对照SVG
   matrix_analysis.py 矩阵多线程/电池样本解析、有效性与能效分析
   matrix_plot.py    Pareto 和混合频率热力图 SVG
+  scheduler_sources.py 只读导出有限来源清单及SHA-256清单
+  scheduler_report.py 离线官方调度配置校验和报告
+  efficiency_report.py 八核历史能效报告
+  baseline.py       配对空闲基线和增量筛选
+  ksu_module.py     设备绑定的后台 task-profile 候选 ZIP
+  desktop.py        Windows Tk桌面入口，复用CLI及离线分析
+  desktop_views.py  桌面工作台视图与曲线预览
   screen_control.py 屏幕常亮与超时设置的受控恢复
   analysis.py       原始扫频日志解析、配对基线和性能/能效指标
   plot.py           旧式频率扫频的无依赖 SVG 曲线输出
@@ -59,7 +79,7 @@ scripts/verify_matrix_recovery.py  恢复故障注入验证（不改写门禁）
 | `screen_control.py` | 临时唤醒屏幕并按原超时值恢复 | `keep_screen_awake()`、`restore_screen_timeout()` | `adb.py` |
 | `analysis.py` | 解析采样/基准协议，计算配对空闲基线、增量功率及迭代/J | `parse_sweep_log()`、`analyze_runs()`、`aggregate_curve()` | `models.py`、`power.py`、`sweep.py` |
 | `plot.py` | 无第三方依赖生成频率扫频性能/功耗 SVG | `render_performance_power_svg()`、`render_efficiency_svg()` | 标准库 |
-| `cli.py` | `preflight`、`capture-power`、`cpu-sweep`、禁用中的 `matrix-sweep` | `main()` | 上述一跳模块 |
+| `cli.py` | `preflight`、采集/扫频、fail-closed 矩阵、官方调度报告、八核历史报告与 KSU 候选生成 | `main()` | 上述一跳模块 |
 
 ## 调用关系
 
@@ -69,7 +89,7 @@ scripts/verify_matrix_recovery.py  恢复故障注入验证（不改写门禁）
 
 2026-11-10 首次 A-CPU0 项曾报 `cpufreq restoration mismatch: policy0`；本次修正为先恢复核心、再恢复 policy，并新增远端 controller 日志。设备 fault injection 记录 `data/phase-d-watchdog-fault-injection-final.raw.log` 和 `data/phase-d-watchdog-child-fault-injection.raw.log` 验证了强杀恢复与子负载终止；正常掩码/吞吐 smoke 在 `data/phase-d-matrix-controller-mask-smoke.log`。
 
-2026-11-11 真机（`192.168.137.99:45387`）首次在故障注入窗口内直接观测到系统并发改动 cpufreq 边界：`policy0` 依次出现 384000–1996800 / 556800–2227200 / 1152000–2745600 / 1152000–1363200，`policy6` 上限在 1958400/2438400/3513600 间变化，同期 `online=0-7`、`low_power=0` 稳定且无本工具写入。保守恢复按设计不放宽并输出 `POLICY_RESTORE_RESTRICTED` + `tainted`；设备事后全核在线、无残留基准进程、屏幕超时已还原。验证器此前把这类外部限频当成工具恢复失败而中止整轮（`policy0_max/min/restore` 均 `cases_completed=0`，后续 8 例未执行），现已区分 `PASS`/`RESTRICTED`/`SKIPPED`/`FAIL`；`RESTRICTED` 表示结论不确定，退出码非 0，门禁不因此松动。
+2026-11-11 真机故障注入窗口内首次直接观测到系统并发改动 cpufreq 边界：`policy0` 依次出现 384000–1996800 / 556800–2227200 / 1152000–2745600 / 1152000–1363200，`policy6` 上限在 1958400/2438400/3513600 间变化，同期 `online=0-7`、`low_power=0` 稳定且无本工具写入。公开说明不包含设备地址或型号。保守恢复按设计不放宽并输出 `POLICY_RESTORE_RESTRICTED` + `tainted`；设备事后全核在线、无残留基准进程、屏幕超时已还原。验证器此前把这类外部限频当成工具恢复失败而中止整轮（`policy0_max/min/restore` 均 `cases_completed=0`，后续 8 例未执行），现已区分 `PASS`/`RESTRICTED`/`SKIPPED`/`FAIL`；`RESTRICTED` 表示结论不确定，退出码非 0，门禁不因此松动。
 
 ## 当前恢复归属契约
 
@@ -105,6 +125,16 @@ scripts/verify_matrix_recovery.py  恢复故障注入验证（不改写门禁）
 
 ## 当前未完成的实机验证
 `scalar_mix_v2` 是自定义整数混合负载，不能代表 Geekbench 或 CPU 专用功耗。屏幕常亮的 all-online pinned 校准不是严格单核/纯组隔离；CPU/SoC 电源轨计量、外部校准、PowerLens 同步对照、热稳态建模和跨设备比较均未实现。新版保守恢复已在设备验证运行中 SIGKILL，以及 ADB 断连后正常结束恢复；系统并发调限和半锁定/恢复中断尚未充分验证。全频矩阵尚未开始。最近观察到 Android `low_power=1` 且 policy6 当前仅1017600 kHz 一个可用频点。
+
+## 2026-11-12 晚 firmware-vote 卡死根因（关键突破）
+用户授权"停服务测完恢复"后，进一步定位 policy0 锁频的真正根因：
+- 现象：policy0 `scaling_min_freq = scaling_max_freq = 2400000`（单频点锁死），`scaling_cur_freq = 2400000`，governor=performance，driver=scmi。
+- **不是热限频**：CPU 32–38°C、电池 28.7°C，均正常。
+- **不是用户态 HAL**：逐个 `stop vendor.perfservice`（min 从 2400000→2227200）、再停 `perf2-hal-1-0`/`miperf2-hal`/`poweropt-service`/`vendor.power`，全停后写 `scaling_min_freq` 仍**立即弹回 2400000**。用户态 vote 有 ms 级延迟，"写入即弹回"排除用户态。
+- **是 SCMI firmware 层 vote**：min/max 由 SCP/固件侧持有的频率 vote 决定，sysfs 写只是请求，固件决定实际值。`msm_performance` 内核模块在本机未暴露 `parameters/` 或 debugfs 清除接口，root 无法清 vote。
+- 结论：**matrix controller 经 SCMI 发起的锁频 vote，在 ADB 断连/脚本被杀后固件句柄未释放，vote 永久卡在 firmware。只能重启清零**（SCMI vote 重启失效）。停服务、改 sysfs 都无效。
+- **运维结论**：遇到"policy 被锁成单频点且 root 写不动、停服务无效"，先重启再测。matrix 启动前应自检：若 policy 可用频点数 < 所需档位数（reduced 需 ≥3），判定为固件锁频，直接报"需重启清除 firmware vote"，而非跑到一半崩溃。
+- 测试后服务已全部 `start` 恢复 running；但 firmware vote 仍需重启清除。
 
 ## 2026-11-12 reduced matrix 实跑结论（重要）
 新增 `--reduced-matrix`（6 单核代表点 + 15 纯簇 + 54 E/P 混合，约 46 分钟，跳过 E/F 复测）。两次实跑均在 A-CPU0 中止：

@@ -153,9 +153,38 @@ def _write_json_exclusive(path: Path, value: dict) -> None:
         handle.write("\n")
 
 
+def firmware_vote_locked_policies(report: PreflightReport, required_levels: int) -> List[str]:
+    """Return descriptions of policies too frequency-pinned to host a sweep.
+
+    A policy whose live scaling range exposes fewer in-range frequency steps
+    than the plan needs cannot be swept. On this device a stuck SCMI min/max
+    vote (e.g. min=max=2400000) cannot be cleared by root sysfs writes or by
+    stopping userspace perf HALs — only a reboot clears it. Detect that up
+    front so the operator is told to reboot instead of crashing mid-run.
+    """
+    locked: List[str] = []
+    for policy in report.policies:
+        if policy.scaling_min_khz is None or policy.scaling_max_khz is None:
+            continue
+        try:
+            in_range = {
+                int(v) for v in policy.available_frequencies_khz.split()
+                if v.isdigit() and policy.scaling_min_khz <= int(v) <= policy.scaling_max_khz
+            }
+        except (TypeError, ValueError):
+            continue
+        if len(in_range) < required_levels:
+            locked.append(
+                "%s exposes only %d in-range frequency step(s) (%d-%d kHz)"
+                % (policy.name, len(in_range), policy.scaling_min_khz, policy.scaling_max_khz)
+            )
+    return locked
+
+
 def _validate_device_ready(
     client: AdbClient,
     minimum_battery_percent: int,
+    reduced: bool = False,
 ) -> Tuple[PreflightReport, CpuTopology, List[str], str, Dict[str, int]]:
     report = collect_preflight(client)
     if not report.ready_for_capture:
@@ -193,6 +222,17 @@ def _validate_device_ready(
             raise AdbError("incomplete scaling limits for %s" % policy.name)
         if not policy.available_frequencies_khz.strip():
             raise AdbError("no discrete frequency table for %s" % policy.name)
+
+    # Firmware-vote lock self-check (see helper for rationale).
+    required_levels = 3 if reduced else 2
+    locked = firmware_vote_locked_policies(report, required_levels)
+    if locked:
+        raise AdbError(
+            "%s: a firmware/SCMI min/max vote appears to pin this policy. "
+            "Root sysfs writes and stopping perf HALs cannot clear it — "
+            "reboot the device to reset the firmware vote, then re-run."
+            % "; ".join(locked)
+        )
 
     cpu_paths, battery_path, temperatures = discover_thermal_sensors(client)
     cpu_temps = [value for name, value in temperatures.items() if name != "battery"]
@@ -233,7 +273,7 @@ def run_full_matrix(
         raise ValueError("benchmark binary not found: %s" % binary_path)
 
     report, topology, cpu_temp_paths, battery_temp_path, initial_temperatures = _validate_device_ready(
-        client, minimum_battery_percent
+        client, minimum_battery_percent, reduced=reduced
     )
     stage_a = build_stage_a(topology, report)
     if reduced:

@@ -25,7 +25,25 @@ from cpu_efficiency_lab.preflight import collect_preflight
 from cpu_efficiency_lab.matrix_runner import _validate_device_ready
 
 
+def _valid_boot_id(value):
+    if not isinstance(value, str):
+        return False
+    try:
+        parsed = uuid.UUID(value)
+    except (ValueError, AttributeError):
+        return False
+    return parsed.int != 0 and str(parsed) == value.lower()
+
+
+def _read_boot_id(client):
+    value = client.run_root_script('cat /proc/sys/kernel/random/boot_id 2>/dev/null').strip().lower()
+    if not _valid_boot_id(value):
+        raise AdbError('boot ID unavailable or malformed')
+    return value
+
+
 def snapshot(client):
+    first_boot = _read_boot_id(client)
     report, topology, _, _, temps = _validate_device_ready(client, 60)
     policies = {p.name: (p.scaling_min_khz, p.scaling_max_khz, p.governor, p.related_cpus)
                 for p in report.policies}
@@ -36,13 +54,32 @@ def snapshot(client):
     ).strip()
     if raw_processes:
         raise AdbError('existing benchmark or probe process: ' + raw_processes)
-    return {'serial': report.serial, 'soc': report.soc, 'selinux': report.selinux,
+    last_boot = _read_boot_id(client)
+    if first_boot != last_boot:
+        raise AdbError('device rebooted during snapshot; observation is uncomparable')
+    identity = {'serial': report.serial, 'model': report.model, 'device': report.device, 'soc': report.soc}
+    if any(not isinstance(value, str) or not value.strip() for value in identity.values()):
+        raise AdbError('device identity unavailable; snapshot is uncomparable')
+    if report.serial != client.serial:
+        raise AdbError('device serial does not match requested endpoint')
+    return {**identity, 'boot_id': first_boot, 'selinux': report.selinux,
             'capacity': report.nodes['capacity']['value'], 'status': report.nodes['status']['value'],
             'cpu_online': list(topology.online_cpus), 'policies': policies, 'temperatures_mc': temps}
 
 
 def same_policy_snapshot(a, b):
-    return a['cpu_online'] == b['cpu_online'] and a['policies'] == b['policies']
+    if not isinstance(a, dict) or not isinstance(b, dict):
+        return False
+    identity_keys = ('serial', 'model', 'device', 'soc')
+    if not all(isinstance(item.get(key), str) and item[key].strip()
+               for item in (a, b) for key in identity_keys):
+        return False
+    if not _valid_boot_id(a.get('boot_id')) or not _valid_boot_id(b.get('boot_id')):
+        return False
+    if any(a[key] != b[key] for key in identity_keys) or a['boot_id'].lower() != b['boot_id'].lower():
+        return False
+    return bool(a.get('cpu_online') and a.get('policies') and
+                a['cpu_online'] == b.get('cpu_online') and a['policies'] == b.get('policies'))
 
 
 def ownership_evidence_valid(output):
@@ -142,6 +179,7 @@ def main(argv: Optional[list] = None):
             result['observations'].extend(observations)
             if not okay:
                 raise AdbError('ownership check postflight differs from initial snapshot')
+            result['crash_ttl'] = 'INCONCLUSIVE'
             try:
                 crash = client.run_root_script(shlex.quote(remote) + ' --crash-test --confirm-device-writes', timeout_s=12)
             except AdbError as exc:

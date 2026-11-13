@@ -16,6 +16,34 @@ MIN_SAMPLE_INTERVAL_S = 0.2
 MAX_CAPTURE_DURATION_S = 7200.0
 PROTOCOL_VERSION = 1
 
+# Screening thresholds for paired whole-device idle baselines, not CPU-rail accuracy.
+BASELINE_MAX_DRIFT_W = 0.15
+BASELINE_MAX_DRIFT_FRACTION = 0.20
+BASELINE_MAX_SAMPLE_GAP_S = 5.0
+
+# Read-only scheduler source inventory. API-specific files use the launch API.
+SCHEDULER_IDENTITY_PROPERTIES = (
+    "ro.product.model",
+    "ro.product.device",
+    "ro.soc.model",
+    "ro.build.version.release",
+    "ro.build.version.sdk",
+    "ro.product.first_api_level",
+    "ro.build.version.incremental",
+    "ro.build.fingerprint",
+    "ro.vendor.build.fingerprint",
+)
+SCHEDULER_SOURCE_PATHS = (
+    "/system/etc/cgroups.json",
+    "/system/etc/task_profiles.json",
+    "/system/etc/task_profiles/cgroups_{first_api_level}.json",
+    "/system/etc/task_profiles/task_profiles_{first_api_level}.json",
+    "/vendor/etc/cgroups.json",
+    "/vendor/etc/task_profiles.json",
+    "/vendor/etc/perf/targetresourceconfigs.xml",
+    "/vendor/etc/perf/targetconfig.xml",
+)
+
 # Two short repetitions per fixed-frequency topology point; all values in seconds.
 MATRIX_SWEEP_REPETITIONS = 2
 MATRIX_SWEEP_WARMUP_S = 2

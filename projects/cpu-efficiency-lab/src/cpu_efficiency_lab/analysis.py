@@ -8,6 +8,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
+from .baseline import paired_baseline
 from .models import BatterySample
 from .power import battery_power_w
 from .sweep import SweepPoint
@@ -65,6 +66,10 @@ class RunMetric:
     measurement_valid: bool
     valid: bool
     invalid_reason: str
+    baseline_before_w: Optional[float] = None
+    baseline_after_w: Optional[float] = None
+    baseline_drift_w: Optional[float] = None
+    observed_idle_range_w: Optional[float] = None
 
 
 def parse_sweep_log(raw: str) -> Tuple[List[SweepReading], List[BenchRun]]:
@@ -216,22 +221,14 @@ def analyze_runs(
             active_readings, run.start_s, run.end_s
         )
         load_power = load_energy / load_coverage if load_coverage > 0.0 else None
-        pre_power, pre_energy, pre_coverage = _power_window(pre_readings)
-        post_power, post_energy, post_coverage = _power_window(post_readings)
-        baseline_coverage = pre_coverage + post_coverage
-        baseline_power = (
-            (pre_energy + post_energy) / baseline_coverage
-            if baseline_coverage > 0.0
-            else None
-        )
-        delta_power = (
-            load_power - baseline_power
-            if load_power is not None and baseline_power is not None
-            else None
-        )
+        idle = paired_baseline(
+            [(r.time_s, battery_power_w(r.sample.current_ua, r.sample.voltage_uv, r.sample.status)) for r in pre_readings],
+            [(r.time_s, battery_power_w(r.sample.current_ua, r.sample.voltage_uv, r.sample.status)) for r in post_readings],
+            load_power, run.start_s, run.end_s)
+        baseline_coverage, baseline_power, delta_power = idle.coverage_s, idle.estimated_w, idle.incremental_w
         ops_per_joule = (
             run.operations_per_second / delta_power
-            if delta_power is not None and delta_power > 0.0
+            if idle.valid and delta_power is not None
             else None
         )
         ops_per_total_joule = (
@@ -265,10 +262,8 @@ def analyze_runs(
             measurement_reasons.append("target frequency not held for enough samples")
         measurement_valid = not measurement_reasons
         reasons = list(measurement_reasons)
-        if baseline_power is None:
-            reasons.append("missing paired idle baseline")
-        if delta_power is None or delta_power <= 0.0:
-            reasons.append("non-positive incremental power")
+        if not idle.valid:
+            reasons.append(idle.reason)
         metrics.append(
             RunMetric(
                 point_id=run.point_id,
@@ -294,10 +289,12 @@ def analyze_runs(
                 max_cpu_temp_c=max(cpu_temps) / 1000.0 if cpu_temps else None,
                 max_battery_temp_c=max(battery_temps) / 1000.0 if battery_temps else None,
                 measurement_valid=measurement_valid,
-                valid=measurement_valid and not any(
-                    reason in reasons for reason in ("missing paired idle baseline", "non-positive incremental power")
-                ),
+                valid=measurement_valid and idle.valid,
                 invalid_reason="; ".join(reasons),
+                baseline_before_w=idle.before_w,
+                baseline_after_w=idle.after_w,
+                baseline_drift_w=idle.drift_w,
+                observed_idle_range_w=idle.observed_range_w,
             )
         )
     return metrics
