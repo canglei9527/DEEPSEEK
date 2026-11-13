@@ -2,6 +2,21 @@
 
 无需外置硬件的 Android 电池侧功耗采集与 CPU 能效实验工具。支持只读预检/采样、显式授权 CPU 扫频；实验性 `matrix-sweep` 当前因恢复安全问题 fail-closed。不改变 governor、不关闭温控或 SELinux。
 
+## 项目构成
+
+本项目包含两个协同的半边，是同一台 Xiaomi 15 Pro（`2410DPN6CC` / SM8750 / Android 16 / KernelSU）上的同一条测量线：
+
+| 目录 | 角色 | 回答的问题 |
+|---|---|---|
+| `src/` + `scripts/` + `native/` | 实验侧（CPU Efficiency Lab） | 每焦耳能干多少活：锁频矩阵、吞吐 ÷ 积分功率（nJ/op）、逐核能效曲线 |
+| `powerlens/` | 采集侧（原独立项目 PowerLens，2026-11-13 并入本目录） | 谁在耗电：root 侧 procfs/dumpsys 常驻采集 + 免 root Java UI，逐 UID 归因 |
+
+两侧互相依赖，不是并列的两个工具：
+
+- **实验侧依赖采集侧的开关**：`powerlens/` 的守护进程是本实验最主要的噪声源。实测每频点相对极差中位 9.3%、最大 59.5%，`data/EEFF-RESULTS.md` 明确记录压噪需要「测前 kill 掉 PowerLens 守护与其它后台进程」。跑任何能效测点前，先用 `powerlens/magisk/module/bin/collect-control.sh` 关闭采集开关。
+- **采集侧依赖实验侧的口径**：`powerlens/` 能告诉你某个 UID 耗了多少 mAh，但答不出为什么。最优频点结论（policy0 2400 MHz 8.42 nJ/op、policy6 3072 MHz 8.86 nJ/op）是解释这些差异的频率口径。
+- **共用同一套电池侧电量口径**：两侧都读 `/sys/class/power_supply/battery` 的 `current_now` / `voltage_now` / `charge_counter`，数字可以直接对账；也受同一个限制——测的是整机放电，不是 CPU 电源轨功耗。
+
 ## 当前进度
 
 - **实现**：固定频率逐点计划、双次重复、配对空闲基线、有效性分析及逐核曲线/混合频率热力图已就绪；本地模拟覆盖锁频写入/恢复中断和可观察到的系统限频变化。

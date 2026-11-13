@@ -1,7 +1,7 @@
 # ---- 构建产物 ----
-projects/PowerLens/app2/out/
-projects/PowerLens/c/out/
-projects/PowerLens/magisk/out/
+projects/cpu-efficiency-lab/powerlens/app2/out/
+projects/cpu-efficiency-lab/powerlens/c/out/
+projects/cpu-efficiency-lab/powerlens/magisk/out/
 
 # ---- 本地备份（手工留的 .bak，不入库）----
 *.bak-*

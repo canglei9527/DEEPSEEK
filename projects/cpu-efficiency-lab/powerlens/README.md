@@ -7,6 +7,10 @@
 > 开发/验证机型：Xiaomi 15 Pro `2410DPN6CC`（`haotian`）/ Android 16 / KernelSU
 > 所有数据均来自真机实测，不是理论值。
 
+> **归属**：PowerLens 自 2026-11-13 起作为 `cpu-efficiency-lab` 的采集侧子目录存在
+> （`projects/cpu-efficiency-lab/powerlens/`）。能效锁频矩阵、nJ/op 口径与恢复门禁见
+> [`../README.md`](../README.md)；跑能效测点前需先关闭本模块的采集开关。
+
 ---
 
 ## 它解决什么问题

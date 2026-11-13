@@ -10,13 +10,12 @@ canglei9527 的公开项目集合。
 |---|---|---|
 | [`projects/ARID`](projects/ARID) | 把 aider-gui 的核心思想在 DeepSeek Harness (DSH) 上重实现：双模型分工与升级流程、多平台模型/密钥管理（含 OpenAI 兼容网关）、本地知识库检索、飞书远程控制 | JavaScript |
 | [`projects/codex-agent-console`](projects/codex-agent-console) | Windows desktop console for Codex dual-model orchestration and token statistics | Python |
-| [`projects/cpu-efficiency-lab`](projects/cpu-efficiency-lab) | Android 整机电池侧 CPU 能效测量、固定频率矩阵规划与绘图；未验证恢复路径保持 fail-closed | Python / C |
+| [`projects/cpu-efficiency-lab`](projects/cpu-efficiency-lab) | Android 电池侧功耗测量一体化项目：外层为 CPU 能效矩阵规划与绘图（Python），内置 [`powerlens/`](projects/cpu-efficiency-lab/powerlens) 采集侧（C 采集器 + 免 root Java UI，逐 UID 功耗归因）。同一台 Xiaomi 15 Pro 上的同一条测量线 | Python / Java / C |
 | [`projects/dsh-router`](projects/dsh-router) | Task-aware reasoning-mode router ported from dsh-routing-suite to ZCode: classifies each prompt (build/fix/ambiguous) and injects the matching working style and workflow stage near-field via hooks | JavaScript |
 | [`projects/f28p55x-driverlib-guide-zh-cn`](projects/f28p55x-driverlib-guide-zh-cn) | F28P55x DriverLib API Guide v5.04.00.00 中文离线指南 | HTML / 中文 |
 | [`projects/f28p55x-study-library-zh-cn`](projects/f28p55x-study-library-zh-cn) | F28P55x 00–19 中文开发学习资料，含译文、中英对照和原文 | PDF |
 | [`projects/flow-pilot`](projects/flow-pilot) | AI 项目维护与初始化工作流 / Reusable workflows for focused maintenance, verification, and project bootstrap | JavaScript |
 | [`projects/jingxiao-ipad-pwa`](projects/jingxiao-ipad-pwa) | Standalone offline-first iPad web app | JavaScript |
-| [`projects/PowerLens`](projects/PowerLens) | Android 功耗归因工具：C 采集器（root 侧 procfs/dumpsys 双源）+ 免 root Java UI，逐对核算消除充电伪数据，四口径归因（全部/前台/后台/前台服务），含真机实测基线与 KernelSU 踩坑记录 | Java / C |
 | [`projects/upstream-price-adjuster`](projects/upstream-price-adjuster) | D-AI upstream price adjustment and lifecycle sync console | JavaScript |
 
 ## 说明

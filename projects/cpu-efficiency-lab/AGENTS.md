@@ -1,6 +1,9 @@
 # CPU Efficiency Lab 维护规则
 
 ## 项目边界
+- 采集侧 `powerlens/`（原独立项目 PowerLens）属于本项目。跑能效测点前必须先用
+  `powerlens/magisk/module/bin/collect-control.sh` 关闭 PowerLens 采集开关，否则其守护进程
+  会污染电池侧功率读数；两侧共用 `/sys/class/power_supply/battery` 电量口径，可互相核对。
 - 根目录：`E:/DEEPSEEK ai/cpu-efficiency-lab`；本项目仅采集和分析 Android CPU 能效实验数据。
 - 当前目标锚点：只读预检/电池采集、已授权的温控保护扫频、staged matrix 与本地分析绘图；架构索引见 `ai-context/ARCHITECTURE.md`、`ai-context/FUNCTION_INDEX.md`。
 - `matrix-sweep` 当前 fail-closed：新版保守恢复已完成部分本地模拟、设备 SIGKILL 和 ADB 断连验证，但 sysfs 并非原子写入，半锁定或恢复中断、并发限频变更尚未充分验证。不得绕过 `require_verified_hotplug_recovery()`；恢复门禁解除前需完整故障注入与实机验证，保留日志。
